@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Novecento Slab Bold';
+    src: url('/fonts/Novecento.otf') format('opentype');
+    /* src: url('../assets/fonts/Novecento.otf') format('opentype'); */
+    font-weight: bold;
+    font-style: normal;
+}

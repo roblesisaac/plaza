@@ -1,0 +1,62 @@
+import { ref } from 'vue';
+import { load } from 'recaptcha-v3';
+import { recaptcha_key } from '../config';
+
+export default function useApi() {
+  const data = ref(null);
+  const error = ref(null);
+  const loading = ref(true);
+
+  async function request(method, url, body = null, settings = {}) {
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      if (settings.checkIfHuman) {
+        const recaptcha = await load(recaptcha_key);
+        body.recaptchaToken = await recaptcha.execute(settings.action || 'submit');
+      }
+
+      const baseUrl = settings.baseUrl || '/api/';
+
+      if (url.startsWith('/')) {
+        url = url.slice(1);
+      }
+
+      const response = await fetch(baseUrl + url, { 
+        method,
+        body: body ? JSON.stringify(body) : null,
+        headers: {
+          'Content-Type': 'application/json',
+          ...settings.headers
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData || response.statusText || 'API Request Failed');
+      }
+  
+      data.value = await response.json();
+  
+      return data.value;
+    } catch (err) {
+      console.error(`Error in useApi.${method}:`, error);
+      error.value = err;
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  return {
+    data,
+    error,
+    loading,
+    get: (url, settings) => request('GET', url, null, settings),
+    post: (url, body, settings) => request('POST', url, body, settings),
+    put: (url, body, settings) => request('PUT', url, body, settings),
+    remove: (url, body, settings) => request('DELETE', url, body, settings)
+  };
+}

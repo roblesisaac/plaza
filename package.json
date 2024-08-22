@@ -1,0 +1,49 @@
+{
+  "name": "myapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ampt/cli": "^1.1.16",
+    "@ampt/data": "^1.0.26",
+    "@ampt/sdk": "^1.0.19",
+    "@headlessui/vue": "^1.7.22",
+    "ampt-model": "^2.0.36",
+    "bcryptjs": "^2.4.3",
+    "braintree": "^3.23.0",
+    "braintree-web": "^3.102.0",
+    "express": "^4.18.3",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.9.12",
+    "nodemailer-plugin-inline-base64": "^2.1.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0",
+    "pinia": "^2.1.7",
+    "recaptcha-v3": "^1.10.0",
+    "swiper": "^11.0.5",
+    "uuid": "^9.0.1",
+    "vue": "^3.3.11",
+    "vue-material-design-icons": "^5.2.0",
+    "vue-recaptcha-v3": "^2.0.1",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.9",
+    "vite": "^5.0.8"
+  },
+  "ampt": {
+    "org": "irobles1030",
+    "app": "garden"
+  }
+}

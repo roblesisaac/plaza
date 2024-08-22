@@ -1,0 +1,9 @@
+{
+    "IDX.aI.enableCodebaseIndexing": true,
+    "IDX.aI.enableActionsInChat": true,
+    "IDX.webDevTools": true,
+    "zenMode.hideLineNumbers": false,
+    "notebook.lineNumbers": "off",
+    "IDX.aI.enableInlineCompletion": true,
+    "zenMode.showTabs": "single"
+}

@@ -1,0 +1,64 @@
+ecommerce-app/
+├── server/           
+│  ├── config/
+│  │  ├── environment.js
+│  │  ├── database.js
+│  │  ├── passport.js     
+│  │  └── payments.js     
+│  ├── controllers/
+│  │  ├── authController.js
+│  │  ├── couponController.js
+│  │  ├── shippingController.js
+│  │  ├── productController.js
+│  │  ├── orderController.js
+│  │  └── paymentController.js  
+│  ├── models/         
+│  │  ├── product.js
+│  │  ├── coupon.js
+│  │  ├── order.js
+│  │  ├── user.js
+│  │  └── payment.js      
+│  ├── routes/         
+│  │  ├── api/
+│  │  │  ├── auth.js
+│  │  │  ├── products.js
+│  │  │  ├── orders.js 
+│  │  │  └── payments.js  
+│  │  └── auth.js
+│  ├── services/
+│  │  ├── authService.js
+│  │  ├── couponService.js
+│  │  ├── shippingService.js
+│  │  ├── orderService.js
+│  │  ├── productService.js
+│  │  └── paymentService.js 
+│  ├── middleware/       
+│  │  ├── auth.js
+│  │  ├── errorLogger.js
+│  │  ├── isAuthenticated.js
+│  │  ├── isAdmin.js
+│  │  └── rateLimiter.js  
+│  ├── utils/
+│  │  ├── formats.js
+│  │  ├── tools.js
+│  │  ├── validation.js
+│  ├── public/
+│  │  └── uploads/       
+│  ├── app.js          
+│  └── package.json      
+├── src/             
+│  ├── components/       
+│  │  ├── ... 
+│  ├── composables/      
+│  │  ├── ...
+│  ├── pages/          
+│  │  ├── ...
+│  ├── stores/         
+│  │  ├── ...
+│  ├── router.js        
+│  ├── App.vue         
+│  └── main.js         
+├── .env            
+├── .gitignore          
+├── package.json         
+└── vite.config.js
