@@ -18,49 +18,6 @@
             <CheckoutLoginPromptVue />
         </div>
     </Transition>
-    
-    <!-- Main Checkout Flow -->
-    <div v-if="(UserStore.isLoggedIn && !isLoading) || CheckoutStore.continueAsGuest" class="q-cell-1 main-checkout-container">
-        <div class="q-grid">
-
-            <!-- Title Section + Cancel -->
-            <div class="q-cell-1 title-section">
-                <div class="title-container">
-                    <router-link to="/cart" class="cancel-link"><ChevronLeftIcon /></router-link>
-                    <div class="page-title"><h3>Checkout</h3></div>
-                </div>
-            </div>
-            
-            <!-- Navigation -->
-            <div class="q-cell-1 navigation p10">
-                <CheckoutNavigationVue />
-            </div>
-            
-            <!-- Notifications -->
-            <Transition>
-                <div v-if="CheckoutStore.notifications.length" class="q-cell-1">
-                    <CheckoutNotificationsVue />
-                </div>
-            </Transition>
-            
-            <!-- Active Component -->
-            <Transition>
-                <div v-if="CheckoutStore.activePage !== 'loading'" class="q-cell-1">
-                    <Component :is="pages[CheckoutStore.activePage]" />
-                </div>
-            </Transition>
-
-             <!-- Button to login in -->
-            <div class="q-cell-1 login-container">
-                <button v-if="CheckoutStore.continueAsGuest" 
-                @click="CheckoutStore.continueAsGuest=false"
-                class="login-btn">
-                    <PersonIcon /> Login
-                </button>
-            </div>
-
-        </div>
-    </div>
 </div>
 </template>
 
@@ -71,16 +28,7 @@ import { useUserStore } from '../stores/userStore';
 
 // Components
 import CheckoutLoginPromptVue from '../components/CheckoutLoginPrompt.vue';
-import CheckoutNavigationVue from '../components/CheckoutNavigation.vue';
-import CheckoutNotificationsVue from '../components/CheckoutNotifications.vue';
-import CheckoutShippingVue from '../components/CheckoutShipping.vue';
-import CheckoutPaymentVue from '../components/CheckoutPayment.vue';
-import CheckoutReviewVue from '../components/CheckoutReview.vue';
-import CheckoutSuccessVue from '../components/CheckoutSuccess.vue';
 import LoadingDotsVue from '../components/LoadingDots.vue';
-
-import PersonIcon from 'vue-material-design-icons/Account.vue';
-import ChevronLeftIcon from 'vue-material-design-icons/ChevronLeft.vue';
 import LockCheckIcon from 'vue-material-design-icons/LockCheck.vue';
 
 const CheckoutStore = useCheckoutStore();
@@ -89,8 +37,6 @@ const UserStore = useUserStore();
 CheckoutStore.init();
 
 const isLoading = computed(() => UserStore.isLoading.value);
-
-const pages = [CheckoutShippingVue, CheckoutPaymentVue, CheckoutReviewVue, CheckoutSuccessVue];
 </script>
 
 <style scoped>

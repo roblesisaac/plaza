@@ -1,4 +1,4 @@
-import paymentServices from './paymentServices';
+// import paymentServices from './paymentServices';
 import Orders from '../models/orders';
 import Users from '../models/users';
 import { throwError } from '../utils/errors';

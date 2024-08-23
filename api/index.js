@@ -8,7 +8,6 @@ import passport from './config/passport';
 import cartRoutes from './routes/cartRoutes';
 import contactRoutes from './routes/contactRoutes';
 import authRoutes from './routes/authRoutes';
-import paymentRoutes from './routes/paymentRoutes';
 import shippingRoutes from './routes/shippingRoutes';
 import dbRoutes from './routes/dbRoutes';
 import orderRoutes from './routes/orderRoutes';
@@ -17,7 +16,6 @@ export const routes = {
     authRoutes,
     cartRoutes,
     contactRoutes,
-    paymentRoutes,
     shippingRoutes,
     dbRoutes,
     orderRoutes
@@ -55,7 +53,6 @@ export function init() {
     routes.cartRoutes(api);
     routes.shippingRoutes(api);
     routes.dbRoutes(api);
-    routes.paymentRoutes(api);
     routes.orderRoutes(api);
 
     app.use(middlewares.redirect404s);
