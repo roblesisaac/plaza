@@ -10,7 +10,6 @@ const userSchema = {
     validate: isValidEmail,
     set: encrypt
   },
-  brainId: String,
   views: [String],
   email_verified: '*',
   password: {

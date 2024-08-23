@@ -149,7 +149,7 @@ export async function submitCheckout(order, user) {
         const subject = 'Your Order Confirmation';
         const html = orderReceivedTemplate(createdOrder);
         
-        sendEmail({ from, to, replyTo, subject, html });
+        await sendEmail({ from, to, replyTo, subject, html });
         sendEmail({ from, to: config.CONTACT.EMAIL, subject, html });
     
         return {

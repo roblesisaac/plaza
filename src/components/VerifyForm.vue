@@ -42,7 +42,6 @@ function notify(message) {
 async function verifyUser() {
 
     const verificationResult = await api.post('auth/verify', {
-        email: userStore.userData.email,
         code: code.value
     });
 

@@ -5,23 +5,6 @@ import { sendEmail } from './contactServices';
 import config from '../config/environment';
 import welcomeEmailTemplate from '../emails/welcome-email-template';
 
-export function checkIfAuthenticated(req) {
-  return req.isAuthenticated() 
-    ? {
-      isLoggedIn: true,
-      data: {
-        _id: req.user._id,
-        email: req.user.email,
-        views: req.user.views,
-        email_verified: req.user.email_verified,
-        role: req.user.role,
-        hideAllViews: req.user.hideAllViews,
-        lastLoggedIn: req.user.lastLoggedIn
-  
-      }
-    } : false;
-}
-
 export async function register(email, password) {
   try {
     const newUser = await Users.save({
@@ -35,6 +18,13 @@ export async function register(email, password) {
       to: newUser.email,
       subject: 'Thank you for signing up!',
       html: welcomeEmailTemplate(newUser)
+    });
+
+    sendEmail({ 
+      from: `${config.FRIENDLY_NAME} <${config.CONTACT.EMAIL}>`,
+      to: config.CONTACT.EMAIL,
+      subject: 'New User Signed Up',
+      html: `${newUser.email} Signed Up.`
     });
 
     return newUser;

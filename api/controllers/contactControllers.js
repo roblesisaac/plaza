@@ -1,4 +1,4 @@
-import { sendContactEmail, sendEmail } from '../services/contactServices';
+import { sendContactEmail } from '../services/contactServices';
 import { sendError } from '../utils/errors';
 
 export default {

@@ -4,40 +4,41 @@ import { useCartStore } from './cartStore';
 import { isValidEmail } from '../utils/validation';
 
 const { get, post, loading: apiLoading, error, data } = useApi();
-import router from '../router';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    userData: null
+    userData: false
   }),
   getters: {
     hasError: () => error,
     isLoading: () => apiLoading,
     isAdmin: (state) => state.isLoggedIn && state.userData.role === 'admin',
-    isLoggedOut: (state) => state.userData === null,
+    isLoggedOut: (state) => state.userData === false,
     isLoggedIn: (state) => !state.isLoggedOut,
-    isVerified: (state) => state.isLoggedIn && state.userData.email_verified === true
+    isVerified: (state) => state.userData?.email_verified === true,
+    status: (state) => {
+        if(state.isLoggedOut) {
+            return 'LOGGED_OUT';
+        }
+
+        if(state.isVerified) {
+            return 'VERIFIED';
+        }
+
+        return 'NOT_VERIFIED';
+    }
   },
   actions: {
     async checkAuth() {  
-        if(!this.isLoggedIn) {
-            const response = await get('auth/check');
-
-            if(!response?.isLoggedIn) {
-                this.userData = null;
-                return;
-            }
-
-            this.userData = response.data;
-        }
-        
-        if(!this.isVerified) {
-            router.push('login')
-
-            return;
+        if(this.isLoggedIn) {
+            return true;
         }
 
-        return true;
+        const response = await get('auth/check');
+
+        this.userData = response.data || response;
+
+        return this.userData === false ? false : true;
     },
 
     async login(email, password) {

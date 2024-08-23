@@ -1,7 +1,8 @@
 <template>
     <TopNav :State="State" />
-    
-    <router-view v-if="!State.showingMenu" />
+
+    <router-view v-if="!State.showingMenu && userStore.status !== 'NOT_VERIFIED'" />
+    <VerifyForm v-if="userStore.status === 'NOT_VERIFIED'" />
     
     <Transition>
         <OffCanvas v-if="State.showingMenu" :State="State" />
@@ -17,6 +18,7 @@ import { onMounted, ref } from 'vue';
 import TopNav from './components/TopNav.vue';
 import OffCanvas from './components/OffCanvas.vue';
 import Footer from './components/Footer.vue';
+import VerifyForm from './components/VerifyForm.vue';
 
 // Stores + Composables
 import { useUserStore } from './stores/userStore';

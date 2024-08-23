@@ -3,7 +3,13 @@ import * as authServices from '../services/authServices';
 import { sendError } from '../utils/errors';
 
 export function checkAuth(req, res) {
-  res.json(authServices.checkIfAuthenticated(req));
+  const { password, encryptionKey, ...user } = req.user || {};
+
+  const isAuth = req.isAuthenticated() 
+  ? { isLoggedIn: true, data: user } 
+  : false;
+
+  res.json(isAuth);
 };
 
 export function loginNative(req, res, next) {
@@ -85,7 +91,8 @@ export async function register(req, res) {
 
 export async function verifyUser(req, res) {
   try {
-    const { email, code } = req.body;
+    const { code } = req.body;
+    const { email } = req.user;
     const user = await authServices.verifyUser(email, code);
     
     res.json(user);
