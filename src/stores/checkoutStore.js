@@ -6,5 +6,6 @@ export const useCheckoutStore = defineStore('checkout', {
   getters: {
   },
   actions: {
+    init: () => console.log('initiated...')
   }
 });

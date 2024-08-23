@@ -3,6 +3,7 @@ import { throwError } from '../utils/errors';
 import Users from '../models/users';
 import { sendEmail } from './contactServices';
 import config from '../config/environment';
+import welcomeEmailTemplate from '../emails/welcome-email-template';
 
 export function checkIfAuthenticated(req) {
   return req.isAuthenticated() 
@@ -33,7 +34,7 @@ export async function register(email, password) {
       from: `${config.FRIENDLY_NAME} <${config.CONTACT.EMAIL}>`,
       to: newUser.email,
       subject: 'Thank you for signing up!',
-      text: `Welcome to ${config.FRIENDLY_NAME}! Your verification code is ${newUser.email_verified}.`
+      html: welcomeEmailTemplate(newUser)
     });
 
     return newUser;

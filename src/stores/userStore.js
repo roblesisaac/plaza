@@ -4,6 +4,7 @@ import { useCartStore } from './cartStore';
 import { isValidEmail } from '../utils/validation';
 
 const { get, post, loading: apiLoading, error, data } = useApi();
+import router from '../router';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -15,22 +16,26 @@ export const useUserStore = defineStore('user', {
     isAdmin: (state) => state.isLoggedIn && state.userData.role === 'admin',
     isLoggedOut: (state) => state.userData === null,
     isLoggedIn: (state) => !state.isLoggedOut,
-    isNotVerified: (state) => state.isLoggedIn && state.userData.email_verified !== true
+    isVerified: (state) => state.isLoggedIn && state.userData.email_verified === true
   },
   actions: {
     async checkAuth() {  
-        if(this.isLoggedIn) {
-            return true;
+        if(!this.isLoggedIn) {
+            const response = await get('auth/check');
+
+            if(!response?.isLoggedIn) {
+                this.userData = null;
+                return;
+            }
+
+            this.userData = response.data;
         }
         
-        const response = await get('auth/check');
+        if(!this.isVerified) {
+            router.push('login')
 
-        if(!response?.isLoggedIn) {
-            this.userData = null;
-            return false;
+            return;
         }
-
-        this.userData = response.data;
 
         return true;
     },
@@ -66,7 +71,8 @@ export const useUserStore = defineStore('user', {
         }
 
         await this.submit('register', { email, password });
-        cartStore.init();
+        await cartStore.init();
+        await this.checkAuth();
     },
 
     async submit(submitType, body) {

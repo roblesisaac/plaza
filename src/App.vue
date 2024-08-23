@@ -36,11 +36,11 @@ const State = ref({
 
 onMounted(async () => {
     try {
+        await userStore.checkAuth();
         await productsDb.init();
         await listingsDb.init();
         await cartStore.init();
         await boxes.init();
-        await userStore.checkAuth();
     } catch (err) {
         console.log(err);
     }

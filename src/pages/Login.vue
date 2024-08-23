@@ -1,7 +1,7 @@
 <template>
 <Transition>
 <LoginForm v-if="userStore.isLoggedOut" />
-<VerifyForm v-else-if="userStore.isNotVerified" />
+<VerifyForm v-else-if="!userStore.isVerified" />
 
 <div v-else-if="userStore.isLoggedIn" class="q-grid">
     <div class="q-cell-1 center">
