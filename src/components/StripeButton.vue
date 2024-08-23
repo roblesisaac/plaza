@@ -5,17 +5,22 @@
 </template>
 
 <script setup>
+import ArrowRight from './ArrowRight.vue';
 import { loadStripe } from '@stripe/stripe-js';
 import { stripe_public } from '../config';
 import useApi from '../composables/useApi';
-import ArrowRight from './ArrowRight.vue';
 
 const { post } = useApi();
-const stripePromise = loadStripe(stripe_public);
 
 const handleCheckout = async () => {
-    const stripe = await stripePromise;
+    const stripe = await loadStripe(stripe_public);
     
-    const session = await post('/stripe/create-checkout-session');
+    const sessionId = await post('/stripe/create-checkout-session');
+    
+    const result = await stripe.redirectToCheckout({ sessionId })
+    
+    if (result.error) {
+        console.error(result.error.message)
+    }
 }
 </script>

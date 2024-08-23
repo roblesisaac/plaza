@@ -10,7 +10,7 @@ export async function createCheckoutSession() {
               currency: 'usd',
               product_data: {
                 name: 'T-shirt',
-                descsription: 'Comfortable cotton t-shirt',
+                description: 'Comfortable cotton t-shirt',
               },
               unit_amount: 2000,
             },
@@ -23,5 +23,5 @@ export async function createCheckoutSession() {
         automatic_tax: {enabled: true},
     });
 
-    return session.url;
+    return session.id;
 }

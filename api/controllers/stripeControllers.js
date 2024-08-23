@@ -4,9 +4,9 @@ import { sendError } from '../utils/errors';
 export default {
     createCheckoutSession: async (req, res) => {
         try {
-            const sessionUrl = await createCheckoutSession();
+            const sessionId = await createCheckoutSession();
 
-            res.redirect(sessionUrl);
+            res.json(sessionId);
         } catch (err) {
             sendError(res, err);
         }
