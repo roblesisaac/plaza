@@ -11,6 +11,7 @@ import authRoutes from './routes/authRoutes';
 import shippingRoutes from './routes/shippingRoutes';
 import dbRoutes from './routes/dbRoutes';
 import orderRoutes from './routes/orderRoutes';
+import stripeRoutes from './routes/stripeRoutes';
 
 export const routes = {
     authRoutes,
@@ -18,7 +19,8 @@ export const routes = {
     contactRoutes,
     shippingRoutes,
     dbRoutes,
-    orderRoutes
+    orderRoutes,
+    stripeRoutes
 };
 
 export const middlewares = {
@@ -54,6 +56,7 @@ export function init() {
     routes.shippingRoutes(api);
     routes.dbRoutes(api);
     routes.orderRoutes(api);
+    routes.stripeRoutes(api);
 
     app.use(middlewares.redirect404s);
 

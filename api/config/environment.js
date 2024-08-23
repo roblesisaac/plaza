@@ -46,11 +46,6 @@ export default {
         callbackURL: `${baseUrl}/api/auth/google/callback`,
         passReqToCallback: true
     },
-    PAYMENTS: {
-        ID: params('BRAINTREE_ID'),
-        PUBLIC_SAND: params('BRAINTREE_PUBLIC_SAND'),
-        PRIVATE_SAND: params('BRAINTREE_PRIVATE_SAND')
-    },
     RECAPTCHA_KEY: params('RECAPTCHA_SECRET_KEY'),
     RSA_PRIVATE: params('RSA_PRIVATE').replace(/\\n/g, '\n'),
     RSA_PUBLIC: params('RSA_PUBLIC').replace(/\\n/g, '\n'),
@@ -63,6 +58,10 @@ export default {
         ZIP_CODE_BASE: params('ZIP_CODE_BASE'),
         SHIP_ENGINE_PROD: params('SHIP_ENGINE_PROD'),
         SHIP_ENGINE_SAND: params('SHIP_ENGINE_SANDBOX')
+    },
+    STRIPE: {
+        PUBLIC: params('STRIPE_PUBLIC'),
+        PRIVATE: params('STRIPE_PRIVATE')
     },
     URL: `https://${customDomain}`
 };
