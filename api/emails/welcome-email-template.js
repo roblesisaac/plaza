@@ -55,15 +55,6 @@ export default function welcomeEmailTemplate(newUser) {
               letter-spacing: 5px;
               font-weight: bold;
           }
-          .button {
-              display: inline-block;
-              padding: 10px 20px;
-              background-color: #3498db;
-              color: white;
-              text-decoration: none;
-              border-radius: 5px;
-              margin-top: 10px;
-          }
           .footer {
               background-color: #34495e;
               color: white;
@@ -95,8 +86,6 @@ export default function welcomeEmailTemplate(newUser) {
               </div>
               
               <p>Enter this code on our website to complete your registration and unlock all the features of your new account.</p>
-              
-              <a href="${config.URL}/login" class="button">Verify Email</a>
               
               <p>If you didn't create an account with us, please ignore this email or contact our support team.</p>
           </div>

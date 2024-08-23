@@ -74,6 +74,7 @@ input {
 
 button {
     border: none;
+    background: var(--blue);
     color: #fff;
     padding: 15px 32px;
     font-weight: bold;

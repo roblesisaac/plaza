@@ -20,7 +20,7 @@ export async function register(email, password) {
       html: welcomeEmailTemplate(newUser)
     });
 
-    sendEmail({ 
+    await sendEmail({ 
       from: `${config.FRIENDLY_NAME} <${config.CONTACT.EMAIL}>`,
       to: config.CONTACT.EMAIL,
       subject: 'New User Signed Up',
