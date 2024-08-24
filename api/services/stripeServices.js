@@ -18,10 +18,10 @@ export async function createCheckoutSession() {
           },
         ],
         mode: 'payment',
-        success_url: `${config.URL}/success`,
-        cancel_url: `${config.URL}/cancel`,
+        success_url: `${config.baseUrl}/cart?success=true`,
+        cancel_url: `${config.baseUrl}/cart?canceled=true`,
         automatic_tax: {enabled: true},
     });
 
-    return session.id;
+    return session;
 }
