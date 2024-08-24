@@ -4,20 +4,42 @@ const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
 
 export async function createCheckoutSession() {
     const session = await stripe.checkout.sessions.create({
+        customer_email: config.CONTACT.EMAIL,
         line_items: [
           {
             price_data: {
               currency: 'usd',
               product_data: {
-                name: 'T-shirt',
-                description: 'Comfortable cotton t-shirt',
+                name: 'A100',
+                description: `For 1” Wood Fences
+                “The Original” Garden Hanger is a versatile and functional solution for hanging your favorite plants on a variety of walls or fencing, no tools required.`,
+                images: ['https://sharp-deploy-xeagbb.ampt.app/images/a100-1.webp']
               },
               unit_amount: 2000,
             },
             quantity: 1,
+            adjustable_quantity: {
+              enabled: true,
+              maximum: 99,
+              minimum: 1
+            }
+          },
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: 'A200',
+                description: `For 1” Wood Fences
+                “The Original” Garden Hanger is a versatile and functional solution for hanging your favorite plants on a variety of walls or fencing, no tools required.`,
+                images: ['https://sharp-deploy-xeagbb.ampt.app/images/a100-1.webp']
+              },
+              unit_amount: 2000,
+            },
+            quantity: 2,
           },
         ],
         mode: 'payment',
+        allow_promotion_codes: true,
         success_url: `${config.baseUrl}/cart?success=true`,
         cancel_url: `${config.baseUrl}/cart?canceled=true`,
         automatic_tax: {enabled: true},
