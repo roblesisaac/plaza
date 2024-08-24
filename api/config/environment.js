@@ -61,7 +61,8 @@ export default {
     },
     STRIPE: {
         PUBLIC: params('STRIPE_PUBLIC'),
-        PRIVATE: params('STRIPE_PRIVATE')
+        PRIVATE: params('STRIPE_PRIVATE'),
+        PRIVATE_TEST: params('STRIPE_PRIVATE_TEST')
     },
     URL: `https://${customDomain}`
 };
