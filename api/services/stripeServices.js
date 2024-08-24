@@ -39,6 +39,9 @@ export async function createCheckoutSession() {
           },
         ],
         mode: 'payment',
+        shipping_address_collection: {
+          allowed_countries: ['US', 'CA'],
+        },
         allow_promotion_codes: true,
         success_url: `${config.baseUrl}/cart?success=true`,
         cancel_url: `${config.baseUrl}/cart?canceled=true`,
