@@ -13,7 +13,7 @@ export async function createCheckoutSession() {
                 name: 'A100',
                 description: `For 1” Wood Fences
                 “The Original” Garden Hanger is a versatile and functional solution for hanging your favorite plants on a variety of walls or fencing, no tools required.`,
-                images: ['https://sharp-deploy-xeagbb.ampt.app/images/a100-1.webp']
+                images: [`${config.baseUrl}/images/a100-1.webp`]
               },
               unit_amount: 2000,
             },
@@ -31,7 +31,7 @@ export async function createCheckoutSession() {
                 name: 'A200',
                 description: `For 1” Wood Fences
                 “The Original” Garden Hanger is a versatile and functional solution for hanging your favorite plants on a variety of walls or fencing, no tools required.`,
-                images: ['https://sharp-deploy-xeagbb.ampt.app/images/a100-1.webp']
+                images: [`${config.baseUrl}/images/a100-1.webp`]
               },
               unit_amount: 2000,
             },
