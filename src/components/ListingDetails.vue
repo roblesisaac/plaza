@@ -4,24 +4,26 @@
             <!-- Image Gallery -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Main Image -->
-                <div class="relative aspect-w-1 aspect-h-1">
-                    <transition
-                        enter-active-class="transition-opacity duration-300"
-                        leave-active-class="transition-opacity duration-300"
-                        enter-from-class="opacity-0"
-                        leave-to-class="opacity-0"
-                    >
-                        <img
-                        v-if="activeImage !== false"
-                        :src="imagePath(activeImage)"
-                        :alt="mainSku"
-                        class="w-full h-full object-cover rounded-lg shadow-lg"
-                        />
-                    </transition>
-                    <!-- Price Badge -->
-                    <div class="absolute top-4 right-4 bg-white bg-opacity-90 text-blue-600 font-bold py-2 px-4 rounded-full shadow-md transform rotate-12">
-                        <span class="text-xl">{{ formatAsPrice(listing.price) }}</span>
+                <div class="relative aspect-w-1 aspect-h-1 group">
+                <transition
+                    enter-active-class="transition-opacity duration-300"
+                    leave-active-class="transition-opacity duration-300"
+                    enter-from-class="opacity-0"
+                    leave-to-class="opacity-0"
+                >
+                    <img
+                    v-if="activeImage !== false"
+                    :src="imagePath(activeImage)"
+                    :alt="mainSku"
+                    class="w-full h-full object-cover rounded-lg shadow-lg"
+                    />
+                </transition>
+                <!-- Price Badge -->
+                <div class="absolute bottom-0 right-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-tl-lg rounded-br-lg shadow-lg transform translate-y-1 translate-x-1 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform duration-300 ease-in-out">
+                    <div class="flex flex-col items-end">
+                    <span class="text-2xl font-bold">{{ formatAsPrice(listing.price) }}</span>
                     </div>
+                </div>
                 </div>
             
             <!-- Thumbnails -->
