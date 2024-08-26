@@ -66,6 +66,9 @@
   
   // Composables
   import useDb from '../composables/useDb';
+  import useListings from '../composables/useListings';
+
+  const { calcListingValue } = useListings();
   
   const props = defineProps({
     listingData: Object
@@ -75,16 +78,6 @@
   const listingsDb = useDb('listings');
   const productsDb = useDb('products');  
   const productsCollection = productsDb.getCollection();
-
-  function calcValue(productsInListing = []) {
-    return productsInListing.reduce((total, product) => 
-      total + (getProduct(product.sku).price * product.qty), 0
-    )
-  }
-
-  function getProduct(sku) {
-    return productsCollection.items.find(product => product.sku === sku);
-  }
   
   function emptyListing() {
     return {
@@ -122,7 +115,7 @@
   }, { deep: true });
 
   onMounted(() => {
-    listingDataLocal.value.value = calcValue(listingDataLocal.value.productsInListing)
+    listingDataLocal.value.value = calcListingValue(listingDataLocal.value)
 
     if(!listingDataLocal.value.price) {
       listingDataLocal.value.price = listingDataLocal.value.value;

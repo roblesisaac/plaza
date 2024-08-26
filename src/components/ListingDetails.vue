@@ -1,24 +1,24 @@
 <template>
 <div class="q-grid listing-details-container">
     <Transition>
-    <div v-if="product" class="q-cell-1">
+    <div v-if="mainProduct" class="q-cell-1">
         <div class="q-grid parent">
             <!-- Active Image Not Small Screen -->
             <div v-if="screenSize === 'large'" class="q-cell-1 image-wrapper">
                 <div class="q-grid">
                     <div class="q-cell-70">
                         <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="product.title" class="active-photo" />
+                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainProduct.title" class="active-photo" />
                         </Transition>
                     </div>
 
                     <!-- Smaller Images -->
                     <div class="q-cell-30 large-thumb-container">
                         <div class="q-grid text-center large-thumbs">
-                            <div v-for="(img, index) in product.images" class="q-cell-50 thumb-container">
+                            <div v-for="(img, index) in mainProduct.images" class="q-cell-50 thumb-container">
                                 <img                          
                                 :key="img" :src="imagePath(index)" 
-                                :alt="product.title" :class="['thumbs', isActiveThumb(index)]"
+                                :alt="mainProduct.title" :class="['thumbs', isActiveThumb(index)]"
                                 @click="activateImage(index)"
                                 />
                             </div>
@@ -32,7 +32,7 @@
                 <div class="q-grid">
                     <div class="q-cell-1">
                         <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="product.title" class="active-photo mb-5" />
+                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainProduct.title" class="active-photo mb-5" />
                         </Transition>
                     </div>
 
@@ -40,9 +40,9 @@
                     <div class="q-cell-1 scrolling-content">
                         <div class="scrolling-wrapper">
                             <img 
-                                v-for="(img, index) in product.images" 
+                                v-for="(img, index) in mainProduct.images" 
                                 :key="img" :src="imagePath(index)" 
-                                :alt="product.title" :class="['thumbs', isActiveThumb(index)]"
+                                :alt="mainProduct.title" :class="['thumbs', isActiveThumb(index)]"
                                 @click="activateImage(index)"
                             />
                         </div>
@@ -53,15 +53,16 @@
             <!-- Title -->
             <div class="q-cell-1 verbiage p30x">
                 <h3>{{ title.toUpperCase() }}</h3>
-                <span v-if="product.application">For</span> {{ product.application || product.title }}
+                <span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainProduct.title }}
             </div>
 
             <!-- Info -->
-            <div class="q-cell-1 p30x" v-html="product.info || productLineData.info"></div>
+            <div class="q-cell-1 p30x" v-html="mainProduct.info || productLineData.info"></div>
 
             <!-- Line Footer -->
             <div class="q-cell-1 p30x" v-html="productLineData.footer"></div>
 
+            <!-- Price -->
             <div class="q-cell-1 pad">
                 <h1 class="listing-price">${{ listing.price }}</h1>
             </div>
@@ -111,21 +112,21 @@
             </div>
 
             <!-- Variation -->
-            <div v-if="product.otherOption" class="q-cell-1 options variation">
-                <h3><router-link :to="'/products/'+product.otherOption">{{ verb }} Add-On Clip »</router-link></h3>
+            <div v-if="mainProduct.otherOption" class="q-cell-1 options variation">
+                <h3><router-link :to="'/products/'+mainProduct.otherOption">{{ verb }} Add-On Clip »</router-link></h3>
             </div>
 
             <!-- Other Sizes -->
             <div class="q-cell-1 other-sizes">
                 <h3 class="others p30x">Other Sizes:</h3>
-                <ProductLineVue :productLine="productLineData" :showVerbiage="false" :showImages="false" :hidden="[sku]" />
+                <ProductLineVue :productLine="productLineData" :showVerbiage="false" :showImages="false" :hidden="[mainSku]" />
             </div>
         </div>
     </div>
     </Transition>
     <Transition>
-    <div v-if="!product" class="q-cell-1">
-        <h3>Loading Product {{ sku }} Details<LoadingDotsVue /></h3>
+    <div v-if="!mainProduct" class="q-cell-1">
+        <h3>Loading Product {{ mainSku }} Details<LoadingDotsVue /></h3>
     </div>
     </Transition>
 </div>
@@ -141,13 +142,14 @@ import LoadingDotsVue from './LoadingDots.vue';
 
 // Composables + Utils
 import router from '../router';
-import useScreen from '../composables/useScreen';
 import { useCartStore } from '../stores/cartStore';
 import useDb from '../composables/useDb';
-import productLines from '../staticDb/productLinesDb';
+import useScreen from '../composables/useScreen';
+import useListings from '../composables/useListings';
 
 const productsDb = useDb('products');
 const listingsDb = useDb('listings');
+const { calcListingValue, getListing, getMainProduct, getProductLineData } = useListings();
 
 const productsCollection = productsDb.getCollection('products');
 const listings = listingsDb.getCollection('listings');
@@ -161,15 +163,23 @@ const title = computed(() => {
 });
 
 const listing = computed(() => {
-    return listings.items.find((l) => l.title === title.value);
+    return getListing(title.value);
 });
 
-const sku = computed(() => {
+const listingPrice = computed(() => {
+    return listing.value?.price || calcListingValue(listing);
+})
+
+const mainSku = computed(() => {
     return listing.value?.productsInListing?.[0]?.sku;
 });
 
-const product = computed(() => {
-  return productsCollection.items.find((p) => p.sku === sku.value);
+function findProduct(sku) {
+    return productsCollection.items.find((p) => p.sku === sku);
+}
+
+const mainProduct = computed(() => {
+  return getMainProduct(listing.value);
 });
 
 const cartItem = computed(() => {
@@ -177,19 +187,15 @@ const cartItem = computed(() => {
 });
 
 const productLineData = computed(() => {
-    if(!product.value) {
-        return;
-    }
-
-    return productLines.find(pl => pl.line === product.value.line);   
+    return getProductLineData(listing.value);
 });
 
 const verb = computed(() => {
-    if(!product.value?.otherOption) {
+    if(!mainProduct.value?.otherOption) {
         return;
     }
 
-    if(product.value?.otherOption.slice(-1) === '1') {
+    if(mainProduct.value?.otherOption.slice(-1) === '1') {
         return 'Equip With An';
     }
 
@@ -205,14 +211,14 @@ function activateImage(index) {
 }
 
 function imagePath(index=0) {  
-    return `/images/${product.value.images[index]}.webp`;
+    return `/images/${mainProduct.value.images[index]}.webp`;
 }
 
 function isActiveThumb(index) {
     return activeImage.value === index ? 'active-thumb' : '';
 }
 
-watch(sku, () => {
+watch(mainSku, () => {
     activeImage.value = 0;
 });
 
@@ -300,10 +306,6 @@ img.active-thumb {
 .listing-price {
     color: var(--dark-blue);
     margin-bottom: 10px;
-}
-
-.product-container {
-    padding-right: 20px;
 }
 
 .thumbs {

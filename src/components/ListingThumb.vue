@@ -35,7 +35,8 @@
 
     
     function imagePath(index=0) {
-        return `../images/${product.value.images[index]}.webp`;
+        const photoName = props.listing.coverPhoto || product.value.images[index];
+        return `../images/${photoName}.webp`;
     }
     
     </script>

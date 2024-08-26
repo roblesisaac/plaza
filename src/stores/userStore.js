@@ -30,15 +30,20 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async checkAuth() {  
-        if(this.isLoggedIn) {
-            return true;
+        try {
+            if(this.isLoggedIn) {
+                return true;
+            }
+    
+            const response = await get('auth/check');
+    
+            this.userData = response.data || response;
+    
+            return this.userData === false ? false : true;
+        } catch (err) {
+            this.userData = false;
+            return false;
         }
-
-        const response = await get('auth/check');
-
-        this.userData = response.data || response;
-
-        return this.userData === false ? false : true;
     },
 
     async login(email, password) {

@@ -46,22 +46,26 @@ export const useCartStore = defineStore('cart', {
       if (existingItem) {
         existingItem.qty += qty;
         existingItem.saveForLater = false;
-      } else {
-        this.items.push({
-          _id: listing._id,
-          title: listing.title, 
-          price: listing.price,
-          productsInListing: listing.productsInListing,
-          qty,
-          saveForLater: false
-        });
+        return await this.saveCart();
       }
+
+      const product = computed(() => {
+        return products.find(p => p.sku === props.listing.productsInListing[0].sku) || { images: []};
+      });
+      this.items.push({
+        _id: listing._id,
+        title: listing.title, 
+        price: listing.price,
+        productsInListing: listing.productsInListing,
+        qty,
+        saveForLater: false
+      });
       
-      await this.saveCart();
+      return await this.saveCart();
     },
     
-    async clearCart(confirmedAlready) {
-      if(!confirmedAlready && !confirm('Are you sure you want to clear your cart?')) {
+    async clearCart() {
+      if(!confirm('Are you sure you want to clear your cart?')) {
         return;
       }
 

@@ -4,6 +4,7 @@ const listingSchema = {
     title: String,
     line: String,
     description: String,
+    coverPhoto: String,
     productsInListing: [{
         sku: String,
         qty: Number
