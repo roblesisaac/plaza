@@ -23,7 +23,7 @@
     </div>
     
     <!-- Clear Cart -->
-    <div v-if="cartStore.items.length > 1" class="text-right mb-4">
+    <div v-if="cartStore.items.length" class="text-right mb-4">
         <button @click="cartStore.clearCart" class="text-red-600 hover:text-red-800 font-semibold">
             Clear Cart
         </button>

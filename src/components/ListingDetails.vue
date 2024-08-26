@@ -1,139 +1,117 @@
 <template>
-<div class="q-grid listing-details-container">
-    <Transition>
-    <div v-if="mainProduct" class="q-cell-1">
-        <div class="q-grid parent">
-            <!-- Active Image Not Small Screen -->
-            <div v-if="screenSize === 'large'" class="q-cell-1 image-wrapper">
-                <div class="q-grid">
-                    <div class="q-cell-70">
-                        <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainSku" class="active-photo" />
-                        </Transition>
-                    </div>
-
-                    <!-- Smaller Images -->
-                    <div class="q-cell-30 large-thumb-container">
-                        <div class="q-grid text-center large-thumbs">
-                            <div v-for="(img, index) in mainProduct.images" class="q-cell-50 thumb-container">
-                                <img                          
-                                :key="img" :src="imagePath(index)" 
-                                :alt="mainSku" :class="['thumbs', isActiveThumb(index)]"
-                                @click="activateImage(index)"
-                                />
-                            </div>
-                        </div>
-                    </div>
+    <div class="container mx-auto px-4 py-8">
+        <div v-if="mainProduct" class="space-y-8">
+            <!-- Image Gallery -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Main Image -->
+                <div class="relative aspect-w-1 aspect-h-1">
+                    <transition
+                    enter-active-class="transition-opacity duration-300"
+                    leave-active-class="transition-opacity duration-300"
+                    enter-from-class="opacity-0"
+                    leave-to-class="opacity-0"
+                    >
+                        <img
+                        v-if="activeImage !== false"
+                        :src="imagePath(activeImage)"
+                        :alt="mainSku"
+                        class="w-full h-full object-cover rounded-lg shadow-lg"
+                        />
+                    </transition>
                 </div>
-            </div>
-
-            <!-- Active Image Small Screen -->
-            <div v-if="isLessThan('large')" class="q-cell-1 image-wrapper">
-                <div class="q-grid">
-                    <div class="q-cell-1">
-                        <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainSku" class="active-photo mb-5" />
-                        </Transition>
-                    </div>
-
-                    <!-- Smaller Images -->
-                    <div class="q-cell-1 scrolling-content">
-                        <div class="scrolling-wrapper">
-                            <img 
-                                v-for="(img, index) in mainProduct.images" 
-                                :key="img" :src="imagePath(index)" 
-                                :alt="mainSku" :class="['thumbs', isActiveThumb(index)]"
-                                @click="activateImage(index)"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Title -->
-            <div class="q-cell-1 verbiage p30x">
-                <h3>{{ listingTitle.toUpperCase() }}</h3>
-                <span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainSku }}
-            </div>
-
-            <!-- Info -->
-            <div class="q-cell-1 p30x" v-html="mainProduct.info || productLineData.info"></div>
-
-            <!-- Line Footer -->
-            <div class="q-cell-1 p30x" v-html="productLineData.footer"></div>
-
-            <!-- Price -->
-            <div class="q-cell-1 pad">
-                <h1 class="listing-price">${{ listing.price }}</h1>
-            </div>
-
-            <!-- Whats In The Box -->
-            <div class="q-cell-1 pad">
-                <h3>Whats In The Box</h3>
-                <ul>
-                    <li v-for="productInListing in listing.productsInListing">
-                        <b>{{ productInListing.sku.toUpperCase() }} x {{ productInListing.qty }}</b>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Add To Cart -->
-            <div v-if="!cartItem" class="q-cell-1 buy-now">
-                <h3><a @click="cart.addItem(listing, 1)" class="button">Add To Cart</a></h3>
-            </div>
-
-            <!-- Adjust Cart -->
-            <Transition>
-            <div v-if="cartItem" class="q-cell-1 buy-now">
-                <div class="q-grid middle">
-                    <div class="q-cell-33">
-                        <a @click="cart.updateItemQuantity(listingTitle, -1)" class="button">
-                            <h2>-</h2>
-                        </a>
-                    </div>
-                    <div class="q-cell-33 cart-count">{{ cartItem.qty }}</div>
-                    <div class="q-cell-33">
-                        <a @click="cart.updateItemQuantity(listingTitle, 1)" class="button">
-                            <h2>+</h2>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            </Transition>
-
-            <!-- Etsy -->
-            <div class="q-cell-1 p30x">
-                <h3><a class="button" target="_blank" href="https://gardenhanger.etsy.com">Buy Now On Etsy »</a></h3>
-            </div>
             
-            <!-- View Cart -->
-            <div class="q-cell-1 view-cart" v-if='cart.items.length'>
-                <router-link to="/cart"><h3>View Cart (${{ cart.subtotal }})</h3></router-link>
-            </div>
-
-            <!-- Variation -->
-            <div v-if="mainProduct.otherOption" class="q-cell-1 options variation">
-                <h3><router-link :to="'/products/'+mainProduct.otherOption">{{ verb }} Add-On Clip »</router-link></h3>
-            </div>
-
-            <!-- Other Sizes -->
-            <div class="q-cell-1 other-sizes">
-                <h3 class="others p30x">Other Sizes:</h3>
-                <ProductLineVue :productLine="productLineData" :showVerbiage="false" :showImages="false" :hidden="[mainSku]" />
+            <!-- Thumbnails -->
+            <div class="grid grid-cols-4 gap-4 content-start">
+                <div 
+                v-for="(img, index) in mainProduct.images" 
+                :key="img" 
+                class="aspect-w-1 aspect-h-1"
+                >
+                    <img
+                    :src="imagePath(index)"
+                    :alt="mainSku"
+                    :class="['w-full h-full object-cover rounded cursor-pointer transition-all duration-300', 
+                    isActiveThumb(index) ? 'ring-2 ring-blue-500' : 'hover:opacity-75']"
+                    @click="activateImage(index)"
+                    />
+                </div>
             </div>
         </div>
+    
+    <!-- Product Info -->
+    <div class="space-y-6">
+        <h1 class="text-3xl font-bold text-gray-900">{{ listingTitle.toUpperCase() }}</h1>
+        <p class="text-xl text-gray-600">
+            <span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainSku }}
+        </p>
+        <div class="prose max-w-none" v-html="mainProduct.info || productLineData.info"></div>
+        <div class="prose max-w-none" v-html="productLineData.footer"></div>
     </div>
-    </Transition>
-    <Transition>
-    <div v-if="!mainProduct" class="q-cell-1">
-        <h3>Loading Product {{ mainSku }} Details<LoadingDotsVue /></h3>
+    
+    <!-- Price and Add to Cart -->
+    <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4 text-center">{{ formatAsPrice(listing.price) }}</h2>
+        <div v-if="!cartItem">
+            <button @click="cart.addItem(listing, 1)" class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors duration-300">
+                Add To Cart
+            </button>
+        </div>
+        <div v-else class="flex items-center justify-between">
+            <button @click="cart.updateItemQuantity(listingTitle, -1)" class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors duration-300">
+                -
+            </button>
+            <span class="text-2xl font-bold">{{ cartItem.qty }}</span>
+            <button @click="cart.updateItemQuantity(listingTitle, 1)" class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors duration-300">
+                +
+            </button>
+        </div>
     </div>
-    </Transition>
+    
+    <!-- What's In The Box -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-2xl font-bold mb-4 text-center">What's In The Box</h3>
+        <ul class="list-disc pl-6 space-y-2">
+            <li v-for="productInListing in listing.productsInListing" :key="productInListing.sku" class="text-lg">
+                <span class="font-semibold">{{ productInListing.sku.toUpperCase() }} x {{ productInListing.qty }}</span>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Etsy and View Cart -->
+    <div class="flex flex-col sm:flex-row gap-4">
+        <a href="https://gardenhanger.etsy.com" target="_blank" class="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg text-center text-lg font-semibold hover:bg-green-700 transition-colors duration-300">
+            Buy Now On Etsy
+        </a>
+        <router-link v-if="cart.items.length" to="/cart" class="flex-1 bg-gray-800 text-white py-3 px-6 rounded-lg text-center text-lg font-semibold hover:bg-gray-900 transition-colors duration-300">
+            View Cart ({{ formatAsPrice(cart.subtotal) }})
+        </router-link>
+    </div>
+    
+    <!-- Variations and Other Sizes -->
+    <div class="space-y-6">
+        <div v-if="mainProduct.otherOption" class="bg-gray-100 p-6 rounded-lg">
+            <router-link :to="'/products/'+mainProduct.otherOption" class="text-xl font-semibold text-blue-600 hover:underline">
+                {{ verb }} Add-On Clip »
+            </router-link>
+        </div>
+        <div>
+            <h3 class="text-2xl font-bold mb-4">Other Sizes:</h3>
+            <ProductLineVue :productLine="productLineData" :showVerbiage="false" :showImages="false" :hidden="[mainSku]" />
+        </div>
+    </div>
+</div>
+
+<div v-else class="text-center py-12">
+    <h3 class="text-2xl font-bold text-gray-700">
+        Loading Product {{ mainSku }} Details<LoadingDotsVue />
+    </h3>
+</div>
 </div>
 </template>
 
 <script setup>
 import { computed, nextTick, ref, watch } from 'vue';
+import { formatAsPrice } from '../utils/formats';
 
 // Components
 import ProductLineVue from './ProductLine.vue';
@@ -170,7 +148,7 @@ const mainSku = computed(() => {
 });
 
 const mainProduct = computed(() => {
-  return getMainProduct(listing.value);
+    return getMainProduct(listing.value);
 });
 
 const cartItem = computed(() => {
@@ -185,11 +163,11 @@ const verb = computed(() => {
     if(!mainProduct.value?.otherOption) {
         return;
     }
-
+    
     if(mainProduct.value?.otherOption.slice(-1) === '1') {
         return 'Equip With An';
     }
-
+    
     return 'Remove';
 });
 

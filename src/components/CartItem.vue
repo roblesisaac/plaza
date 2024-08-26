@@ -3,10 +3,9 @@
 
     <!-- Thumbnail -->
     <div class="item-image q-cell-20">
-      <router-link v-if="product.images?.length" :to="'products/' + item.title">
-        <img :src="imagePath(0)" :alt="item.name" class="thumbnail" />
+      <router-link :to="'products/' + item.title">
+        <img :src="item.coverPhoto" :alt="item.name" class="thumbnail" />
       </router-link>
-      <div class="placeholder" v-else>{{ item.name }}</div>
     </div>
 
     <!-- Details -->
@@ -37,7 +36,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import useDb from '../composables/useDb';
+import { formatAsPrice } from '../utils/formats';
 
 const props = defineProps({ 
   item: {
@@ -46,32 +45,11 @@ const props = defineProps({
   }
 });
 
-const productsDb = useDb('products');
-
-const products = productsDb.getCollection();
-
-const product = computed(() => {
-  return products.items.find(itm => itm.sku === props.item?.productsInListing?.[0]?.sku);
-});
-
 const emits = defineEmits(['update-qty', 'remove-item']);
 
 const formattedPrice = computed(() => {
-  return (props.item.price * props.item.qty).toLocaleString('en-US', {
-    style: 'currency', 
-    currency: 'USD' 
-  });
+  return formatAsPrice((props.item.price * props.item.qty));
 });
-
-function imagePath(index=0) {    
-  try {
-    return `/images/${product.value.images[index]}.webp`;
-  } catch (err) {
-    console.log({
-      err
-    })
-  }
-}
 
 function updateQuantity(amount) {
   emits('update-qty', props.item.title, Number(amount));

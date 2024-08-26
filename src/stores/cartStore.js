@@ -3,12 +3,13 @@ import { defineStore } from 'pinia';
 // composables
 import useApi from '../composables/useApi';
 import useShipping from '../composables/useShipping';
+import useListings from '../composables/useListings';
 import { useUserStore } from './userStore';
 
 import { formatProper } from '../utils/formats';
 import { isValidZipCode } from '../utils/validation';
 
-
+const { getListingCoverPhoto } = useListings();
 const shipping = useShipping();
 const { get, post } = useApi();
 
@@ -49,13 +50,11 @@ export const useCartStore = defineStore('cart', {
         return await this.saveCart();
       }
 
-      const product = computed(() => {
-        return products.find(p => p.sku === props.listing.productsInListing[0].sku) || { images: []};
-      });
       this.items.push({
         _id: listing._id,
         title: listing.title, 
         price: listing.price,
+        coverPhoto: getListingCoverPhoto(listing),
         productsInListing: listing.productsInListing,
         qty,
         saveForLater: false
