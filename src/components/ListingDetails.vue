@@ -6,10 +6,10 @@
                 <!-- Main Image -->
                 <div class="relative aspect-w-1 aspect-h-1">
                     <transition
-                    enter-active-class="transition-opacity duration-300"
-                    leave-active-class="transition-opacity duration-300"
-                    enter-from-class="opacity-0"
-                    leave-to-class="opacity-0"
+                        enter-active-class="transition-opacity duration-300"
+                        leave-active-class="transition-opacity duration-300"
+                        enter-from-class="opacity-0"
+                        leave-to-class="opacity-0"
                     >
                         <img
                         v-if="activeImage !== false"
@@ -18,6 +18,10 @@
                         class="w-full h-full object-cover rounded-lg shadow-lg"
                         />
                     </transition>
+                    <!-- Price Badge -->
+                    <div class="absolute top-4 right-4 bg-white bg-opacity-90 text-blue-600 font-bold py-2 px-4 rounded-full shadow-md transform rotate-12">
+                        <span class="text-xl">{{ formatAsPrice(listing.price) }}</span>
+                    </div>
                 </div>
             
             <!-- Thumbnails -->
