@@ -11,6 +11,7 @@ const Cart = AmptModel(['cart', 'userid'], {
             qty: Number,
             saveForLater: Boolean,
             coverPhoto: String,
+            description: String,
             productsInListing: [{
                 sku: String,
                 qty: Number

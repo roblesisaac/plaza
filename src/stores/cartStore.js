@@ -9,7 +9,7 @@ import { useUserStore } from './userStore';
 import { formatProper } from '../utils/formats';
 import { isValidZipCode } from '../utils/validation';
 
-const { getListingCoverPhoto } = useListings();
+const { getListingCoverPhoto, getListingDescription } = useListings();
 const shipping = useShipping();
 const { get, post } = useApi();
 
@@ -54,6 +54,7 @@ export const useCartStore = defineStore('cart', {
         _id: listing._id,
         title: listing.title, 
         price: listing.price,
+        description: getListingDescription(listing),
         coverPhoto: getListingCoverPhoto(listing),
         productsInListing: listing.productsInListing,
         qty,

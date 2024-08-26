@@ -50,12 +50,22 @@ export default function useListings() {
         return productLines.find(pl => pl.line === mainProduct.line);  
     }
 
+    function getListingDescription(listing) {
+        if(listing.description) {
+            return listing.description;
+        }
+
+        const { application } = getMainProduct(listing) || {};
+        return application
+    }
+
     return {
         calcListingValue,
         getListing,
         getListingCoverPhoto,
         getMainSku,
         getMainProduct,
-        getProductLineData
+        getProductLineData,
+        getListingDescription
     }
 }

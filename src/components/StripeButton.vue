@@ -16,17 +16,15 @@ import useApi from '../composables/useApi';
 import { useCartStore } from '../stores/cartStore';
 
 const { post } = useApi();
-const { items: cartItems } = useCartStore();
+const cart = useCartStore();
 const isLoading = ref(false);
 
 const handleCheckout = async () => {
     isLoading.value = true;
     const stripe = await loadStripe(stripe_public);
-
-    console.log(cartItems.value);
     
     const sessionId = await post('/stripe/create-checkout-session', {
-        lineItems: cartItems
+        lineItems: cart.items
     });
     
     const result = await stripe.redirectToCheckout({ sessionId })

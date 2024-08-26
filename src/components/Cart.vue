@@ -70,16 +70,6 @@
 
         <!-- Secure Strip Checkout -->
         <StripeButton />
-        
-        <!-- Proceed To Checkout -->
-        <!-- <router-link 
-        v-if="cartStore.items.length > 0" 
-        to="/checkout" 
-        class="block button w-full bg-blue-600 text-white text-center bold p20 rounded-lg mt-6 hover:bg-blue-700 transition duration-300"
-        >
-            Proceed To Checkout 
-            <ArrowRightBoldVue class="inline-block ml-2" />
-        </router-link> -->
     </div>
 </div>
 </template>
@@ -88,7 +78,6 @@
 import { computed, watch } from 'vue';
 
 // Components
-import ArrowRightBoldVue from 'vue-material-design-icons/ArrowRightBold.vue';
 import CartItemVue from '../components/CartItem.vue';
 import LoadingDotsVue from '../components/LoadingDots.vue';
 import StripeButton from './StripeButton.vue';
