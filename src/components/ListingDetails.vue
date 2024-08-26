@@ -8,7 +8,7 @@
                 <div class="q-grid">
                     <div class="q-cell-70">
                         <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainProduct.sku" class="active-photo" />
+                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainSku" class="active-photo" />
                         </Transition>
                     </div>
 
@@ -18,7 +18,7 @@
                             <div v-for="(img, index) in mainProduct.images" class="q-cell-50 thumb-container">
                                 <img                          
                                 :key="img" :src="imagePath(index)" 
-                                :alt="mainProduct.sku" :class="['thumbs', isActiveThumb(index)]"
+                                :alt="mainSku" :class="['thumbs', isActiveThumb(index)]"
                                 @click="activateImage(index)"
                                 />
                             </div>
@@ -32,7 +32,7 @@
                 <div class="q-grid">
                     <div class="q-cell-1">
                         <Transition>
-                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainProduct.sku" class="active-photo mb-5" />
+                            <img v-if="activeImage!==false" :src="imagePath(activeImage)" :alt="mainSku" class="active-photo mb-5" />
                         </Transition>
                     </div>
 
@@ -42,7 +42,7 @@
                             <img 
                                 v-for="(img, index) in mainProduct.images" 
                                 :key="img" :src="imagePath(index)" 
-                                :alt="mainProduct.sku" :class="['thumbs', isActiveThumb(index)]"
+                                :alt="mainSku" :class="['thumbs', isActiveThumb(index)]"
                                 @click="activateImage(index)"
                             />
                         </div>
@@ -53,7 +53,7 @@
             <!-- Title -->
             <div class="q-cell-1 verbiage p30x">
                 <h3>{{ listingTitle.toUpperCase() }}</h3>
-                <span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainProduct.sku }}
+                <span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainSku }}
             </div>
 
             <!-- Info -->

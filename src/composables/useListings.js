@@ -26,6 +26,16 @@ export default function useListings() {
         return listings.items.find((l) => l.title === listingTitle);
     }
 
+    function getListingCoverPhoto(listing) {
+        if(listing.coverPhoto) {
+            return listing.coverPhoto;
+        }
+        const mainProduct = getMainProduct(listing);
+        const imageName = mainProduct.images[0];
+
+        return `/images/${imageName}.webp`;
+    }
+
     function getMainSku(listing) {
         return listing?.productsInListing?.[0]?.sku; 
     }
@@ -43,6 +53,7 @@ export default function useListings() {
     return {
         calcListingValue,
         getListing,
+        getListingCoverPhoto,
         getMainSku,
         getMainProduct,
         getProductLineData

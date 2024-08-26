@@ -2,15 +2,15 @@
     <div class="q-grid parent">
         <div v-if="showImage !== false" class="q-cell-1">
             <router-link :to="'/products/' + listing.title">
-                <img class="cover-photo" :src="imagePath()" :alt="product.name">
+                <img class="cover-photo" :src="imagePath()" :alt="mainProduct.name">
             </router-link>
         </div>
         <div class="q-cell-1 details">
             <router-link :to="'/products/' + listing.title">
-            <h4 class="title"><span v-if="product.application">For</span> {{ product.application || product.title }}</h4>
+            <h4 class="title"><span v-if="mainProduct.application">For</span> {{ mainProduct.application || mainProduct.title }}</h4>
             <small><b>Sku: </b>{{ listing.title.toUpperCase() }}</small>
             <br>
-            <small v-if="product.features">*{{ product.features }}</small>
+            <small v-if="mainProduct.features">*{{ mainProduct.features }}</small>
             <br>
             <b class="view-details" :to="'/products/' + listing.title">View Details »</b>
             </router-link>
@@ -20,23 +20,22 @@
     
     <script setup>
     import { computed } from 'vue';
-    import useDb from '../composables/useDb';
+    import useListings from '../composables/useListings';
 
-    const { items: products } = useDb('products').getCollection();
+    const { getMainProduct, getListingCoverPhoto } = useListings();
 
     const props = defineProps({
         listing: Object,
         showImage: Boolean
     });
 
-    const product = computed(() => {
-        return products.find(p => p.sku === props.listing.productsInListing[0].sku) || { images: []};
+    const mainProduct = computed(() => {
+        return getMainProduct(props.listing)
     });
 
     
-    function imagePath(index=0) {
-        const photoName = props.listing.coverPhoto || product.value.images[index];
-        return `../images/${photoName}.webp`;
+    function imagePath() {
+        return getListingCoverPhoto(props.listing);
     }
     
     </script>
