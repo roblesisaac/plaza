@@ -143,16 +143,11 @@ import LoadingDotsVue from './LoadingDots.vue';
 // Composables + Utils
 import router from '../router';
 import { useCartStore } from '../stores/cartStore';
-import useDb from '../composables/useDb';
 import useScreen from '../composables/useScreen';
 import useListings from '../composables/useListings';
 
-const productsDb = useDb('products');
-const listingsDb = useDb('listings');
-const { calcListingValue, getListing, getMainProduct, getProductLineData } = useListings();
+const { calcListingValue, getListing, getMainSku, getMainProduct, getProductLineData } = useListings();
 
-const productsCollection = productsDb.getCollection('products');
-const listings = listingsDb.getCollection('listings');
 const cart = useCartStore();
 const { isLessThan, screenSize } = useScreen();
 
@@ -167,16 +162,12 @@ const listing = computed(() => {
 });
 
 const listingPrice = computed(() => {
-    return listing.value?.price || calcListingValue(listing);
+    return listing.value?.price || calcListingValue(listing.value);
 })
 
 const mainSku = computed(() => {
-    return listing.value?.productsInListing?.[0]?.sku;
+    return getMainSku(listing.value);
 });
-
-function findProduct(sku) {
-    return productsCollection.items.find((p) => p.sku === sku);
-}
 
 const mainProduct = computed(() => {
   return getMainProduct(listing.value);
@@ -210,8 +201,10 @@ function activateImage(index) {
     });
 }
 
-function imagePath(index=0) {  
-    return `/images/${mainProduct.value.images[index]}.webp`;
+function imagePath(index=0) {
+    const imageName = mainProduct.value.images[index]; 
+    
+    return `/images/${imageName}.webp`;
 }
 
 function isActiveThumb(index) {
