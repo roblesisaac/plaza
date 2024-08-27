@@ -6,8 +6,7 @@
       aria-busy="isLoading"
       aria-label="Secure Checkout"
     >
-      Secure Checkout with Stripe
-      <ArrowRightVue v-if="!isLoading" />
+      Secure Checkout <ArrowRightVue v-if="!isLoading" />
       <LoadingDotsVue v-else />
     </button>
   </template>

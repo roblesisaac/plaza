@@ -5,9 +5,9 @@
     </div>
     <div v-else class="q-cell-1">
         <div class="q-grid">
-            <div class="q-cell-20"></div>
-            <div class="q-cell-60"><CartVue /></div>
-            <div class="q-cell-20"></div>
+            <div class="q-cell-10"></div>
+            <div class="q-cell-80"><CartVue /></div>
+            <div class="q-cell-10"></div>
         </div>
     </div>
 </div>
