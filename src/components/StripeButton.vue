@@ -1,8 +1,16 @@
 <template>
-    <button @click="handleCheckout" class="block button w-full bg-blue-600 text-white text-center bold p20 rounded-lg mt-6 hover:bg-blue-700 transition duration-300">
-        Secure Checkout <ArrowRightVue v-if="!isLoading" /><LoadingDotsVue v-else />
+    <button
+      @click="handleCheckout"
+      class="block button w-full bold bg-blue-600 text-white text-center font-bold py-4 px-6 rounded-lg mt-6 hover:bg-blue-700 transition duration-300"
+      :disabled="isLoading"
+      aria-busy="isLoading"
+      aria-label="Secure Checkout"
+    >
+      Secure Checkout with Stripe
+      <ArrowRightVue v-if="!isLoading" />
+      <LoadingDotsVue v-else />
     </button>
-</template>
+  </template>
 
 <script setup>
 import { ref } from 'vue';
@@ -20,6 +28,10 @@ const cart = useCartStore();
 const isLoading = ref(false);
 
 const handleCheckout = async () => {
+    if(isLoading.value === true) {
+        return;
+    }
+
     isLoading.value = true;
     const stripe = await loadStripe(stripe_public);
     
