@@ -13,7 +13,7 @@ export async function createCheckoutSession(lineItems) {
       allow_promotion_codes: true,
       success_url: `${config.baseUrl}/cart?success=true`,
       cancel_url: `${config.baseUrl}/cart?canceled=true`,
-      automatic_tax: {enabled: true},
+      automatic_tax: { enabled: true },
   });
 
   return session;

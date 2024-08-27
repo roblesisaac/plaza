@@ -1,15 +1,24 @@
 <template>
-    <button
-      @click="handleCheckout"
-      class="block button w-full bold bg-blue-600 text-white text-center font-bold py-4 px-6 rounded-lg mt-6 hover:bg-blue-700 transition duration-300"
-      :disabled="isLoading"
-      aria-busy="isLoading"
-      aria-label="Secure Checkout"
-    >
-      Secure Checkout <ArrowRightVue v-if="!isLoading" />
-      <LoadingDotsVue v-else />
-    </button>
+    <div class="secure-checkout-container mt-6">
+      <button
+        @click="handleCheckout"
+        class="block w-full bg-blue-600 text-white text-center font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50"
+        :disabled="isLoading"
+        aria-busy="isLoading"
+        aria-label="Secure Checkout"
+      >
+        <span v-if="!isLoading">
+          Secure Checkout
+          <ArrowRightVue class="inline-block w-5 h-5 ml-2 align-middle" />
+        </span>
+        <LoadingDotsVue v-else />
+      </button>
+      <div class="text-xs text-gray-500 text-center mt-2">
+        <a target="_blank" href="https://stripe.com"><span class="lock-icon">&#128274;</span> Powered by Stripe</a>
+      </div>
+    </div>
   </template>
+  
 
 <script setup>
 import { ref } from 'vue';

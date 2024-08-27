@@ -32,7 +32,7 @@ export const useCartStore = defineStore('cart', {
     },
 
     tax: (state) => {
-      return state.subtotal * 0.0875;
+      return state.subtotal * 0.0775;
     },
 
     total: (state) => {
