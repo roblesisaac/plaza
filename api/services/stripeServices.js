@@ -3,14 +3,12 @@ import config from '../config/environment';
 const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
 
 export async function createCheckoutSession(lineItems) {
-  const line_items = formatLineItems(lineItems);
-
   const session = await stripe.checkout.sessions.create({
       customer_email: config.CONTACT.EMAIL,
-      line_items,
+      line_items: formatLineItems(lineItems),
       mode: 'payment',
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'],
+        allowed_countries: ['US'],
       },
       allow_promotion_codes: true,
       success_url: `${config.baseUrl}/cart?success=true`,
