@@ -7,10 +7,10 @@
         aria-busy="isLoading"
         aria-label="Secure Checkout"
       >
-        <span v-if="!isLoading">
+        <span>
           Secure Checkout
-          <ArrowRightVue class="inline-block w-5 h-5 ml-2 align-middle" />
         </span>
+        <ArrowRightVue v-if="!isLoading" class="inline-block w-5 h-5 ml-2 align-middle" />
         <LoadingDotsVue v-else />
       </button>
       <div class="text-xs text-gray-500 text-center mt-2">
