@@ -36,27 +36,7 @@
                     <h4 class="text-lg font-semibold">Subtotal:</h4>
                     <span class="text-xl font-bold">{{ formattedSubtotal }}</span>
                 </div>
-                
-                <!-- Shipping Estimates -->
-                <div>
-                    <h4 class="text-lg font-semibold mb-2">
-                        Estimated Shipping: 
-                        <LoadingDotsVue v-if="cartStore.status=='loading'" />
-                    </h4>
-                    <div v-if="cartStore.shippingEstimate" class="text-xl font-bold mb-2">
-                        {{ formattedShipping }}
-                    </div>
-                    <input 
-                        type="number" 
-                        class="w-full p-2 border border-gray-300 rounded" 
-                        placeholder="Enter Zip Code" 
-                        v-model="cartStore.zipCode"
-                    />
-                    <p v-if="cartStore.shippingError" class="text-red-600 mt-1">
-                        {{ cartStore.shippingError }}
-                    </p>
-                </div>
-                
+
                 <div class="flex justify-between items-center">
                     <h4 class="text-lg font-semibold">Tax:</h4>
                     <span class="text-xl font-bold">{{ formattedTax }}</span>
@@ -81,7 +61,7 @@ import { computed, watch } from 'vue';
 
 // Components
 import CartItemVue from '../components/CartItem.vue';
-import LoadingDotsVue from '../components/LoadingDots.vue';
+// import LoadingDotsVue from '../components/LoadingDots.vue';
 import StripeButton from './StripeButton.vue';
 
 // Stores
@@ -95,20 +75,12 @@ const formattedSubtotal = computed(() => {
     return formatAsPrice(cartStore.subtotal);
 });
 
-const formattedShipping = computed(() => {
-    return formatAsPrice(cartStore.shippingEstimate);
-});
-
 const formattedTax = computed(() => {
     return formatAsPrice(cartStore.tax);
 });
 
 const formattedTotalPrice = computed(() => {
     return formatAsPrice(cartStore.total);
-});
-
-watch(() => cartStore.zipCode, async (zipCode) => {
-    await cartStore.fetchShippingEstimate(zipCode);
 });
 
 watch(() => cartStore.items, async (zipCode) => {

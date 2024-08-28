@@ -50,19 +50,19 @@ export async function authNativeUser(email, password, done) {
 
 export async function authGoogleUser(req, accessToken, refreshToken, profile, done) {
   if(!isValidClientHost(req)) {
-      return done(new Error('Invalid hostname'));
+    return done(new Error('Invalid hostname'));
   }
 
   const { email } = profile._json;
   const existingUser = await Users.findUser(email);
 
   const user = {
-      accessToken,
-      ...profile._json
+    accessToken,
+    ...profile._json
   };
 
   if(existingUser) {
-      return done(null, await Users.updateUser(email, user));
+    return done(null, await Users.updateUser(email, user));
   }
 
   const newUser = await Users.save(user);
@@ -72,8 +72,8 @@ export async function authGoogleUser(req, accessToken, refreshToken, profile, do
 }
 
 function isValidClientHost(req) {
-    const clientHost = '.'+req.headers.host;
-    return clientHost === config.domain;
+  const clientHost = '.'+req.headers.host;
+  return clientHost === config.domain;
 }
 
 export default passport;

@@ -11,7 +11,7 @@ export async function createCheckoutSession(lineItems) {
       allowed_countries: ['US'],
     },
     allow_promotion_codes: true,
-    success_url: `${config.baseUrl}/cart?success=true`,
+    success_url: `${config.baseUrl}/checkout/success`,
     cancel_url: `${config.baseUrl}/cart?canceled=true`,
     automatic_tax: { enabled: true },
   });

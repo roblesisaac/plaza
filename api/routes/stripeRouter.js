@@ -3,6 +3,10 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
+router.get('/checkout-success', (_, res) => {
+    res.redirect('/checkout');
+});
+
 router.post(
     `/create-checkout-session`,
     express.json(),

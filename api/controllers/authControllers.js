@@ -55,7 +55,7 @@ export function googleCallback(req, res, next) {
       // const redirectUrl = `/${views[0] || ''}`;
       
       // return res.redirect(redirectUrl);
-      res.redirect('/');
+      res.redirect('/cart?loginSuccess=true');
     });
   })(req, res, next);
 }
