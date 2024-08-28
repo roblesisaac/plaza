@@ -24,6 +24,7 @@
     import LoadingDotsVue from './LoadingDots.vue';
     import { useCartStore } from '../stores/cartStore';
 
+    const cartStore = useCartStore();
     const formattedShipping = computed(() => {
         return formatAsPrice(cartStore.shippingEstimate);
     });
