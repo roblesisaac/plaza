@@ -19,19 +19,14 @@ export async function createCheckoutSession(lineItems) {
   return session;
 }
 
-export async function constructEvent(rawBody, sig) {
+export function constructEvent(body, sig) {
   const webhookSecret = config.STRIPE.WHSEC_TEST;
   let event;
 
   try {
-    console.log(typeof rawBody);
-    console.log(rawBody);
-    console.log(webhookSecret);
-    // console.log('Raw Body:', rawBody.toString('utf8'));
-    console.log('Signature:', sig);
-    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecretLocal);
   } catch (err) {
-    throw new Error(`Webhook signature verification failed: ${err.message}`);
+    throw new Error(err.message);
   }
 
   return event;

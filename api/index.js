@@ -17,7 +17,7 @@ import stripeRouter from './routes/stripeRouter';
 
 const app = express();
 
-app.use('/api', stripeRouter);
+app.use('/api/stripe', stripeRouter);
 
 const api = Router();
 
