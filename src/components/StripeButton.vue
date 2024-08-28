@@ -13,9 +13,9 @@
         <LoadingDotsVue v-else />
       </span>
     </button>
-    <div class="text-xs text-gray-500 text-center mt-2">
-      <a target="_blank" href="https://stripe.com" class="inline-flex items-center">
-        <span class="mr-1">&#128274;</span> Powered by Stripe
+    <div class="text-xs text-center mt-2">
+      <a target="_blank" href="https://stripe.com" class="inline-flex items-center text-gray-500">
+        Powered by <StripeLogo class="ml-1" fill="#333" />
       </a>
     </div>
   </div>
@@ -47,6 +47,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import LoginFormVue from './LoginForm.vue'
 import ArrowRightVue from './ArrowRight.vue';
 import LoadingDotsVue from './LoadingDots.vue';
+import StripeLogo from './StripeLogo.vue';
 
 import useApi from '../composables/useApi';
 import { useCartStore } from '../stores/cartStore';
