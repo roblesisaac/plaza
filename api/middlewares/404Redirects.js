@@ -17,6 +17,6 @@ export async function redirectHtml(req, res) {
 export async function redirectJson(_, res) {
     res.status(404).json({ 
         success: false,
-        message: 'Not found' 
+        message: '<(-_-)> Found, it is not. Success, false it is.'
     });
 }

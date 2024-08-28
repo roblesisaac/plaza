@@ -16,9 +16,9 @@ export default {
         const sig = req.headers['stripe-signature'];
 
         try {
-            const event = stripeService.constructEvent(req.body, sig);
-
-            console.log(event);
+            
+            const event = stripeService.constructEvent(req.rawBody, sig);
+            res.status(200).send('Webhook received');
       
             switch (event.type) {
                 case 'checkout.session.completed':
@@ -27,8 +27,6 @@ export default {
                 default:
                     console.log(`Unhandled event type ${event.type}`);
             }
-      
-            res.status(200).send('Webhook received');
         } catch (err) {
             console.error(`Webhook Error: ${err.message}`);
             res.status(400).send(`Webhook Error: ${err.message}`);

@@ -21,21 +21,15 @@ export async function createCheckoutSession(lineItems) {
 
 export function constructEvent(body, sig) {
   const webhookSecret = config.STRIPE.WHSEC_TEST;
-  let event;
-
-  console.log('Webhook Secret:', webhookSecret);
-  console.log('Signature:', sig);
-  console.log('Body:', body);
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-    console.log('Event constructed successfully:', event);
+    console.log(body);
+    const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    return event;
   } catch (err) {
-    console.error('Error constructing event:', err);
-    throw new Error(err.message);
+    console.error('Error message:', err.message);
+    throw err;
   }
-
-  return event;
 }
 
 export async function fulfillOrder(session) {

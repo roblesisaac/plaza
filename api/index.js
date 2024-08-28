@@ -29,6 +29,7 @@ api
     .use(passport.session())
     .use(express.json());
     
+api.get('/', (_, res) => res.json({ message: '<(-_-)> Running, the API is.' }));
 api.use('/', authRouter);
 api.use('/', contactRouter);
 api.use('/', cartRouter);
