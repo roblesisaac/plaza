@@ -1,7 +1,6 @@
 import AmptModel from '../utils/amptModel';
 import { generateRandomNumber } from '../utils/tools';
-import { decrypt, decryptWithKey, encrypt, encryptWithKey } from '../utils/encryption';
-import users from './users';
+import { encrypt, encryptWithKey } from '../utils/encryption';
 
 const orderSchema = {
     orderId: {

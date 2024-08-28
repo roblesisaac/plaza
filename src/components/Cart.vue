@@ -24,7 +24,7 @@
             />
             <!-- Clear Cart -->
             <div v-if="cartStore.items.length" class="flex justify-end mb-4">
-                <button class="text-red-600 hover:text-red-800 font-semibold">Clear Cart</button>
+                <button @click="cartStore.clearCart()" class="text-red-600 hover:text-red-800 font-semibold">Clear Cart</button>
             </div>
 
         </div>
