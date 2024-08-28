@@ -57,11 +57,10 @@
     
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 
 // Components
 import CartItemVue from '../components/CartItem.vue';
-// import LoadingDotsVue from '../components/LoadingDots.vue';
 import StripeButton from './StripeButton.vue';
 
 // Stores
@@ -82,10 +81,4 @@ const formattedTax = computed(() => {
 const formattedTotalPrice = computed(() => {
     return formatAsPrice(cartStore.total);
 });
-
-watch(() => cartStore.items, async (zipCode) => {
-    await cartStore.fetchShippingEstimate(zipCode);
-}, { deep: true });
-
-
 </script>
