@@ -24,7 +24,7 @@ export function constructEvent(body, sig) {
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, webhookSecretLocal);
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
     throw new Error(err.message);
   }
