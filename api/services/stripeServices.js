@@ -23,14 +23,20 @@ export function constructEvent(body, sig) {
   const webhookSecret = config.STRIPE.WHSEC_TEST;
   let event;
 
+  console.log('Webhook Secret:', webhookSecret);
+  console.log('Signature:', sig);
+  console.log('Body:', body);
+
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    console.log('Event constructed successfully:', event);
   } catch (err) {
+    console.error('Error constructing event:', err);
     throw new Error(err.message);
   }
 
   return event;
-};
+}
 
 export async function fulfillOrder(session) {
   const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {

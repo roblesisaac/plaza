@@ -3,6 +3,12 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
+router.get('/config', (_, res) => {
+    res.send({
+        publishableKey: 'stripe_public'
+    });
+})
+
 router.post(
     `/create-checkout-session`,
     express.json(),

@@ -1,15 +1,10 @@
-import { http } from "@ampt/sdk";
+import { http } from '@ampt/sdk';
 
-export default async (req, res) => {
+export async function redirectHtml(req, res) {
     if (req.accepts('html')) {
+        res.status(200).set('Content-Type', 'text/html');
         const stream = await http.node.readStaticFile('index.html');
-        res.status(200).type('html');
-        stream.pipe(res);
-        return;
-    }
-    
-    if (req.accepts('json')) {
-        return res.status(404).json({ message: 'Not found' });
+        return stream.pipe(res);
     }
     
     if (req.accepts('txt')) {
@@ -17,4 +12,11 @@ export default async (req, res) => {
     }
 
     res.status(404).end()
+}
+
+export async function redirectJson(_, res) {
+    res.status(404).json({ 
+        success: false,
+        message: 'Not found' 
+    });
 }

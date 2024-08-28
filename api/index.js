@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 // Middlewares
 import sessionStore from './middlewares/sessionStore';
-import redirect404s from './middlewares/404Redirects';
+import { redirectHtml, redirectJson } from './middlewares/404Redirects';
 import passport from './config/passport';
 
 // Routes
@@ -36,6 +36,7 @@ api.use('/', shippingRouter);
 api.use('/', dbRouter);
 api.use('/', orderRouter);
 
-app.use(redirect404s);
+api.use('/*', redirectJson);
+app.use(redirectHtml);
 
 export default app;
