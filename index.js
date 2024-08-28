@@ -1,7 +1,4 @@
 import { http } from '@ampt/sdk';
-
-import { init } from './api';
-
-const app = init();
+import app from './api';
 
 http.node.use(app);
