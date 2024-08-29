@@ -3,9 +3,7 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
-router.get('/checkout-success', (_, res) => {
-    res.redirect('/checkout');
-});
+router.get('/complete-order/:sessionId', stripeControllers.completeOrder);
 
 router.post(
     `/create-checkout-session`,

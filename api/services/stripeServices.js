@@ -2,16 +2,16 @@ import Stripe from 'stripe';
 import config from '../config/environment';
 const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
 
-export async function createCheckoutSession(lineItems) {
+export async function createCheckoutSession(email, lineItems) {
   const session = await stripe.checkout.sessions.create({
-    customer_email: config.CONTACT.EMAIL,
+    customer_email: email,
     line_items: formatLineItems(lineItems),
     mode: 'payment',
     shipping_address_collection: {
       allowed_countries: ['US'],
     },
     allow_promotion_codes: true,
-    success_url: `${config.baseUrl}/checkout/success`,
+    success_url: `${config.baseUrl}/api/stripe/complete-order/{CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.baseUrl}/cart?canceled=true`,
     automatic_tax: { enabled: true },
   });
@@ -30,6 +30,23 @@ export function constructEvent(body, sig) {
     console.error('Error message:', err.message);
     throw err;
   }
+}
+
+export async function completeOrder(email, sessionId) {
+  const session = await getSession(sessionId);
+
+  console.log(JSON.stringify({ session, email }, null, 2));
+
+  return session;
+
+  // TODO: Fulfill the order
+  // This is where you would:
+  // 1. Match the line items to your products
+  // 2. Update your database
+  // 3. Send confirmation emails
+  // 4. Update inventory
+  // etc.
+
 }
 
 export async function fulfillOrder(session) {
@@ -69,4 +86,9 @@ function formatLineItems(lineItems) {
       minimum: 1
     }
   }));
+}
+
+async function getSession(sessionId) {
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  return session;
 }

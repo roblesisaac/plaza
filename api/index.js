@@ -17,17 +17,17 @@ import stripeRouter from './routes/stripeRouter';
 
 const app = express();
 
+app.use(sessionStore())
+    .use(passport.initialize())
+    .use(passport.session());
+
 app.use('/api/stripe', stripeRouter);
 
 const api = Router();
 
 app.use('/api', api);
 
-api
-    .use(sessionStore())
-    .use(passport.initialize())
-    .use(passport.session())
-    .use(express.json());
+api.use(express.json());
     
 api.get('/', (_, res) => res.json({ message: '<(-_-)> Running, the API is.' }));
 api.use('/', authRouter);
