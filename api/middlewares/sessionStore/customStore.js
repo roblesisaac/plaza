@@ -3,19 +3,32 @@
 import { data } from '@ampt/data';
 import session from 'express-session';
 
+const oneDayInSeconds = 86400;
+
 export default class CustomStore extends session.Store {
-  constructor() {
+  constructor(options = {}) {
     super();
-  }  
+    this.prefix = options.prefix || 'sess:';
+    this.reapInterval = options.reapInterval || 0;
+    if (this.reapInterval > 0) {
+      this._reap = setInterval(this.reap.bind(this), this.reapInterval);
+    }
+  }
 
   async get(sessionId, callback) {
     try {
-      const sessionData = await data.get(`sessions:${sessionId}`);
-      if(!sessionData) {
-        console.log('no session data for', sessionId);
+      const key = this.prefix + sessionId;
+      const sessionData = await data.get(key);
+      if (!sessionData) {
+        console.log('No session data for', sessionId);
         return callback(null, null);
       }
-      callback(null, JSON.parse(sessionData));
+      const sess = JSON.parse(sessionData);
+      const now = Math.floor(Date.now() / 1000);
+      if (sess.expires && now >= sess.expires) {
+        return callback(null, null);
+      }
+      callback(null, sess);
     } catch (error) {
       callback(error);
     }
@@ -23,13 +36,15 @@ export default class CustomStore extends session.Store {
 
   async set(sessionId, session, callback) {
     try {
+      const key = this.prefix + sessionId;
       session.cookie.expires = new Date(session.cookie.expires);
       session.cookie.originalMaxAge = session.cookie.maxAge;
-      const payload = JSON.stringify(session);
+      const expires = this.getExpiresValue(session);
+      const payload = JSON.stringify({...session, expires});
       const ttl = Math.round((session.cookie.expires - Date.now()) / 1000);
-  
-      const result = await data.set(`sessions:${sessionId}`, payload, { ttl });
-      callback(null, result);
+
+      await data.set(key, payload, { ttl });
+      callback(null);
     } catch (error) {
       callback(error);
     }
@@ -37,21 +52,48 @@ export default class CustomStore extends session.Store {
 
   async touch(sessionId, session, callback) {
     try {
-      session.lastAccess = new Date().getTime();
-  
+      session.lastAccess = Date.now();
       this.set(sessionId, session, callback);
     } catch (error) {
       callback(error);
-    }    
-  
+    }
   }
 
   async destroy(sessionId, callback) {
     try {
-      await data.remove(`sessions:${sessionId}`);
+      const key = this.prefix + sessionId;
+      await data.remove(key);
       callback(null, true);
     } catch (error) {
       callback(error);
     }
+  }
+
+  getExpiresValue(sess) {
+    const now = Math.floor(Date.now() / 1000);
+    return typeof sess.cookie.maxAge === 'number'
+      ? now + (sess.cookie.maxAge / 1000)
+      : now + oneDayInSeconds;
+  }
+
+  async reap(callback = () => {}) {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const allSessions = await data.get(this.prefix + '*');
+      
+      for (const [key, value] of Object.entries(allSessions)) {
+        const sess = JSON.parse(value);
+        if (sess.expires && now >= sess.expires) {
+          await data.remove(key);
+        }
+      }
+      callback(null);
+    } catch (error) {
+      callback(error);
+    }
+  }
+
+  clearInterval() {
+    if (this._reap) clearInterval(this._reap);
   }
 }

@@ -10,7 +10,10 @@ export default function() {
     secret: config.SESSION_ID,
     resave: false,
     saveUninitialized: false,
-    store: new CustomStore(),
+    store: new CustomStore({
+      prefix: 'sessions:',
+      reapInterval: 86400000
+    }),
     cookie: {
       secure: true,
       httpOnly: true,

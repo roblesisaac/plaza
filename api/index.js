@@ -21,6 +21,11 @@ app.use(sessionStore())
     .use(passport.initialize())
     .use(passport.session());
 
+// app.use((req, res, next) => {
+//     console.log(req.session);
+//     next();
+// })
+
 app.use('/api/stripe', stripeRouter);
 
 const api = Router();
