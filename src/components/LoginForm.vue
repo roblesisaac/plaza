@@ -106,7 +106,8 @@ import LoadingDotsVue from './LoadingDots.vue';
 import { useUserStore } from '../stores/userStore';
 
 const emit = defineEmits(['login-success']);
-const { login, register, isLoading, hasError } = useUserStore();
+const userStore = useUserStore();
+const { login, register, isLoading, hasError, isLoggedIn } = userStore;
 
 const body = ref({
     email: '',
@@ -128,6 +129,10 @@ async function nativeSubmit() {
             : register;
         
     await submit(email, password, retype);
+
+    if(userStore.isLoggedIn) {
+        emit('login-success');
+    }
 }
 
 function toggleFormType(changeTo) {

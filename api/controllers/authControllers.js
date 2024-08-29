@@ -26,9 +26,11 @@ export function loginNative(req, res, next) {
       if (err) {
         return sendError(res, err)
       }
+
+      const { _id, encryptionKey, password, ...data } = user;
       
       return res.json({
-        data: user
+        data
       });
     });
   })(req, res, next);
