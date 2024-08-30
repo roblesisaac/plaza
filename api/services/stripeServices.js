@@ -1,5 +1,7 @@
 import Stripe from 'stripe';
 import config from '../config/environment';
+import orders from '../models/orders';
+
 const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
 
 export async function createCheckoutSession(email, lineItems) {
@@ -11,7 +13,7 @@ export async function createCheckoutSession(email, lineItems) {
       allowed_countries: ['US'],
     },
     allow_promotion_codes: true,
-    success_url: `${config.baseUrl}/api/stripe/fulfill-order`,
+    success_url: `${config.baseUrl}/api/stripe/save-order?stripe_session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.baseUrl}/cart?canceled=true`,
     automatic_tax: { enabled: true },
     // discounts: [{coupon: 'Ah9S1gRQ'}],
@@ -20,23 +22,19 @@ export async function createCheckoutSession(email, lineItems) {
   return session;
 }
 
-export async function fulfillOrder(email, sessionId) {
-  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+export async function saveOrder(stripeSessionId, user) {
+  const stripeSession = await getStripeSession(stripeSessionId);
+  const savedOrder = await orders.saveStripeOrder(stripeSession, user);
+
+  console.log(stripeSession);
+
+  return savedOrder;
+}
+
+export async function getStripeSession(stripeSessionId) {
+  return await stripe.checkout.sessions.retrieve(stripeSessionId, {
     expand: ['line_items'],
   });
-
-  console.log(JSON.stringify({ session, email }, null, 2));
-
-  return session;
-
-  // TODO: Fulfill the order
-  // This is where you would:
-  // 1. Match the line items to your products
-  // 2. Update your database
-  // 3. Send confirmation emails
-  // 4. Update inventory
-  // etc.
-
 }
 
 function formatLineItems(lineItems) {

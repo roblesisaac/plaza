@@ -8,27 +8,34 @@ export default {
             const { email: userEmail } = req.user || {};
             const session = await stripeService.createCheckoutSession(email || userEmail, lineItems);
 
-            req.session.stripe_session_id = session.id;
             res.json(session.id);
         } catch (err) {
             sendError(res, err);
         }
     },
-    fulfillOrder: async (req, res) => {
+    saveOrder: async (req, res) => {
         try {
-            console.log(req.session);
-            const { stripe_session_id } = req.session;   
-            const { email } = req.user || {};
+            const { stripe_session_id } = req.query;
 
-            await stripeService.fulfillOrder(email, stripe_session_id);
+            const savedOrder = await stripeService.saveOrder(stripe_session_id, req.user);
 
-            delete req.session.stripe_session_id;
+            req.session.savedOrder = savedOrder;
+
+            console.log(savedOrder);
 
             res.redirect(`/checkout`);
         } catch (err) {
             sendError(res, err);
         }
     },
+    getSessionOrder: (req, res) => {
+        try {
+            console.log(req.session);
+            res.json(req.session.savedOrder || null);
+        } catch (err) {
+            sendError(req, err);
+        }
+    }
     // fullfillCheckoutWebhook: async (req, res) => {
     //     const sig = req.headers['stripe-signature'];
 

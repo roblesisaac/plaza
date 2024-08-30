@@ -1,24 +1,18 @@
 import AmptModel from '../utils/amptModel';
 import { generateRandomNumber } from '../utils/tools';
-import { encrypt, encryptWithKey } from '../utils/encryption';
+import { encrypt, decrypt } from '../utils/encryption';
 
 const orderSchema = {
     orderId: {
         set: () => generateRandomNumber()
     },
     userid: String,
-    orderItems: [
-        {
-            productsInListing: [{
-                sku: String,
-                qty: Number
-            }],
-            qty: Number,
-            title: String,
-            _id: String
-        }
-    ],
-    shippingAddress: {
+    stripeSessionId: {
+        set: encrypt,
+        get: decrypt
+    },
+    orderEmail: String,
+    updatedShippingAddress: {
         customerName: String,
         email: String,
         street: String,
@@ -26,38 +20,42 @@ const orderSchema = {
         state: String,
         zipCode: String
     },
-    totalPrice: num => Number(num).toFixed(2),
-    contactEmail: String,
+    totalPrice: {
+        set: num => (Number(num) / 100).toFixed(2)
+    },
     notes: String,
     purchasedLabelUrl: String,
     trackingUrl: String,
     status: {
         type: String,
-        enum: [ 'PENDING', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED' ]
+        enum: [ 'pending', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
     },
     cancellationReason: String,
-    paymentTransactionId: {
-        set: (transactionId, { item }) => {
-            const { encryptionKey } = item.user;
-            const userEncryption = encryptWithKey(transactionId, encryptionKey);
-
-            return encrypt(userEncryption);
-        }
-    },
     paymentStatus: {
         type: String,
-        enum: ['AUTHORIZED', 'VOIDED', 'CAPTURED', 'REFUNDED', 'PARTIALLY_REFUNDED']
+        enum: ['paid', 'voided', 'refunded', 'partially_refunded']
     },
-    paidAt: String,
     deliveredAt: String,
     shippingCost: Number,
     label1: 'userid',
-    label2: 'orderId',
-    label3: 'status',
-    label4: {
-        name: 'address',
-        computed: item => item.shippingAddress.street
-    }
+    label2: 'stripeSessionId',
+    label3: 'orderEmail',
+    label4: 'status'
 }
 
-export default AmptModel('orders', orderSchema);
+const orderModel = AmptModel('orders', orderSchema);
+
+orderModel.saveStripeOrder = async (stripeSession, user) => {
+    const savedOrder = await orderModel.save({
+        userid: user ? user._id : 'guest',
+        stripeSessionId: stripeSession.id,
+        orderEmail: stripeSession.customer_details.email,
+        totalPrice: stripeSession.amount_total,
+        status: 'pending',
+        paymentStatus: stripeSession.payment_status
+    });
+
+    return savedOrder;
+}
+
+export default orderModel;

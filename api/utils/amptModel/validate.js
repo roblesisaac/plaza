@@ -53,9 +53,14 @@ async function validate(schema, dataToValidate, config={}) {
     }
 
     if (isANestedObject(schema[field])) {
-      if (!isPlainObject(dataToValidate[field])) {
-        throw new Error(getErrorMessage(errorCodes.OBJECT_ERROR, `Field: ${field}`));
+      if(!isPlainObject(dataToValidate[field])) {
+        validated[field] = {};
+        continue;
       }
+
+      // if (!isPlainObject(dataToValidate[field])) {
+      //   throw new Error(getErrorMessage(errorCodes.OBJECT_ERROR, `Field: ${field}`));
+      // }
 
       const validationResult = await validate(rules, dataToValidate[field], { parentField: field, ...config });
       validated[field] = validationResult.validated;

@@ -3,9 +3,9 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
-router.get('/test', (req, res) => res.json('hi...'));
+router.get('/session-order', stripeControllers.getSessionOrder);
 
-router.get('/fulfill-order', stripeControllers.fulfillOrder);
+router.get('/save-order', stripeControllers.saveOrder);
 
 router.post(
     `/create-checkout-session`,

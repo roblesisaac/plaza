@@ -23,7 +23,20 @@
   <!-- Modal for Login Form, Guest Option, and Guest Email Form -->
   <div v-if="showLoginOptions" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-lg p-6 max-w-md w-full">
-      <div v-if="!showLoginForm && !showGuestEmailForm" class="space-y-4">
+  
+      <!-- Connecting with Stripe message -->
+      <div v-if="showProceedingToCheckout" class="text-center py-4">
+        <p class="text-gray-600 flex items-center justify-center mb-4">
+          Connecting with <StripeLogo class="mx-2 h-4" />
+        </p>
+        <div class="animate-pulse flex space-x-4 justify-center">
+          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+        </div>
+      </div>
+  
+      <div v-else-if="!showLoginForm && !showGuestEmailForm" class="space-y-4">
         <h2 class="text-xl font-bold mb-4">Checkout Options</h2>
         <button @click="showLoginForm = true" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
           Login to Continue
@@ -32,8 +45,8 @@
           Continue as Guest
         </button>
       </div>
-      <LoginFormVue v-else-if="showLoginForm" @login-success="handleLoginSuccess" />
-      <form v-else-if="showGuestEmailForm" @submit.prevent="handleGuestCheckout" class="space-y-4">
+      <LoginFormVue v-else-if="showLoginForm" @login-success="handleProceedToCheckout" />
+      <form v-else-if="showGuestEmailForm" @submit.prevent="handleProceedToCheckout" class="space-y-4">
         <div class="text-center mb-4">
           <p class="text-lg font-semibold text-gray-800">Guest Checkout</p>
           <p class="text-sm text-gray-600">We'll use your email to send order updates. No account needed.</p>
@@ -50,13 +63,13 @@
           >
         </div>
         <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-          Continue to Checkout
+          Continue to Checkout <LoadingDotsVue v-if="isLoading" />
         </button>
         <p class="text-xs text-gray-500 text-center mt-2">
           We respect your privacy. You can unsubscribe from order updates at any time.
         </p>
       </form>
-      <button @click="cancelLoginOptions" class="mt-4 text-sm text-gray-600 hover:text-gray-800">
+      <button v-if="!showProceedingToCheckout" @click="cancelLoginOptions" class="mt-4 text-sm text-gray-600 hover:text-gray-800">
         Cancel
       </button>
     </div>
@@ -74,6 +87,7 @@
   
   import useApi from '../composables/useApi';
   import { useCartStore } from '../stores/cartStore';
+  import { useCheckoutStore } from '../stores/checkoutStore';
   import { useUserStore } from '../stores/userStore';
   import { stripe_public } from '../config';
   
@@ -81,11 +95,13 @@
   const { post } = useApi();
   const cart = useCartStore();
   const userStore = useUserStore();
+  const checkoutStore = useCheckoutStore();
   
   const isLoading = ref(false);
   const showLoginOptions = ref(false);
   const showLoginForm = ref(false);
   const showGuestEmailForm = ref(false);
+  const showProceedingToCheckout = ref(false);
   const guestEmail = ref('');
   
   const handleCheckout = async () => {
@@ -101,6 +117,7 @@
   
   const proceedToCheckout = async () => {
     isLoading.value = true;
+    showProceedingToCheckout.value = true;
   
     try {
       const stripe = await stripePromise;  
@@ -108,9 +125,11 @@
         lineItems: cart.items,
         email: guestEmail.value || userStore.user?.email
       });
-      
+  
+      checkoutStore.stripe_session_id = sessionId;
+  
       const result = await stripe.redirectToCheckout({ sessionId });
-      
+  
       if (result.error) {
         console.error(result.error.message);
       }
@@ -118,18 +137,12 @@
       console.error('Checkout error:', error);
     } finally {
       isLoading.value = false;
+      showProceedingToCheckout.value = false;
     }
   };
   
-  const handleLoginSuccess = () => {
-    showLoginOptions.value = false;
-    showLoginForm.value = false;
-    proceedToCheckout();
-  };
-  
-  const handleGuestCheckout = () => {
-    showLoginOptions.value = false;
-    showGuestEmailForm.value = false;
+  const handleProceedToCheckout = () => {
+    showProceedingToCheckout.value = true;
     proceedToCheckout();
   };
   
