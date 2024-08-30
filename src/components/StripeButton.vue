@@ -21,59 +21,70 @@
   </div>
   
   <!-- Modal for Login Form, Guest Option, and Guest Email Form -->
-  <div v-if="showLoginOptions" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+  <Transition>
+    <div v-if="showLoginOptions" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full">
   
-      <!-- Connecting with Stripe message -->
-      <div v-if="showProceedingToCheckout" class="text-center py-4">
-        <p class="text-gray-600 flex items-center justify-center mb-4">
-          Connecting with <StripeLogo class="mx-2 h-4" />
-        </p>
-        <div class="animate-pulse flex space-x-4 justify-center">
-          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-          <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-        </div>
-      </div>
+        <!-- Connecting with Stripe message -->
+        <Transition>
+          <div v-if="showProceedingToCheckout" class="text-center py-4">
+            <p class="text-gray-600 flex items-center justify-center mb-4">
+              Connecting with <StripeLogo class="mx-2 h-4" />
+            </p>
+            <div class="animate-pulse flex space-x-4 justify-center">
+              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+            </div>
+          </div>
+        </Transition>
   
-      <div v-else-if="!showLoginForm && !showGuestEmailForm" class="space-y-4">
-        <h2 class="text-xl font-bold mb-4">Checkout Options</h2>
-        <button @click="showLoginForm = true" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-          Login to Continue
-        </button>
-        <button @click="showGuestEmailForm = true" class="w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-300 transition duration-300">
-          Continue as Guest
+        <div v-if="!showLoginForm && !showGuestEmailForm" class="space-y-4">
+          <h2 class="text-xl font-bold mb-4">Checkout Options</h2>
+          <button @click="showLoginForm = true" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+            Login to Continue
+          </button>
+          <button @click="showGuestEmailForm = true" class="w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded hover:bg-gray-300 transition duration-300">
+            Continue as Guest
+          </button>
+        </div>
+        
+        <Transition>
+          <LoginFormVue v-if="showLoginForm" @login-success="handleProceedToCheckout" />
+        </Transition>
+        
+        <Transition>
+          <form v-if="showGuestEmailForm" @submit.prevent="handleProceedToCheckout" class="space-y-4">
+            <div class="text-center mb-4">
+              <p class="text-lg font-semibold text-gray-800">Guest Checkout</p>
+              <p class="text-sm text-gray-600">We'll use your email to send order updates. No account needed.</p>
+            </div>
+            <div>
+              <label for="guestEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
+              <input
+                type="email"
+                id="guestEmail"
+                v-model="guestEmail"
+                required
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                placeholder="your@email.com"
+              >
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+              Continue to Checkout <LoadingDotsVue v-if="isLoading" />
+            </button>
+            <p class="text-xs text-gray-500 text-center mt-2">
+              We respect your privacy. You can unsubscribe from order updates at any time.
+            </p>
+          </form>
+        </Transition>
+        
+        <button v-if="!showProceedingToCheckout" @click="cancelLoginOptions" class="mt-4 text-sm text-gray-600 hover:text-gray-800">
+          Cancel
         </button>
       </div>
-      <LoginFormVue v-else-if="showLoginForm" @login-success="handleProceedToCheckout" />
-      <form v-else-if="showGuestEmailForm" @submit.prevent="handleProceedToCheckout" class="space-y-4">
-        <div class="text-center mb-4">
-          <p class="text-lg font-semibold text-gray-800">Guest Checkout</p>
-          <p class="text-sm text-gray-600">We'll use your email to send order updates. No account needed.</p>
-        </div>
-        <div>
-          <label for="guestEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
-          <input
-            type="email"
-            id="guestEmail"
-            v-model="guestEmail"
-            required
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            placeholder="your@email.com"
-          >
-        </div>
-        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
-          Continue to Checkout <LoadingDotsVue v-if="isLoading" />
-        </button>
-        <p class="text-xs text-gray-500 text-center mt-2">
-          We respect your privacy. You can unsubscribe from order updates at any time.
-        </p>
-      </form>
-      <button v-if="!showProceedingToCheckout" @click="cancelLoginOptions" class="mt-4 text-sm text-gray-600 hover:text-gray-800">
-        Cancel
-      </button>
     </div>
-  </div>
+  </Transition>
   </template>
   
   <script setup>
