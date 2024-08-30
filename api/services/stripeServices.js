@@ -26,7 +26,10 @@ export async function saveOrder(stripeSessionId, user) {
   const stripeSession = await getStripeSession(stripeSessionId);
   const savedOrder = await orders.saveStripeOrder(stripeSession, user);
 
-  return savedOrder;
+  return {
+    ...savedOrder,
+    stripeSession: stripeSession
+  };
 }
 
 export async function getStripeSession(stripeSessionId) {

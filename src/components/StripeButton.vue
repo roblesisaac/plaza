@@ -96,7 +96,6 @@
   
   import useApi from '../composables/useApi';
   import { useCartStore } from '../stores/cartStore';
-  import { useCheckoutStore } from '../stores/checkoutStore';
   import { useUserStore } from '../stores/userStore';
   import { stripe_public } from '../config';
   
@@ -104,7 +103,6 @@
   const { post } = useApi();
   const cart = useCartStore();
   const userStore = useUserStore();
-  const checkoutStore = useCheckoutStore();
   
   const isLoading = ref(false);
   const showLoginOptions = ref(false);
@@ -134,8 +132,6 @@
         lineItems: cart.items,
         email: guestEmail.value || userStore.user?.email
       });
-  
-      checkoutStore.stripe_session_id = sessionId;
   
       const result = await stripe.redirectToCheckout({ sessionId });
   

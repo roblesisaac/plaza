@@ -35,7 +35,7 @@ export default {
         } catch (err) {
             sendError(res, err);
         }
-    }
+    },
     // fullfillCheckoutWebhook: async (req, res) => {
     //     const sig = req.headers['stripe-signature'];
 

@@ -40,7 +40,6 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
-
 const userRoutes = useFilteredRoutes('home');
 
 function reload() {

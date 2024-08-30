@@ -21,7 +21,6 @@
 
 <script setup>
 import { computed, ref, onMounted } from 'vue';
-import { useCheckoutStore } from '../stores/checkoutStore';
 import { useUserStore } from '../stores/userStore';
 import useApi from '../composables/useApi';
 
@@ -29,15 +28,10 @@ import useApi from '../composables/useApi';
 import CheckoutLoginPromptVue from '../components/CheckoutLoginPrompt.vue';
 import LoadingDotsVue from '../components/LoadingDots.vue';
 
-const CheckoutStore = useCheckoutStore();
 const UserStore = useUserStore();
 const { get } = useApi();
 
 const savedOrder = ref(null);
-
-console.log('CheckoutStore', CheckoutStore);
-
-CheckoutStore.init();
 
 const isLoading = computed(() => UserStore.isLoading.value);
 

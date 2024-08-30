@@ -7,6 +7,7 @@ import { decrypt, decryptWithKey } from '../utils/encryption';
 import { sendEmail } from './contactServices';
 import config from '../config/environment';
 import orderReceivedTemplate from '../emails/order-received-template';
+import { getStripeSession } from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
@@ -96,7 +97,14 @@ export async function getAllOrders() {
 export async function getUserOrders(userid) {
     try {
         const userOrders = await Orders.findAll({ userid });
-        const sanitizedOrders = userOrders.map(({ paymentTransactionId, purchasedLabelUrl, ...rest }) => rest);
+        const sanitizedOrders = [];
+
+        for (const userOrder of userOrders) {
+            const { purchasedLabelUrl, stripeSessionId, ...sanitizedOrder } = userOrder;
+
+            sanitizedOrder.stripeSession = await getStripeSession(stripeSessionId);
+            sanitizedOrders.push(sanitizedOrder);
+        }
         
         return sortByMostRecent(sanitizedOrders);
     } catch (err) {

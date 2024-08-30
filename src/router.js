@@ -4,7 +4,6 @@ import { computed } from 'vue';
 
 import Boxes from './pages/BoxesPage.vue';
 import Cart from './pages/CartPage.vue';
-import Checkout from './pages/CheckoutPage.vue';
 import Home from './pages/Home.vue';
 import InventoryPage from './pages/InventoryPage.vue';
 import ListingPage from './pages/ListingsManagementPage.vue';
@@ -25,12 +24,6 @@ const routes = [
     path: '/cart', 
     name: 'cart',
     component: Cart
-  },
-  {
-    path: '/checkout', 
-    name: 'checkout',
-    component: Checkout,
-    meta: { hide: true }
   },
   {
     path: '/my-account',
