@@ -39,7 +39,7 @@
           </div>
         </Transition>
   
-        <div v-if="!showLoginForm && !showGuestEmailForm" class="space-y-4">
+        <div v-if="!showLoginForm && !showGuestEmailForm && !showProceedingToCheckout" class="space-y-4">
           <h2 class="text-xl font-bold mb-4">Checkout Options</h2>
           <button @click="showLoginForm = true" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
             Login to Continue
@@ -112,7 +112,7 @@
   const showLoginOptions = ref(false);
   const showLoginForm = ref(false);
   const showGuestEmailForm = ref(false);
-  const showProceedingToCheckout = ref(false);
+  const showProceedingToCheckout = ref(true);
   const guestEmail = ref('');
   
   const handleCheckout = async () => {
