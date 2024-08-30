@@ -112,7 +112,7 @@
   const showLoginOptions = ref(false);
   const showLoginForm = ref(false);
   const showGuestEmailForm = ref(false);
-  const showProceedingToCheckout = ref(true);
+  const showProceedingToCheckout = ref(false);
   const guestEmail = ref('');
   
   const handleCheckout = async () => {
