@@ -23,7 +23,7 @@ export default {
             const { stripe_session_id } = tempSessionStore;
 
             if(!stripe_session_id) {
-                return res.json(tempSessionStore.savedStripeOrder);
+                return res.json(tempSessionStore.savedStripeOrder || null);
             }
 
             const savedStripeOrder = await stripeService.saveOrder(stripe_session_id, req.user);

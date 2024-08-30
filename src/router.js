@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from './stores/userStore'
+import { computed } from 'vue';
 
 import Boxes from './pages/BoxesPage.vue';
 import Cart from './pages/CartPage.vue';
@@ -103,14 +104,46 @@ async function handleAuthentication(to, from, next) {
   if(import.meta.env.DEV) {
     return next();
   }
-
+  
   const userStore = useUserStore();
-
+  
   if (await userStore.checkAuth()) {
     return next();
   }
   
   next({ name: 'login' });
+}
+
+export const userRoutes = computed(() => {
+  return router.getRoutes().filter(route => !route.path.includes(':') && userHasAccess(route) && !routeIsHidden(route)); 
+});
+
+function userHasAccess(route) {
+  const userStore = useUserStore();
+  const { requires } = route.meta;
+  
+  if(route.name === 'login') {
+    if(userStore.isLoggedIn) return false;
+  }
+  
+  if (!requires || import.meta.env.DEV) {
+    return true;
+  }
+  
+  if(!userStore.isLoggedIn) {
+    return false;
+  }
+  
+  const { userData } = userStore;
+  const roleHierarchy = ['member', 'admin'];
+  const requiresRole = roleHierarchy.indexOf(requires);
+  const userRole = roleHierarchy.indexOf(userData.role);
+  
+  return userRole >= requiresRole;
+}
+
+function routeIsHidden(route) {
+  return route?.meta?.hide;
 }
 
 export default router;

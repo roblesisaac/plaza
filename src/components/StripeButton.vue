@@ -159,6 +159,7 @@
     showLoginOptions.value = false;
     showLoginForm.value = false;
     showGuestEmailForm.value = false;
+    showProceedingToCheckout.value = false;
     guestEmail.value = '';
   };
   
@@ -166,6 +167,8 @@
   const loginSuccess = params.get('loginSuccess');
   
   if(loginSuccess) {
+    showLoginOptions.value = true;
+    showProceedingToCheckout.value = true;
     proceedToCheckout();
   }
   
