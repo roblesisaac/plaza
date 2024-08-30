@@ -50,11 +50,11 @@
         </div>
         
         <Transition>
-          <LoginFormVue v-if="showLoginForm" @login-success="handleProceedToCheckout" />
+          <LoginFormVue v-if="showLoginForm && !showProceedingToCheckout" @login-success="handleProceedToCheckout" />
         </Transition>
         
         <Transition>
-          <form v-if="showGuestEmailForm" @submit.prevent="handleProceedToCheckout" class="space-y-4">
+          <form v-if="showGuestEmailForm && !showProceedingToCheckout" @submit.prevent="handleProceedToCheckout" class="space-y-4">
             <div class="text-center mb-4">
               <p class="text-lg font-semibold text-gray-800">Guest Checkout</p>
               <p class="text-sm text-gray-600">We use your email to send order updates.</p>
