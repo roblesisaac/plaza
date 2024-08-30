@@ -42,7 +42,7 @@ CheckoutStore.init();
 const isLoading = computed(() => UserStore.isLoading.value);
 
 onMounted(async () => {
-    savedOrder.value = await get('stripe/session-order');
+    savedOrder.value = await get('stripe/save-order');
     console.log(savedOrder.value);
 });
 

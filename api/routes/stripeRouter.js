@@ -3,8 +3,6 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
-router.get('/session-order', stripeControllers.getSessionOrder);
-
 router.get('/save-order', stripeControllers.saveOrder);
 
 router.post(

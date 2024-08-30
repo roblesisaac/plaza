@@ -6,34 +6,34 @@ export default {
         try {
             const { lineItems, email } = req.body;
             const { email: userEmail } = req.user || {};
-            const session = await stripeService.createCheckoutSession(email || userEmail, lineItems);
+            const stripeSession = await stripeService.createCheckoutSession(email || userEmail, lineItems);
 
-            res.json(session.id);
+            const tempSessionStore = req.isAuthenticated() ? req.session.passport : req.session;
+
+            tempSessionStore.stripe_session_id = stripeSession.id;
+
+            res.json(stripeSession.id);
         } catch (err) {
             sendError(res, err);
         }
     },
     saveOrder: async (req, res) => {
         try {
-            const { stripe_session_id } = req.query;
+            const tempSessionStore = req.isAuthenticated() ? req.session.passport : req.session;
+            const { stripe_session_id } = tempSessionStore;
 
-            const savedOrder = await stripeService.saveOrder(stripe_session_id, req.user);
+            if(!stripe_session_id) {
+                return res.json(tempSessionStore.savedStripeOrder);
+            }
 
-            req.session.savedOrder = savedOrder;
+            const savedStripeOrder = await stripeService.saveOrder(stripe_session_id, req.user);
 
-            console.log(savedOrder);
+            tempSessionStore.savedStripeOrder = savedStripeOrder;
+            delete tempSessionStore.stripe_session_id;
 
-            res.redirect(`/checkout`);
+            res.json(savedStripeOrder);
         } catch (err) {
             sendError(res, err);
-        }
-    },
-    getSessionOrder: (req, res) => {
-        try {
-            console.log(req.session);
-            res.json(req.session.savedOrder || null);
-        } catch (err) {
-            sendError(req, err);
         }
     }
     // fullfillCheckoutWebhook: async (req, res) => {

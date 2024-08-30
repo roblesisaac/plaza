@@ -13,7 +13,7 @@ export async function createCheckoutSession(email, lineItems) {
       allowed_countries: ['US'],
     },
     allow_promotion_codes: true,
-    success_url: `${config.baseUrl}/api/stripe/save-order?stripe_session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${config.baseUrl}/checkout`,
     cancel_url: `${config.baseUrl}/cart?canceled=true`,
     automatic_tax: { enabled: true },
     // discounts: [{coupon: 'Ah9S1gRQ'}],
@@ -25,8 +25,6 @@ export async function createCheckoutSession(email, lineItems) {
 export async function saveOrder(stripeSessionId, user) {
   const stripeSession = await getStripeSession(stripeSessionId);
   const savedOrder = await orders.saveStripeOrder(stripeSession, user);
-
-  console.log(stripeSession);
 
   return savedOrder;
 }
