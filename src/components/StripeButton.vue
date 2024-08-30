@@ -26,18 +26,16 @@
       <div class="bg-white rounded-lg p-6 max-w-md w-full">
   
         <!-- Connecting with Stripe message -->
-        <Transition>
-          <div v-if="showProceedingToCheckout" class="text-center py-4">
-            <p class="text-gray-600 flex items-center justify-center mb-4">
-              Connecting with <StripeLogo class="mx-2 h-4" />
-            </p>
-            <div class="animate-pulse flex space-x-4 justify-center">
-              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-              <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
-            </div>
+        <div v-if="showProceedingToCheckout" class="text-center py-4">
+          <p class="text-gray-600 flex items-center justify-center mb-4">
+            Connecting with <StripeLogo class="mx-2 h-4" />
+          </p>
+          <div class="animate-pulse flex space-x-4 justify-center">
+            <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+            <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
+            <div class="rounded-full bg-indigo-300 h-3 w-3"></div>
           </div>
-        </Transition>
+        </div>
   
         <div v-if="!showLoginForm && !showGuestEmailForm && !showProceedingToCheckout" class="space-y-4">
           <h2 class="text-xl font-bold mb-4">Checkout Options</h2>
