@@ -13,6 +13,7 @@ import Listings from './pages/ListingsPage.vue';
 import ListingDetails from './pages/ListingDetailsPage.vue';
 import Privacy from './pages/Privacy.vue';
 import Terms from './pages/Terms.vue';
+import ThankYou from './pages/ThankYou.vue';
 
 const routes = [
   {
@@ -84,6 +85,11 @@ const routes = [
     component: Boxes,
     meta: { requires: 'admin' },
     beforeEnter: handleAuthentication
+  },
+  {
+    path: '/thank-you',
+    name: 'thank you',
+    component: ThankYou
   }
 ];
 

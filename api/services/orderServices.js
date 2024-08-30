@@ -84,6 +84,15 @@ export async function getOrder(orderId) {
 
 }
 
+async function getStripeOrderSession(order) {
+    const { stripeSessionId, ...restOrder } = order;
+
+    return {
+        ...restOrder,
+        stripeSession: await getStripeSession(stripeSessionId)
+    }
+}
+
 export async function getAllOrders() {
     try {
         const userOrders = await Orders.findAll({ userid: '*' });
@@ -100,9 +109,8 @@ export async function getUserOrders(userid) {
         const sanitizedOrders = [];
 
         for (const userOrder of userOrders) {
-            const { purchasedLabelUrl, stripeSessionId, ...sanitizedOrder } = userOrder;
+            const { purchasedLabelUrl, ...sanitizedOrder } = await getStripeOrderSession(userOrder); 
 
-            sanitizedOrder.stripeSession = await getStripeSession(stripeSessionId);
             sanitizedOrders.push(sanitizedOrder);
         }
         
