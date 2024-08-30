@@ -1,8 +1,9 @@
 <template>
     <div class="q-grid">
         <button v-for="route in userRoutes" @click="changeRoute(route)" class="q-cell-1 router-link"><h2>{{ route.name }}</h2></button>
-        <button href="#" class="q-cell-1 router-link"><h2>Shop On Etsy »</h2></button>
-        <!-- logout button if logged in -->
+
+        <a href="https://www.etsy.com/shop/gardenhanger/?etsrc=sdt" target="_blank" class="q-cell-1 router-link center"><h2>Shop On Etsy »</h2></a>
+        
         <a v-if="userStore.isLoggedIn" class="q-cell-1 button router-link center" href="/api/auth/logout"><h2>Logout</h2></a>
     </div>
 </template>

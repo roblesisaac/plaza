@@ -6,9 +6,17 @@
             </a>
         </div>
         <nav class="hidden md:flex space-x-4">
-            <router-link v-for="link in userRoutes" :to="link.path" class="text-white hover:text-green-300 transition-colors duration-200 pr-5">
+            <router-link v-for="link in userRoutes" :to="link.path" :class="linkClasses">
                 <b>{{ formatProper(link.name) }}</b>
             </router-link>
+
+            <a href="https://www.etsy.com/shop/gardenhanger/?etsrc=sdt" target="_blank" :class="linkClasses">
+                <b>Shop On Etsy »</b>
+            </a>
+        
+            <a v-if="userStore.isLoggedIn" href="/api/auth/logout" :class="linkClasses">
+                <b>Logout</b>
+            </a>
         </nav>
         <button @click="toggleMenu" class="md:hidden p-2 text-white focus:outline-none">
             <MenuVue v-if="!State.showingMenu" />
@@ -18,15 +26,22 @@
 </template>
 
 <script setup>
-import router, { userRoutes } from '../router';
+import router, { useFilteredRoutes } from '../router';
+import { useUserStore } from '../stores/userStore';
 import { formatProper } from '../utils/formats';
 
 import MenuVue from 'vue-material-design-icons/Menu.vue';
 import CloseVue from 'vue-material-design-icons/Close.vue';
 
+const linkClasses = 'text-white hover:text-green-300 transition-colors duration-200 pr-5';
+
 const props = defineProps({
     State: Object
 });
+
+const userStore = useUserStore();
+
+const userRoutes = useFilteredRoutes('home');
 
 function reload() {
     if (window.location.pathname === '/') {

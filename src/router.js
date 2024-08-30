@@ -118,6 +118,22 @@ export const userRoutes = computed(() => {
   return router.getRoutes().filter(route => !route.path.includes(':') && userHasAccess(route) && !routeIsHidden(route)); 
 });
 
+export function useFilteredRoutes(arrayOfRoutesToExclude) {
+  return computed(() => {
+    if (!Array.isArray(arrayOfRoutesToExclude)) {
+      arrayOfRoutesToExclude = [arrayOfRoutesToExclude];
+    }
+
+    return userRoutes.value.filter(route => {
+      const routeName = route.name || '';
+      
+      return !arrayOfRoutesToExclude.some(
+        excludedRoute => excludedRoute.toLowerCase() === routeName.toLowerCase()
+      );
+    });
+  });
+}
+
 function userHasAccess(route) {
   const userStore = useUserStore();
   const { requires } = route.meta;
