@@ -57,7 +57,7 @@
           <form v-if="showGuestEmailForm" @submit.prevent="handleProceedToCheckout" class="space-y-4">
             <div class="text-center mb-4">
               <p class="text-lg font-semibold text-gray-800">Guest Checkout</p>
-              <p class="text-sm text-gray-600">We'll use your email to send order updates. No account needed.</p>
+              <p class="text-sm text-gray-600">We use your email to send order updates.</p>
             </div>
             <div>
               <label for="guestEmail" class="block text-sm font-medium text-gray-700">Email Address</label>
