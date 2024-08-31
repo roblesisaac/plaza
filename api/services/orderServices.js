@@ -84,7 +84,7 @@ export async function getOrder(orderId) {
 
 }
 
-async function getStripeOrderSession(order) {
+export async function getStripeOrderSession(order) {
     const { stripeSessionId, ...restOrder } = order;
 
     return {

@@ -4,6 +4,7 @@ import config from '../config/environment';
 import ZipCodes from '../models/zipcodes';
 import { sendEmail } from './contactServices';
 import orderShippedTemplate from '../emails/order-shipped-template';
+import { getStripeOrderSession } from './orderServices';
 
 import orders from '../models/orders';
 
@@ -126,10 +127,12 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         const updatedOrder = await orders.update(orderId, { 
             purchasedLabelUrl, 
             trackingUrl,
-            status: 'SHIPPED' 
+            status: 'shipped' 
         });
+
+        const stripedOrder = await getStripeOrderSession(updatedOrder);
         
-        await emailOrderShipped(updatedOrder);
+        await emailOrderShipped(stripedOrder);
         
         return { purchasedLabel, updatedOrder };
     } catch (err) {

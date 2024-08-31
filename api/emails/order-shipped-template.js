@@ -34,10 +34,10 @@ export default function orderShippedTemplate(order) {
               text-align: center;
           }
           .logo {
-                width: 100%;
-                height: auto;
-                margin-bottom: 20px;
-           }
+              width: 100%;
+              height: auto;
+              margin-bottom: 20px;
+          }
           .content {
               padding: 20px;
           }
@@ -152,13 +152,15 @@ export default function orderShippedTemplate(order) {
                           <tr>
                               <th>Item</th>
                               <th>Quantity</th>
+                              <th>Price</th>
                           </tr>
                       </thead>
                       <tbody>
-                          ${order.orderItems.map(item => `
+                          ${order.stripeSession.line_items.data.map(item => `
                               <tr>
-                                  <td><a href="${config.URL}/products/${item.title}">${(item.title || '').toUpperCase()}</a></td>
-                                  <td>${item.qty}</td>
+                                  <td>${item.description}</td>
+                                  <td>${item.quantity}</td>
+                                  <td>$${(item.amount_total / 100).toFixed(2)}</td>
                               </tr>
                           `).join('')}
                       </tbody>
