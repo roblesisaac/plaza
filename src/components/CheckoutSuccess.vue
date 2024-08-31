@@ -22,7 +22,7 @@
                         <h3 class="text-lg font-semibold text-gray-700 mb-2">Shipping Address</h3>
                         <address class="not-italic">
                             <p class="font-semibold">{{ createdOrder.shippingAddress.customerName }}</p>
-                            <p>{{ createdOrder.shippingAddress.street }}</p>
+                            <p>{{ createdOrder.shippingAddress.line1 }}</p>
                             <p>{{ createdOrder.shippingAddress.city }}, {{ createdOrder.shippingAddress.state }} {{ createdOrder.shippingAddress.zipCode }}</p>
                             <a :href="`mailto:${createdOrder.shippingAddress.email}`" class="text-blue-600 hover:underline">{{ createdOrder.shippingAddress.email }}</a>
                         </address>

@@ -2,7 +2,7 @@ import AmptModel from 'ampt-model';
 
 const addressSchema = {
     label: String, // work, home, etc
-    street: String,
+    line1: String,
     city: String,
     zip: String,
     phone: Number,

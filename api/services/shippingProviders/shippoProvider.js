@@ -112,10 +112,11 @@ export async function validateAddress(address) {
 }
 
 function formatAddressForShipment(address) {
+    console.log(address);
     return {
         name: address.name || address.customerName,
         company: address.company,
-        street1: address.street,
+        street1: address.line1,
         city: address.city,
         state: address.state,
         zip: address.zipCode,
@@ -128,7 +129,7 @@ function formatAddressForShipment(address) {
 
 function formatAddressForValidation(address) {
     return {
-        address_line_1: address.street,
+        address_line_1: address.line1,
         city_locality: address.city,
         state_province: address.state,
         postal_code: address.zipCode,

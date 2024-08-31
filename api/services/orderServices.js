@@ -96,8 +96,15 @@ async function getStripeOrderSession(order) {
 export async function getAllOrders() {
     try {
         const userOrders = await Orders.findAll({ userid: '*' });
+        const userOrdersWithStripeSessions = [];
+
+        for (const userOrder of userOrders) {
+            const stripedOrder = await getStripeOrderSession(userOrder); 
+
+            userOrdersWithStripeSessions.push(stripedOrder);
+        }
         
-        return sortByMostRecent(userOrders);
+        return sortByMostRecent(userOrdersWithStripeSessions);
     } catch (err) {
         throwError(err);
     }

@@ -10,7 +10,7 @@
         class="form-select mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         >
             <option v-for="status in statuses" :key="status" :value="status">
-                {{ status }}
+                {{ status.toUpperCase() }}
             </option>
         </select>
     </div>
@@ -20,7 +20,7 @@
 <script setup>
 import { ref } from 'vue';
 const emit = defineEmits(['status-changed']);
-const statuses = ['PENDING', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED'];
+const statuses = ['pending', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned'];
 
 const props = defineProps({
     orderData: Object

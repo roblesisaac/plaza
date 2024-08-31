@@ -13,12 +13,13 @@ const orderSchema = {
     },
     orderEmail: String,
     updatedShippingAddress: {
-        customerName: String,
+        name: String,
         email: String,
-        street: String,
+        line1: String,
         city: String,
         state: String,
-        zipCode: String
+        postal_code: String,
+        country: String
     },
     totalPrice: {
         set: num => (Number(num) / 100).toFixed(2)
@@ -33,7 +34,7 @@ const orderSchema = {
     cancellationReason: String,
     paymentStatus: {
         type: String,
-        enum: ['paid', 'voided', 'refunded', 'partially_refunded']
+        enum: ['failed', 'paid', 'voided', 'refunded', 'partially_refunded']
     },
     deliveredAt: String,
     shippingCost: Number,

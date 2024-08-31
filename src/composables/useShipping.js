@@ -188,6 +188,11 @@ export default function useShipping() {
     }
 
     async function createShipment(shippingAddress, shippingOption, provider) {
+        console.log({
+            shippingAddress,
+            shippingOption,
+            provider
+        })
         try {
             const body = {
                 address: shippingAddress,
@@ -246,9 +251,9 @@ export default function useShipping() {
                 throw new Error('Please fill out required fields');
             }
 
-            const { street, city, state, zipCode } = addressToValidate;
+            const { line1, city, state, zipCode } = addressToValidate;
     
-            if (!street || !city || !state || !zipCode) {
+            if (!line1 || !city || !state || !zipCode) {
                 console.log('Missing required fields in addressToValidate:', addressToValidate)
                 return false;
             }

@@ -24,7 +24,7 @@ export default {
         phone: params('CONTACT_PHONE'),
         email: params('CONTACT_EMAIL'),
         company: params('CONTACT_COMPANY'),
-        street: params('ADDRESS_ORIGIN_STREET'),
+        line1: params('ADDRESS_ORIGIN_STREET'),
         city: params('ADDRESS_ORIGIN_CITY'),
         state: 'CA',
         zipCode: params('ADDRESS_ORIGIN_ZIP')

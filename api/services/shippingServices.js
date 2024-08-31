@@ -80,6 +80,8 @@ export async function createShipment(addressDestination, shipment, mailingServic
         }
         
         const fetchedShipment = await provider.createShipment(config.ADDRESS_ORIGIN, addressDestination, shipment);
+
+        console.log(mailingServiceProvider);
         
         if (fetchedShipment?.error) {
             return throwError(`${fetchedShipment.error.message} - Details: ${JSON.stringify(fetchedShipment.error.details)}`);

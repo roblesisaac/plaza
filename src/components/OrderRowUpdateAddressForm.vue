@@ -6,7 +6,7 @@
     </div>
     <div>
         <label for="street" class="form-label">Street</label>
-        <input type="text" id="street" v-model="newAddress.street" class="form-input">
+        <input type="text" id="street" v-model="newAddress.line1" class="form-input">
     </div>
     <div class="grid grid-cols-2 gap-4">
         <div>
@@ -42,14 +42,19 @@ const props = defineProps({
     orderData: Object
 });
 
-const newAddress = reactive({
-    customerName: props.orderData.shippingAddress.customerName,
-    street: props.orderData.shippingAddress.street,
-    city: props.orderData.shippingAddress.city,
-    state: props.orderData.shippingAddress.state,
-    zipCode: props.orderData.shippingAddress.zipCode,
-    email: props.orderData.shippingAddress.email
-});
+const shippingDetails = props.orderData.stripeSession.shipping_details;
+const shippingAddress = shippingDetails.address;
+
+const newAddress = props.orderData.updatedShippingAddress.line1?.length
+    ? reactive(props.orderData.updatedShippingAddress)
+    : reactive({
+        customerName: shippingDetails.name,
+        line1: shippingAddress.line1,
+        city: shippingAddress.city,
+        state: shippingAddress.state,
+        zipCode: shippingAddress.postal_code,
+        email: props.orderData.orderEmail
+    });
 
 const handleAddressChange = () => {
     emit('address-changed', { shippingAddress: { ...newAddress } });

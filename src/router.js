@@ -89,7 +89,8 @@ const routes = [
   {
     path: '/thank-you',
     name: 'thank you',
-    component: ThankYou
+    component: ThankYou,
+    meta: { hide: true }
   }
 ];
 

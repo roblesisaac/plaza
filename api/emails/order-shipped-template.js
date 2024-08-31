@@ -135,7 +135,7 @@ export default function orderShippedTemplate(order) {
                       <span>
                         <b>${order.shippingAddress.customerName}</b>
                         <br>
-                        ${order.shippingAddress.street}
+                        ${order.shippingAddress.line1}
                         <br>${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}
                       </span>
                   </div>

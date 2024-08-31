@@ -55,11 +55,11 @@
                     <li class="flex justify-between"><span class="font-medium">Shipping Cost:</span> <span class="font-semibold">${{ order.shippingCost.toFixed(2) }}</span></li>
                     <li class="flex justify-between items-center">
                         <span class="font-medium">Payment Status:</span> 
-                        <span class="px-3 py-1 text-sm font-semibold text-white bg-blue-500 rounded-full">{{ order.paymentStatus }}</span>
+                        <span class="px-3 py-1 text-sm font-semibold text-white bg-blue-500 rounded-full">{{ order.paymentStatus.toUpperCase() }}</span>
                     </li>
                     <li class="flex justify-between items-center">
                         <span class="font-medium">Order Status:</span> 
-                        <span class="px-3 py-1 text-sm font-semibold text-white bg-green-500 rounded-full">{{ order.status }}</span>
+                        <span class="px-3 py-1 text-sm font-semibold text-white bg-green-500 rounded-full">{{ order.status.toUpperCase() }}</span>
                     </li>
                     </ul>
                 </div>

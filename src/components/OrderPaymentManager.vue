@@ -7,16 +7,15 @@
         :class="[
           'px-3 py-1 rounded-full text-sm font-medium',
           {
-            'bg-green-100 text-green-800': orderData.paymentStatus === 'CAPTURED',
-            'bg-yellow-100 text-yellow-800': orderData.paymentStatus === 'AUTHORIZED',
-            'bg-red-100 text-red-800': orderData.paymentStatus === 'FAILED',
-            'bg-gray-100 text-gray-800': orderData.paymentStatus === 'PENDING',
-            'bg-blue-100 text-blue-800': orderData.paymentStatus === 'VOIDED',
-            'bg-orange-100 text-gray-800': orderData.paymentStatus === 'REFUNDED',
+            'bg-green-100 text-green-800': orderData.paymentStatus === 'paid',
+            'bg-yellow-100 text-yellow-800': orderData.paymentStatus === 'voided',
+            'bg-red-100 text-red-800': orderData.paymentStatus === 'failed',
+            'bg-blue-100 text-blue-800': orderData.paymentStatus === 'partially_refunded',
+            'bg-orange-100 text-gray-800': orderData.paymentStatus === 'refunded',
           }
         ]"
       >
-        {{ orderData.paymentStatus }}
+        {{ orderData.paymentStatus.toUpperCase() }}
       </span>
     </div>
     
@@ -25,7 +24,7 @@
       <!-- Capture Payment -->
       <Transition>
         <button
-          v-if="orderData.paymentStatus !== 'CAPTURED'"
+          v-if="orderData.paymentStatus !== 'captured'"
           @click="handleCaptureOrderPayment"
           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         >
@@ -36,7 +35,7 @@
       <!-- Cancel Payment -->
       <Transition>
         <button
-          v-if="orderData.paymentStatus === 'AUTHORIZED'"
+          v-if="orderData.paymentStatus === 'paid'"
           @click="handleCancelPayment"
           class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
         >
@@ -46,7 +45,7 @@
 
       <!-- Refund -->
       <Transition>
-        <div v-if="['CAPTURED', 'PARTIALLY_REFUNDED'].includes(orderData.paymentStatus)" class="space-y-2">
+        <div v-if="['paid', 'partially_refunded'].includes(orderData.paymentStatus)" class="space-y-2">
           <div class="flex space-x-2">
             <input
               type="number"

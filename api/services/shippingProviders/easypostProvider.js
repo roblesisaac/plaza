@@ -64,7 +64,7 @@ export async function createShipment(addressOrigin, addressDestination, shipment
 function formatAddressForApiRequest(address) {
     return {
         name: address.name,
-        street1: address.street,
+        street1: address.line1,
         city: address.city,
         state: address.state,
         zip: address.zipCode,

@@ -80,7 +80,7 @@ function formatAddressForApiRequest(address) {
     return {
         contact_name: address.name || 'N/A',
         company_name: address.company || 'N/A',
-        line_1: address.street,
+        line_1: address.line1,
         city: address.city,
         state: address.state,
         postal_code: String(address.zipCode),

@@ -36,7 +36,7 @@
                             <p>{{ orderData.stripeSession.shipping_details.address.line1 }}</p>
                             <p v-if="orderData.stripeSession.shipping_details.address.line2">{{ orderData.stripeSession.shipping_details.address.line2 }}</p>
                             <p>{{ orderData.stripeSession.shipping_details.address.city }}, {{ orderData.stripeSession.shipping_details.address.state }} {{ orderData.stripeSession.shipping_details.address.postal_code }}</p>
-                            <p>{{ orderData.stripeSession.shipping_details.address.country }}</p>
+                            <p>{{ orderData.stripeSession.shipping_details.address.country || 'US' }}</p>
                             <p>{{ orderData.orderEmail }}</p>
                         </address>
                     </div>
@@ -50,9 +50,9 @@
                     <h4 class="text-md font-semibold text-gray-700 mb-3">Order Items</h4>
                     <ul class="space-y-2">
                         <li v-for="item in orderData.stripeSession.line_items.data" :key="item.id" class="text-sm bg-gray-50 p-2 rounded">
-                            <span class="font-medium text-blue-600">
+                            <router-link :to="'/products/'+item.description.toLowerCase()" class="font-medium text-blue-600">
                                 {{ item.description }}
-                            </span>
+                            </router-link>
                             <span class="text-gray-500 ml-2">(Qty: {{ item.quantity }})</span>
                             <span class="text-gray-700 ml-2">${{ (item.amount_total / 100).toFixed(2) }}</span>
                         </li>
@@ -101,7 +101,7 @@
                 
                 <!-- Create Label Section -->
                 <div v-if="!orderData.purchasedLabelUrl && showCreateLabel">
-                    <CreateLabel :orderData="orderData" />
+                    <CreateLabel :orderData="orderData" :orderShippingAddress="orderShippingAddress" />
                 </div>
             </div>
         </div>
@@ -148,6 +148,17 @@ const canUpdateAddress = computed(() => {
     return ['pending', 'on_hold'].includes(status.toLowerCase());
 });
 
+const orderShippingAddress = computed(() => {
+    if(props.orderData.updatedShippingAddress.line1?.length) {
+        return props.orderData.updatedShippingAddress;
+    }
+
+    return {
+        ...props.orderData.stripeSession.shipping_details,
+        email: props.orderData.customerEmail
+    }
+});
+
 const toggleExpand = () => {
     expanded.value = !expanded.value;
 };
@@ -181,7 +192,9 @@ const handleUpdateOrder = async (updates) => {
             return;
         }
         
-        await updateOrder(props.orderData._id, updates);
+        const { stripeSession, ...restUpdates } = updates;
+
+        await updateOrder(props.orderData._id, restUpdates);
         
         if (updates.updatedShippingAddress) {
             isEditingAddress.value = false;
