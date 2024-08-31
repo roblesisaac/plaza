@@ -115,7 +115,7 @@ function formatAddressForShipment(address) {
     return {
         name: address.name || address.customerName,
         company: address.company,
-        street1: address.line1,
+        street1: address.street,
         city: address.city,
         state: address.state,
         zip: address.zipCode,
@@ -128,7 +128,7 @@ function formatAddressForShipment(address) {
 
 function formatAddressForValidation(address) {
     return {
-        address_line_1: address.line1,
+        address_line_1: address.street,
         city_locality: address.city,
         state_province: address.state,
         postal_code: address.zipCode,

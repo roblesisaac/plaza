@@ -117,7 +117,7 @@ function formatAddressForApiRequest(address) {
     return {
         name: address.name || address.customerName,
         company_name: address.company,
-        address_line1: address.line1,
+        address_line1: address.street,
         city_locality: address.city,
         state_province: address.state,
         postal_code: address.zipCode,

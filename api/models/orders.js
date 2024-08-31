@@ -12,14 +12,13 @@ const orderSchema = {
         get: decrypt
     },
     orderEmail: String,
-    updatedShippingAddress: {
-        name: String,
+    shippingAddress: {
+        customerName: String,
         email: String,
-        line1: String,
+        street: String,
         city: String,
         state: String,
-        postal_code: String,
-        country: String
+        zipCode: String
     },
     totalPrice: {
         set: num => (Number(num) / 100).toFixed(2)
@@ -47,13 +46,21 @@ const orderSchema = {
 const orderModel = AmptModel('orders', orderSchema);
 
 orderModel.saveStripeOrder = async (stripeSession, user) => {
+    const { address } = stripeSession.shipping_details;
     const savedOrder = await orderModel.save({
         userid: user ? user._id : 'guest',
         stripeSessionId: stripeSession.id,
-        orderEmail: stripeSession.customer_details.email,
         totalPrice: stripeSession.amount_total,
         status: 'pending',
-        paymentStatus: stripeSession.payment_status
+        paymentStatus: stripeSession.payment_status,
+        shippingAddress: {
+            customerName: stripeSession.shipping_details.name,
+            email: stripeSession.customer_email,
+            street: address.line1,
+            city: address.city,
+            state: address.state,
+            zipCode: address.postal_code
+        }
     });
 
     return savedOrder;

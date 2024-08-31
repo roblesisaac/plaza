@@ -11,7 +11,7 @@ import { getStripeSession } from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
-    const canCancel = ['PENDING', 'ON_HOLD'].includes(orderToCancel.status);
+    const canCancel = ['pending', 'on_hold'].includes(orderToCancel.status);
 
     if(!canCancel) {
         return {

@@ -37,12 +37,12 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-700 mb-4">Shipping Address</h3>
                     <address class="not-italic text-gray-600">
-                    <p class="font-semibold">{{ order.stripeSession.shipping_details.name }}</p>
-                    <p>{{ order.stripeSession.shipping_details.address.line1 }}</p>
-                    <p v-if="order.stripeSession.shipping_details.address.line2">{{ order.stripeSession.shipping_details.address.line2 }}</p>
-                    <p>{{ order.stripeSession.shipping_details.address.city }}, {{ order.stripeSession.shipping_details.address.state }} {{ order.stripeSession.shipping_details.address.postal_code }}</p>
-                    <p>{{ order.stripeSession.shipping_details.address.country }}</p>
-                    <a :href="`mailto:${order.orderEmail}`" class="text-blue-600 hover:underline mt-2 inline-block">{{ order.orderEmail }}</a>
+                    <p class="font-semibold">{{ order.shippingAddress.customerName }}</p>
+                    <p>{{ order.shippingAddress.street }}</p>
+                    <!-- <p v-if="order.stripeSession.shipping_details.address.line2">{{ order.stripeSession.shipping_details.address.line2 }}</p> -->
+                    <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zipCode }}</p>
+                    <p>US</p>
+                    <a :href="`mailto:${order.orderEmail}`" class="text-blue-600 hover:underline mt-2 inline-block">{{ order.shippingAddress.email }}</a>
                     </address>
                 </div>
 

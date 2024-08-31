@@ -8,12 +8,12 @@
                         <span class="text-sm font-medium text-gray-600">Order #{{ orderData.orderId }}</span>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 mt-2">{{ getOrderTitle() }}</h3>
-                    <p class="text-sm text-gray-500">{{ orderData.stripeSession.line_items.data.length }} item(s)</p>
+                    <p class="text-sm text-gray-500">{{ getItemCount() }} item(s)</p>
                 </div>
                 <div class="flex flex-grow flex-col items-end">
                     <span :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusClass()]">{{ orderData.status.toUpperCase() }}</span>
                     <p class="text-lg font-semibold text-green-600">${{ orderData.totalPrice }}</p>
-                    <p class="text-xs text-gray-400">{{ extractDateFromId(orderData._id) }}</p>
+                    <p class="text-xs text-gray-400">{{ formatDate(orderData._id) }}</p>
                 </div>
             </div>
         </div>
@@ -32,12 +32,10 @@
                     </div>
                     <div v-if="!isEditingAddress">
                         <address class="text-sm text-gray-600 not-italic space-y-1">
-                            <p>{{ orderData.stripeSession.shipping_details.name }}</p>
-                            <p>{{ orderData.stripeSession.shipping_details.address.line1 }}</p>
-                            <p v-if="orderData.stripeSession.shipping_details.address.line2">{{ orderData.stripeSession.shipping_details.address.line2 }}</p>
-                            <p>{{ orderData.stripeSession.shipping_details.address.city }}, {{ orderData.stripeSession.shipping_details.address.state }} {{ orderData.stripeSession.shipping_details.address.postal_code }}</p>
-                            <p>{{ orderData.stripeSession.shipping_details.address.country || 'US' }}</p>
-                            <p>{{ orderData.orderEmail }}</p>
+                            <p>{{ orderData.shippingAddress.customerName }}</p>
+                            <p>{{ orderData.shippingAddress.street }}</p>
+                            <p>{{ orderData.shippingAddress.city }}, {{ orderData.shippingAddress.state }} {{ orderData.shippingAddress.zipCode }}</p>
+                            <p>{{ orderData.shippingAddress.email }}</p>
                         </address>
                     </div>
                     <div v-else>
@@ -50,11 +48,11 @@
                     <h4 class="text-md font-semibold text-gray-700 mb-3">Order Items</h4>
                     <ul class="space-y-2">
                         <li v-for="item in orderData.stripeSession.line_items.data" :key="item.id" class="text-sm bg-gray-50 p-2 rounded">
-                            <router-link :to="'/products/'+item.description.toLowerCase()" class="font-medium text-blue-600">
+                            <router-link :to="'/products/' + item.description.toLowerCase()" class="font-medium text-blue-600">
                                 {{ item.description }}
                             </router-link>
                             <span class="text-gray-500 ml-2">(Qty: {{ item.quantity }})</span>
-                            <span class="text-gray-700 ml-2">${{ (item.amount_total / 100).toFixed(2) }}</span>
+                            <span class="text-gray-500 ml-2">${{ (item.amount_total / 100).toFixed(2) }}</span>
                         </li>
                     </ul>
                 </div>
@@ -92,6 +90,14 @@
                 <!-- Admin Capture / Refund Buttons -->
                 <OrderPaymentManager :orderData="orderData" />
                 
+                <!-- Label Image -->
+                <div v-if="orderData.purchasedLabelUrl" class="flex flex-col items-center">
+                    <button @click="showLabel = !showLabel" class="flex-1 w-full text-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-sm font-medium">
+                        {{ showLabel ? 'Hide' : 'View' }} Shipping Label
+                    </button>
+                    <img v-if="showLabel" :src="orderData.purchasedLabelUrl" alt="Shipping Label" class="mt-4 rounded-lg shadow-md max-w-full h-auto" />
+                </div>
+                
                 <!-- Toggle Label Button -->
                 <div v-if="!orderData.purchasedLabelUrl" class="flex flex-col items-center">
                     <button @click="showCreateLabel = !showCreateLabel" class="flex-1 text-center px-4 py-2 text-blue-500 rounded-md transition-colors text-sm font-medium">
@@ -101,7 +107,7 @@
                 
                 <!-- Create Label Section -->
                 <div v-if="!orderData.purchasedLabelUrl && showCreateLabel">
-                    <CreateLabel :orderData="orderData" :orderShippingAddress="orderShippingAddress" />
+                    <CreateLabel :orderData="orderData" />
                 </div>
             </div>
         </div>
@@ -128,7 +134,6 @@ import OrderRowUpdateAddressForm from './OrderRowUpdateAddressForm.vue';
 import OrderRowCancelOrder from './OrderRowCancelOrder.vue';
 
 import { useUserStore } from '../stores/userStore';
-import { extractDateFromId } from '../utils/extractDateFromId';
 import useOrders from '../composables/useOrders';
 
 const { updateOrder } = useOrders();
@@ -139,6 +144,7 @@ const props = defineProps({
 });
 
 const expanded = ref(false);
+const showLabel = ref(false);
 const showCreateLabel = ref(false);
 const isEditingAddress = ref(false);
 const showCancelOrder = ref(false);
@@ -146,17 +152,6 @@ const showCancelOrder = ref(false);
 const canUpdateAddress = computed(() => {
     const { status } = props.orderData;
     return ['pending', 'on_hold'].includes(status.toLowerCase());
-});
-
-const orderShippingAddress = computed(() => {
-    if(props.orderData.updatedShippingAddress.line1?.length) {
-        return props.orderData.updatedShippingAddress;
-    }
-
-    return {
-        ...props.orderData.stripeSession.shipping_details,
-        email: props.orderData.customerEmail
-    }
 });
 
 const toggleExpand = () => {
@@ -172,6 +167,10 @@ const getOrderTitle = () => {
     return firstItem ? firstItem.description : 'Untitled Order';
 };
 
+const getItemCount = () => {
+    return props.orderData.stripeSession.line_items.data.reduce((total, item) => total + item.quantity, 0);
+};
+
 const getStatusClass = () => {
     const status = props.orderData.status.toLowerCase();
     return {
@@ -184,19 +183,22 @@ const getStatusClass = () => {
     };
 };
 
+const formatDate = (id) => {
+    const date = new Date(id.split('_')[0].replace('orders:', '').replace(/-/g, ':'));
+    return date.toLocaleString();
+};
+
 const handleUpdateOrder = async (updates) => {
     try {
-        if(updates.updatedShippingAddress && !canUpdateAddress.value) {
-            alert('You can only update orders with PENDING or ON_HOLD status');
+        if(updates.shippingAddress && !canUpdateAddress.value) {
+            alert('You can only update orders with pending or on_hold status');
             isEditingAddress.value = false;
             return;
         }
         
-        const { stripeSession, ...restUpdates } = updates;
-
-        await updateOrder(props.orderData._id, restUpdates);
+        await updateOrder(props.orderData._id, updates);
         
-        if (updates.updatedShippingAddress) {
+        if (updates.shippingAddress) {
             isEditingAddress.value = false;
         }
     } catch (err) {

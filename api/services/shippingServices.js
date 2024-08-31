@@ -80,8 +80,6 @@ export async function createShipment(addressDestination, shipment, mailingServic
         }
         
         const fetchedShipment = await provider.createShipment(config.ADDRESS_ORIGIN, addressDestination, shipment);
-
-        console.log(mailingServiceProvider);
         
         if (fetchedShipment?.error) {
             return throwError(`${fetchedShipment.error.message} - Details: ${JSON.stringify(fetchedShipment.error.details)}`);
@@ -204,7 +202,7 @@ function findLowestRate(rates, mailingServiceProvider = DEFAULT_PROVIDER) {
 
 function orderStatusIsAllowed(orderStatus) {
     const orderStatuses = [ 'PENDING', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED' ];
-    const statusIndex = orderStatuses.indexOf(orderStatus);
+    const statusIndex = orderStatuses.indexOf(orderStatus.toUpperCase());
     const onHoldIndex = orderStatuses.indexOf('ON_HOLD');
     
     return statusIndex !== -1 && statusIndex <= onHoldIndex;

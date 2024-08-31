@@ -94,7 +94,6 @@ import ShippingRatesSelection from './ShippingRatesSelection.vue';
 import useShipping from '../composables/useShipping';
 
 const props = defineProps({
-    orderShippingAddress: Object,
     orderData: {
         type: Object,
         required: true
@@ -129,9 +128,9 @@ async function fetchShippingRates(shippingOption, optionName) {
     isLoading.value = true;
     try {
         fetchedShipmentRates.value = await createShipment(
-            props.orderShippingAddress,
-            shippingOption,
-            selectedServiceProvider.value
+        props.orderData.shippingAddress,
+        shippingOption,
+        selectedServiceProvider.value
         );
     } catch (err) {
         console.error(err);
