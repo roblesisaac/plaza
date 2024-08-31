@@ -112,7 +112,6 @@ export async function validateAddress(address) {
 }
 
 function formatAddressForShipment(address) {
-    console.log(address);
     return {
         name: address.name || address.customerName,
         company: address.company,
