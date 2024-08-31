@@ -24,10 +24,10 @@ export default {
         phone: params('CONTACT_PHONE'),
         email: params('CONTACT_EMAIL'),
         company: params('CONTACT_COMPANY'),
-        line1: params('ADDRESS_ORIGIN_STREET'),
+        street: params('ADDRESS_ORIGIN_STREET'),
         city: params('ADDRESS_ORIGIN_CITY'),
         state: 'CA',
-        postal_code: params('ADDRESS_ORIGIN_ZIP')
+        zipCode: params('ADDRESS_ORIGIN_ZIP')
     },
     APP_NAME: params('APP_NAME'),
     AMPT_URL,
