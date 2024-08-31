@@ -178,7 +178,7 @@ export async function fetchCityAndState(zipCode) {
 async function emailOrderShipped(order) {
     const html = orderShippedTemplate(order);        
     const from = `${config.ADDRESS_ORIGIN.name} <${config.CONTACT.EMAIL}>`;
-    const to = order.contactEmail;
+    const to = order.shippingAddress.email;
     const replyTo = config.CONTACT.EMAIL;
     const subject = `Your Order #${order.orderId} Has Been Shipped!`;
 
