@@ -21,7 +21,7 @@
             <div>
               <p class="text-lg font-semibold mb-1">Thank you for your order!</p>
               <p>Your order has been successfully placed. Updates will be sent to 
-                <span class="font-bold">{{ order.orderEmail }}</span>.
+                <span class="font-bold">{{ order.shippingAddress.email }}</span>.
               </p>
             </div>
           </div>
@@ -42,7 +42,7 @@
                     <!-- <p v-if="order.stripeSession.shipping_details.address.line2">{{ order.stripeSession.shipping_details.address.line2 }}</p> -->
                     <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zipCode }}</p>
                     <p>US</p>
-                    <a :href="`mailto:${order.orderEmail}`" class="text-blue-600 hover:underline mt-2 inline-block">{{ order.shippingAddress.email }}</a>
+                    <a :href="`mailto:${order.shippingAddress.email}`" class="text-blue-600 hover:underline mt-2 inline-block">{{ order.shippingAddress.email }}</a>
                     </address>
                 </div>
 
