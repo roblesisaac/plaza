@@ -13,7 +13,7 @@
                 <div class="flex flex-grow flex-col items-end">
                     <span :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusClass()]">{{ orderData.status.toUpperCase() }}</span>
                     <p class="text-lg font-semibold text-green-600">${{ orderData.totalPrice }}</p>
-                    <p class="text-xs text-gray-400">{{ formatDate(orderData._id) }}</p>
+                    <p class="text-xs text-gray-400">{{ formatDateFromId(orderData._id) }}</p>
                 </div>
             </div>
         </div>
@@ -132,6 +132,7 @@ import CreateLabel from './CreateLabel.vue';
 import OrderRowUpdateOrderStatus from './OrderRowUpdateOrderStatus.vue';
 import OrderRowUpdateAddressForm from './OrderRowUpdateAddressForm.vue';
 import OrderRowCancelOrder from './OrderRowCancelOrder.vue';
+import { formatDateFromId } from '../../api/utils/formats';
 
 import { useUserStore } from '../stores/userStore';
 import useOrders from '../composables/useOrders';
@@ -151,7 +152,7 @@ const showCancelOrder = ref(false);
 
 const canUpdateAddress = computed(() => {
     const { status } = props.orderData;
-    return ['pending', 'on_hold'].includes(status.toLowerCase());
+    return ['created', 'on_hold'].includes(status.toLowerCase());
 });
 
 const toggleExpand = () => {
@@ -174,7 +175,7 @@ const getItemCount = () => {
 const getStatusClass = () => {
     const status = props.orderData.status.toLowerCase();
     return {
-        'bg-yellow-100 text-yellow-800': status === 'pending',
+        'bg-yellow-100 text-yellow-800': status === 'created',
         'bg-orange-100 text-orange-800': status === 'on_hold',
         'bg-red-100 text-red-800': status === 'cancelled',
         'bg-blue-100 text-blue-800': status === 'shipped',
@@ -183,15 +184,10 @@ const getStatusClass = () => {
     };
 };
 
-const formatDate = (id) => {
-    const date = new Date(id.split('_')[0].replace('orders:', '').replace(/-/g, ':'));
-    return date.toLocaleString();
-};
-
 const handleUpdateOrder = async (updates) => {
     try {
         if(updates.shippingAddress && !canUpdateAddress.value) {
-            alert('You can only update orders with pending or on_hold status');
+            alert('You can only update orders with created or on_hold status');
             isEditingAddress.value = false;
             return;
         }
