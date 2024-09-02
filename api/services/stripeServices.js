@@ -1,6 +1,5 @@
 import Stripe from 'stripe';
 import config from '../config/environment';
-import orders from '../models/orders';
 
 const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
 
@@ -22,17 +21,7 @@ export async function createCheckoutSession(email, lineItems) {
   return session;
 }
 
-export async function saveOrder(stripeSessionId, user) {
-  const stripeSession = await getStripeSession(stripeSessionId);
-  const savedOrder = await orders.saveStripeOrder(stripeSession, user);
-
-  return {
-    ...savedOrder,
-    stripeSession: stripeSession
-  };
-}
-
-export async function getStripeSession(stripeSessionId) {
+export async function retreiveStripeSession(stripeSessionId) {
   return await stripe.checkout.sessions.retrieve(stripeSessionId, {
     expand: ['line_items'],
   });
@@ -57,16 +46,3 @@ function formatLineItems(lineItems) {
     }
   }));
 }
-
-// export function constructEvent(body, sig) {
-//   const webhookSecret = config.STRIPE.WHSEC_TEST;
-
-//   try {
-//     console.log(body);
-//     const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-//     return event;
-//   } catch (err) {
-//     console.error('Error message:', err.message);
-//     throw err;
-//   }
-// }

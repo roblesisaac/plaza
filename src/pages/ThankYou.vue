@@ -121,11 +121,11 @@
     router.push('/my-account');
   }
   
-  const { get } = useApi();
+  const { post } = useApi();
   
   onMounted(async () => {
     try {
-      const response = await get('stripe/save-order');
+      const response = await post('orders/checkout');
       order.value = response;
     } catch (error) {
       console.error('Error fetching order:', error);

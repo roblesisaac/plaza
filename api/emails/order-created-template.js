@@ -122,10 +122,10 @@ export default function(order) {
                   <h2>Shipping Address</h2>
                   <div class="detail-row">
                       <span>
-                        <b>${ order.shippingAddress.customerName }</b>
+                        <b>${order.shippingAddress.customerName}</b>
                         <br>
-                        ${ order.shippingAddress.street }
-                        <br>${ order.shippingAddress.city }, ${ order.shippingAddress.state } ${ order.shippingAddress.zipCode }
+                        ${order.shippingAddress.street}
+                        <br>${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}
                       </span>
                   </div>
               </div>
@@ -137,13 +137,15 @@ export default function(order) {
                           <tr>
                               <th>Item</th>
                               <th>Quantity</th>
+                              <th>Price</th>
                           </tr>
                       </thead>
                       <tbody>
-                          ${order.orderItems.map(item => `
+                          ${order.stripeSession.line_items.data.map(item => `
                               <tr>
-                                  <td><a href="${config.URL}/products/${item.title}">${(item.title || '').toUpperCase()}</a></td>
-                                  <td>${item.qty}</td>
+                                  <td><a href="${config.URL}/products/${item.description.toLowerCase()}">${item.description}</a></td>
+                                  <td>${item.quantity}</td>
+                                  <td>$${(item.amount_total / 100).toFixed(2)}</td>
                               </tr>
                           `).join('')}
                       </tbody>

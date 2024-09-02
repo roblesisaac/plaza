@@ -6,8 +6,8 @@ import { extractDateFromId } from '../utils/tools';
 import { decrypt, decryptWithKey } from '../utils/encryption';
 import { sendEmail } from './contactServices';
 import config from '../config/environment';
-import orderReceivedTemplate from '../emails/order-received-template';
-import { getStripeSession } from './stripeServices';
+import orderCreatedTemplate from '../emails/order-created-template';
+import { retreiveStripeSession } from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
@@ -25,15 +25,13 @@ export async function cancelOrder(orderId, cancellationReason) {
         ? await paymentServices.refundPayment(decryptedTransactionId)
         : await paymentServices.voidTransaction(decryptedTransactionId);
 
-
-
     const cancelledOrder = await Orders.update(orderId, {
         status: 'CANCELLED',
         paymentStatus: orderToCancel.paymentStatus === 'CAPTURED' ? 'REFUNDED' : 'VOIDED',
         cancellationReason
     });
 
-    //send email confirmation
+    // send email
 
     return {
         cancelledOrder,
@@ -42,46 +40,32 @@ export async function cancelOrder(orderId, cancellationReason) {
     
 }
 
-export async function captureOrderPayment(paymentTransactionId, orderId, userid) {
-    try {
-        const decryptedTransactionId = await getDecryptedTransactionId({ paymentTransactionId, userid });
-        const paymentResult = await paymentServices.captureTransaction(decryptedTransactionId);
-        const { paymentStatus } = await Orders.update(orderId, { paymentStatus: 'CAPTURED' });
+export async function createStripeOrder(stripeSessionId, user) {
+    const stripeSession = await retreiveStripeSession(stripeSessionId);
+    const { id, amount_total, payment_status, payment_intent, shipping_details, customer_email } = stripeSession;
 
-        return {
-            paymentResult,
-            updatedOrder: {
-                _id: orderId,
-                paymentStatus
-            }
-        };
-    } catch (err) {
-        throwError(err);
-    }
-}
-
-export async function createOrder({ order, user, paymentTransactionId }) {
-    const createdOrder = await Orders.save({
-        userid: user._id,
-        paymentTransactionId,
-        contactEmail: order.shippingAddress.email || user.email,
-        ...order,
-        user
+    const { address, name } = shipping_details;
+    const savedOrder = await Orders.save({
+        userid: user ? user._id : 'guest',
+        stripeSessionId: id,
+        totalPrice: amount_total,
+        status: 'created',
+        paymentStatus: payment_status,
+        paymentIntent: payment_intent,
+        shippingAddress: {
+            customerName: name,
+            email: customer_email,
+            street: address.line1,
+            city: address.city,
+            state: address.state,
+            zipCode: address.postal_code
+        }
     });
-
-    return createdOrder;
-}
-
-export async function createLabel(orderItems, shippingAddress) {
-    return { success: true, orderItems, shippingAddress };
-}
-
-export async function deleteOrder(orderId) {
-
-}
-
-export async function getOrder(orderId) {
-
+  
+    return {
+      ...savedOrder,
+      stripeSession: stripeSession
+    };
 }
 
 export async function getStripeOrderSession(order) {
@@ -89,7 +73,7 @@ export async function getStripeOrderSession(order) {
 
     return {
         ...restOrder,
-        stripeSession: await getStripeSession(stripeSessionId)
+        stripeSession: await retreiveStripeSession(stripeSessionId)
     }
 }
 
@@ -131,6 +115,31 @@ export async function refundOrder(orderId) {
 
 }
 
+export async function sendOrderStatusEmail(order) {
+    const emailTemplates = {
+        'created': {
+            subject: 'Your Order Confirmation',
+            template: orderCreatedTemplate
+        },
+        'on_hold': 'order-on-hold-template',
+        'shipped': 'order-shipped-template',
+        'delivered': 'order-delivered-template',
+        'cancelled': 'order-cancelled-template'
+    }
+
+    const from = `${config.CONTACT.SITENAME} <orders${config.CONTACT.SES_EMAIL}>`;
+    const replyTo = `orders${config.CONTACT.SES_EMAIL}`;
+    const to = order.shippingAddress.email;
+    const { subject, template } = emailTemplates[order.status];
+
+    if(template) {
+        const html = template(order);
+        await sendEmail({ from, to, replyTo, subject, html });
+        sendEmail({ from, to: config.CONTACT.EMAIL, subject, html });
+    }
+    
+}
+
 function sortByMostRecent(orders) {
     if(!Array.isArray(orders)) {
         return [];
@@ -142,46 +151,6 @@ function sortByMostRecent(orders) {
 
         return dateB.getTime() - dateA.getTime();
     });
-}
-
-export async function submitCheckout(order, user) {
-    try {
-        let savedPaymentMethod;
-
-        if(order.shouldSavePayment) {
-            savedPaymentMethod = await paymentServices.savePaymentMethod(order.paymentMethod.nonce, user);
-            
-            order.paymentMethod = { methodId: savedPaymentMethod.methodId };
-        }
-    
-        const { streetAddress, postalCode } = order.shippingAddress;
-        const { id: paymentTransactionId } = await paymentServices.authorizePayment({
-            method: order.paymentMethod,
-            amount: order.totalPrice,
-            streetAddress,
-            postalCode,
-            deviceData: order.deviceData,
-            user
-        });
-    
-        const createdOrder = await createOrder({ order, user, paymentTransactionId });
-
-        const from = `${config.CONTACT.SITENAME} <orders${config.CONTACT.SES_EMAIL}>`;
-        const replyTo = `orders${config.CONTACT.SES_EMAIL}`;
-        const to = order.shippingAddress.email || user.email;
-        const subject = 'Your Order Confirmation';
-        const html = orderReceivedTemplate(createdOrder);
-        
-        await sendEmail({ from, to, replyTo, subject, html });
-        sendEmail({ from, to: config.CONTACT.EMAIL, subject, html });
-    
-        return {
-            createdOrder,
-            savedPaymentMethod
-        };
-    } catch (err) {
-        throwError(err);
-    }
 }
 
 export async function updateOrder(orderId, updates) {

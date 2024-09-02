@@ -3,8 +3,6 @@ import stripeControllers from '../controllers/stripeControllers';
 
 const router = Router();
 
-router.get('/save-order', stripeControllers.saveOrder);
-
 router.post(
     `/create-checkout-session`,
     express.json(),

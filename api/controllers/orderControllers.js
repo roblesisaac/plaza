@@ -12,12 +12,23 @@ export default {
             sendError(res, err);
         }
     },
-    captureOrderPayment: async (req, res) => {
+    checkoutStripeOrder: async (req, res) => {
         try {
-            const { transactionId, orderId, userid } = req.body;
-            const order = await orderServices.captureOrderPayment(transactionId, orderId, userid);
+            const tempSessionStore = req.isAuthenticated() ? req.session.passport : req.session;
+            const { stripe_session_id } = tempSessionStore;
 
-            res.json(order);
+            if(!stripe_session_id) {
+                return res.json(tempSessionStore.savedStripeOrder || null);
+            }
+
+            const savedStripeOrder = await orderServices.createStripeOrder(stripe_session_id, req.user);
+
+            await orderServices.sendOrderStatusEmail(savedStripeOrder);
+
+            tempSessionStore.savedStripeOrder = savedStripeOrder;
+            delete tempSessionStore.stripe_session_id;
+
+            res.json(savedStripeOrder);
         } catch (err) {
             sendError(res, err);
         }
@@ -46,15 +57,6 @@ export default {
             const orders = await orderServices.getUserOrders(req.user?._id);
 
             res.json(orders);
-        } catch (err) {
-            sendError(res, err);
-        }
-    },
-    submitCheckout: async (req, res) => {
-        try {
-            const submittedOrder = await orderServices.submitCheckout(req.body, req.user);
-
-            res.json(submittedOrder);
         } catch (err) {
             sendError(res, err);
         }

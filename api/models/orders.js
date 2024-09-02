@@ -11,7 +11,6 @@ const orderSchema = {
         set: encrypt,
         get: decrypt
     },
-    orderEmail: String,
     shippingAddress: {
         customerName: String,
         email: String,
@@ -28,13 +27,14 @@ const orderSchema = {
     trackingUrl: String,
     status: {
         type: String,
-        enum: [ 'pending', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
+        enum: [ 'created', 'pending', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
     },
     cancellationReason: String,
     paymentStatus: {
         type: String,
         enum: ['failed', 'paid', 'voided', 'refunded', 'partially_refunded']
     },
+    paymentIntent: String,
     deliveredAt: String,
     shippingCost: Number,
     label1: 'userid',
@@ -44,26 +44,5 @@ const orderSchema = {
 }
 
 const orderModel = AmptModel('orders', orderSchema);
-
-orderModel.saveStripeOrder = async (stripeSession, user) => {
-    const { address } = stripeSession.shipping_details;
-    const savedOrder = await orderModel.save({
-        userid: user ? user._id : 'guest',
-        stripeSessionId: stripeSession.id,
-        totalPrice: stripeSession.amount_total,
-        status: 'pending',
-        paymentStatus: stripeSession.payment_status,
-        shippingAddress: {
-            customerName: stripeSession.shipping_details.name,
-            email: stripeSession.customer_email,
-            street: address.line1,
-            city: address.city,
-            state: address.state,
-            zipCode: address.postal_code
-        }
-    });
-
-    return savedOrder;
-}
 
 export default orderModel;

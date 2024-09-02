@@ -6,8 +6,7 @@ import { isValidEmail } from '../utils/validation';
 import { proper } from '../utils/formats';
 import { throwError } from '../utils/errors';
 
-export async function sendEmail(emailData) {
-    const { from, to, replyTo, subject, text, html } = emailData;
+export async function sendEmail({ from, to, replyTo, subject, text, html }) {
     const hasText = !!text?.length || !!html?.length;
     const requiredFieldsMet = hasText && isValidEmail(to)
 
