@@ -77,18 +77,22 @@ export function formatDateFromId(id) {
     const matches = id.match(/\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}Z/g);
     if (matches && matches.length > 0) {
         const dateString = matches[0].replace(/(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})Z/, '$1-$2-$3T$4:$5:$6Z');
-        const date = new Date(dateString);
+        const utcDate = new Date(dateString);
+        
+        // Convert to PST (UTC-8)
+        const pstDate = new Date(utcDate.getTime() - 12 * 60 * 60 * 1000);
         
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const month = months[date.getUTCMonth()];
-        const day = date.getUTCDate();
-        const year = date.getUTCFullYear();
+        const month = months[pstDate.getUTCMonth()];
+        const day = pstDate.getUTCDate();
+        const year = pstDate.getUTCFullYear();
         
-        const hours = date.getUTCHours().toString().padStart(2, '0');
-        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-        const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-        const time = `${hours}:${minutes}:${seconds} UTC`;
-
+        const hours = pstDate.getUTCHours().toString().padStart(2, '0');
+        const minutes = pstDate.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = pstDate.getUTCSeconds().toString().padStart(2, '0');
+        
+        const time = `${hours}:${minutes}:${seconds} PST`;
+        
         return `${month} ${day}, ${year} at ${time}`;
     }
     return "Invalid date";
