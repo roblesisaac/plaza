@@ -1,7 +1,7 @@
 <template>
     <TopNav :State="State" />
 
-    <router-view v-if="!State.showingMenu && userStore.status !== 'NOT_VERIFIED'" />
+    <router-view v-if="userStore.status !== 'NOT_VERIFIED'" />
     
     <VerifyForm v-if="userStore.status === 'NOT_VERIFIED'" />
     
