@@ -25,7 +25,7 @@
             href="/api/auth/logout"
             class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <h2 class="text-lg font-semibold">Logout</h2>
+            <h2 class="text-lg font-semibold text-center">Logout</h2>
           </a>
         </div>
       </nav>
