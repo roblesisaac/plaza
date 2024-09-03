@@ -33,7 +33,7 @@
       <!-- Overlay for click-outside functionality -->
       <div 
         v-if="props.State.showingMenu"
-        class="fixed inset-0 bg-black bg-opacity-50 z-40"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 cursor-pointer"
         @click="closeMenu"
       ></div>
     </div>
