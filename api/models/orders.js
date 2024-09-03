@@ -19,6 +19,16 @@ const orderSchema = {
         state: String,
         zipCode: String
     },
+    orderItems: [
+        {
+            productsInListing: [{
+                sku: String,
+                qty: Number
+            }],
+            qty: Number,
+            title: String
+        }
+    ],
     totalPrice: {
         set: num => (Number(num) / 100).toFixed(2)
     },
@@ -27,7 +37,7 @@ const orderSchema = {
     trackingUrl: String,
     status: {
         type: String,
-        enum: [ 'created', 'pending', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
+        enum: [ 'created', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
     },
     cancellationReason: String,
     paymentStatus: {

@@ -111,6 +111,8 @@ const isLoading = ref(false);
 onMounted(async () => {
     try {
         isLoading.value = true;
+        console.log('hi');
+        console.log(props.orderData.orderItems);
         const shipmentData = await getShippingOptions(props.orderData.orderItems);
         shippingOptions.value = shipmentData;
     } catch (error) {

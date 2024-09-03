@@ -99,7 +99,7 @@
 
       <div v-else class="flex items-center justify-center z-50">
         <div class="bg-white p-8 flex flex-col items-center">
-            <p class="text-lg font-semibold text-gray-700">No Order Data</p>
+          <p class="text-lg font-semibold text-gray-700">No Order Data</p>
         </div>
     </div>
     </div>

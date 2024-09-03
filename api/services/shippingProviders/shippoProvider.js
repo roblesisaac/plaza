@@ -30,6 +30,8 @@ export async function createShipment(addressOrigin, addressDestination, shipment
 
         const json = await response.json();
 
+        console.log(json);
+
         return json;
     } catch (err) {
         console.log(err);

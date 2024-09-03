@@ -14,7 +14,7 @@
         <select v-model="data[prop]">
             <option v-for="option in options" :value="option">{{ option }}</option>
         </select>
-    </div>
+    </div> 
 </div>
 
 </template>

@@ -2,11 +2,10 @@
     <TopNav :State="State" />
 
     <router-view v-if="!State.showingMenu && userStore.status !== 'NOT_VERIFIED'" />
+    
     <VerifyForm v-if="userStore.status === 'NOT_VERIFIED'" />
     
-    <Transition>
-        <OffCanvas v-if="State.showingMenu" :State="State" />
-    </Transition>
+    <OffCanvas v-if="State.showingMenu" :State="State" />
     
     <Footer v-if="!State.showingMenu" />
 </template>

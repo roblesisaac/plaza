@@ -7,16 +7,17 @@ import { decrypt, decryptWithKey } from '../utils/encryption';
 import { sendEmail } from './contactServices';
 import config from '../config/environment';
 import orderCreatedTemplate from '../emails/order-created-template';
+import orderShippedTemplate from '../emails/order-shipped-template';
 import { retreiveStripeSession } from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
-    const canCancel = ['pending', 'on_hold'].includes(orderToCancel.status);
+    const canCancel = ['created', 'on_hold'].includes(orderToCancel.status);
 
     if(!canCancel) {
         return {
             success: false,
-            message: `Order status must be pending or on hold to cancel`
+            message: `Order status must be created or on hold to cancel`
         }
     }
 
@@ -122,20 +123,33 @@ export async function sendOrderStatusEmail(order) {
             template: orderCreatedTemplate
         },
         'on_hold': 'order-on-hold-template',
-        'shipped': 'order-shipped-template',
+        'shipped': {
+            subject: '',
+            template: orderShippedTemplate
+        },
         'delivered': 'order-delivered-template',
         'cancelled': 'order-cancelled-template'
-    }
+    };
 
     const from = `${config.CONTACT.SITENAME} <orders${config.CONTACT.SES_EMAIL}>`;
     const replyTo = `orders${config.CONTACT.SES_EMAIL}`;
-    const to = order.shippingAddress.email;
+    const toCustomer = order.shippingAddress.email;
+    const toAdmin = config.CONTACT.EMAIL;
     const { subject, template } = emailTemplates[order.status];
 
-    if(template) {
-        const html = template(order);
-        await sendEmail({ from, to, replyTo, subject, html });
-        sendEmail({ from, to: config.CONTACT.EMAIL, subject, html });
+    if(!template) {
+        return;
+    }
+
+    const html = template(order);
+
+    try {
+        await Promise.all([
+            sendEmail({ from, to: toCustomer, replyTo, subject, html }),
+            sendEmail({ from, to: toAdmin, subject, html })
+        ]);
+    } catch (error) {
+        console.error("Error sending email:", error);
     }
     
 }

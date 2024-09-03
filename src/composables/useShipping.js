@@ -53,7 +53,6 @@ export default function useShipping() {
     
         return baseWeight + additionalWeight;
     }
-    
 
     function findProduct(sku) {
         return products.items.find(p => p.sku === sku);
@@ -158,7 +157,12 @@ export default function useShipping() {
     }
 
     async function getShippingOptions(items) {
+        console.log({
+            items: items || 'none',
+            cartItems: useCartStore().items
+        })
         items = items || useCartStore().items;
+        
 
         const itemsInShipment = formatItemsForShipmentCreation(items);
         const { dimensions, totalWeight, units } = calculateBoxDimensions(itemsInShipment);

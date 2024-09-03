@@ -4,7 +4,7 @@ import config from '../config/environment';
 import ZipCodes from '../models/zipcodes';
 import { sendEmail } from './contactServices';
 import orderShippedTemplate from '../emails/order-shipped-template';
-import { getStripeOrderSession } from './orderServices';
+import { getStripeOrderSession, sendOrderStatusEmail } from './orderServices';
 
 import orders from '../models/orders';
 
@@ -131,9 +131,8 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         });
 
         const stripedOrder = await getStripeOrderSession(updatedOrder);
-        
-        await emailOrderShipped(stripedOrder);
-        
+        await sendOrderStatusEmail(stripedOrder);
+
         return { purchasedLabel, updatedOrder };
     } catch (err) {
         throwError(err);
@@ -175,16 +174,6 @@ export async function fetchCityAndState(zipCode) {
     }
 }
 
-async function emailOrderShipped(order) {
-    const html = orderShippedTemplate(order);        
-    const from = `${config.ADDRESS_ORIGIN.name} <${config.CONTACT.EMAIL}>`;
-    const to = order.shippingAddress.email;
-    const replyTo = config.CONTACT.EMAIL;
-    const subject = `Your Order #${order.orderId} Has Been Shipped!`;
-
-    await sendEmail({ from, to, replyTo, subject, html });
-}
-
 function findLowestRate(rates, mailingServiceProvider = DEFAULT_PROVIDER) {
     if (!Array.isArray(rates)) {
         return rates;
@@ -204,7 +193,7 @@ function findLowestRate(rates, mailingServiceProvider = DEFAULT_PROVIDER) {
 }
 
 function orderStatusIsAllowed(orderStatus) {
-    const orderStatuses = [ 'PENDING', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED' ];
+    const orderStatuses = [ 'CREATED', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED' ];
     const statusIndex = orderStatuses.indexOf(orderStatus.toUpperCase());
     const onHoldIndex = orderStatuses.indexOf('ON_HOLD');
     
