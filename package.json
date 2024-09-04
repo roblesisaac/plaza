@@ -13,6 +13,7 @@
     "@ampt/data": "^1.0.26",
     "@ampt/sdk": "^1.0.19",
     "@stripe/stripe-js": "^4.3.0",
+    "@vueuse/head": "^2.0.0",
     "ampt-model": "^2.0.36",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",

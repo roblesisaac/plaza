@@ -122,7 +122,7 @@
 
 <script setup>
 import { computed, nextTick, ref } from 'vue';
-import { formatAsPrice } from '../utils/formats';
+import { formatAsPrice, formatTitle } from '../utils/formats';
 
 // Components
 import ProductLineVue from './ProductLine.vue';
@@ -135,6 +135,7 @@ import router from '../router';
 import { useCartStore } from '../stores/cartStore';
 import useScreen from '../composables/useScreen';
 import useListings from '../composables/useListings';
+import { useHead } from '@vueuse/head'
 
 const { calcListingValue, getListing, getMainSku, getMainProduct, getProductLineData } = useListings();
 
@@ -188,6 +189,25 @@ function imagePath(index=0) {
     
     return `/images/${imageName}.webp`;
 }
+
+const pageTitle = computed(() => {
+    if(!listing.value || !productLineData.value) {
+        return 'Garden Hanger';
+    }
+
+    return formatTitle(`${listing.value.title} ${productLineData.value.line}`);
+});
+
+const pageDescription = ref(`${pageTitle.value} - a versatile and functional solution for hanging your favorite planter boxes on a variety of walls or fencing, no tools required, allowing for effortless expansion of your vertical garden.`)
+
+useHead({
+  title: () => pageTitle.value,
+  meta: [
+    { name: 'description', content: () => pageDescription.value },
+    { property: 'og:title', content: () => pageTitle.value },
+    { property: 'og:description', content: () => pageDescription.value },
+  ],
+})
 
 </script>
 

@@ -21,3 +21,11 @@ export function formatProper(string) {
     string = string.toString();
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function formatTitle(string) {
+    string = string.toString();
+    return string
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
