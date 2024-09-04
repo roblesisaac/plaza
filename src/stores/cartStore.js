@@ -16,6 +16,7 @@ const { get, post } = useApi();
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: [],
+    isLoading: true,
     zipCode: '',
     status: null,
     shippingEstimate: 0,
@@ -121,6 +122,8 @@ export const useCartStore = defineStore('cart', {
       const userCart = await this.fetchUserCart();
      
       await this.mergeCarts(localCart, userCart.items);
+
+      this.isLoading = false;
     },
     
     loadLocalCart() {

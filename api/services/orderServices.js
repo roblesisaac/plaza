@@ -41,7 +41,7 @@ export async function cancelOrder(orderId, cancellationReason) {
     
 }
 
-export async function createStripeOrder(stripeSessionId, user) {
+export async function createStripeOrder(stripeSessionId, orderItems, user) {
     const stripeSession = await retreiveStripeSession(stripeSessionId);
     const { id, amount_total, payment_status, payment_intent, shipping_details, customer_email } = stripeSession;
 
@@ -50,6 +50,7 @@ export async function createStripeOrder(stripeSessionId, user) {
         userid: user ? user._id : 'guest',
         stripeSessionId: id,
         totalPrice: amount_total,
+        orderItems,
         status: 'created',
         paymentStatus: payment_status,
         paymentIntent: payment_intent,

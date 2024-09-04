@@ -157,10 +157,6 @@ export default function useShipping() {
     }
 
     async function getShippingOptions(items) {
-        console.log({
-            items: items || 'none',
-            cartItems: useCartStore().items
-        })
         items = items || useCartStore().items;
         
 

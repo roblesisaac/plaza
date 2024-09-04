@@ -52,6 +52,7 @@ export default {
     SESSION_ID: params('SESSION_ID'),
     SHIP: {
         SHIPPO_TEST: params('SHIPPO_TEST'),
+        SHIPPO_PROD: params('SHIPPO_PROD'),
         EASYSHIP_PROD: params('EASYSHIP'),
         EASYSHIP_SAND: params('EASYSHIP_SAND'),
         EASYSHIP_SAND_PROD: params('EASYSHIP_SAND_PROD'),

@@ -106,7 +106,7 @@
   </template>
   
   <script setup>
-  import { onMounted, ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { useCartStore } from '../stores/cartStore';
   import { useUserStore } from '../stores/userStore';
   import useApi from '../composables/useApi';
@@ -124,8 +124,16 @@
   }
   
   const { post } = useApi();
-  
-  onMounted(async () => {
+
+  watch(() => cartStore.isLoading, async () => {
+    if(cartStore.isLoading) {
+      return;
+    }
+
+    await saveStripeOrder();
+  });
+
+  async function saveStripeOrder() {
     try {
       const response = await post('orders/checkout', {
         orderItems: cartStore.items
@@ -137,5 +145,5 @@
     } finally {
       isLoading.value = false;
     }
-  });
+  }
   </script>
