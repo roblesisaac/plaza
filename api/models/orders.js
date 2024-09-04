@@ -26,7 +26,8 @@ const orderSchema = {
                 qty: Number
             }],
             qty: Number,
-            title: String
+            title: String,
+            _id: String
         }
     ],
     totalPrice: {

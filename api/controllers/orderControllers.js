@@ -16,6 +16,7 @@ export default {
         try {
             const tempSessionStore = req.isAuthenticated() ? req.session.passport : req.session;
             const { stripe_session_id } = tempSessionStore;
+            const { orderItems } = req.body;
 
             if(!stripe_session_id) {
                 return res.json(tempSessionStore.savedStripeOrder || null);

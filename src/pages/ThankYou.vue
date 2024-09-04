@@ -107,6 +107,7 @@
   
   <script setup>
   import { onMounted, ref } from 'vue';
+  import { useCartStore } from '../stores/cartStore';
   import { useUserStore } from '../stores/userStore';
   import useApi from '../composables/useApi';
   import router from '../router';
@@ -116,6 +117,7 @@
   const isLoading = ref(true);
   const order = ref(null);
   const userStore = useUserStore();
+  const cartStore = useCartStore();
   
   const goToOrders = () => {
     router.push('/my-account');
@@ -125,8 +127,11 @@
   
   onMounted(async () => {
     try {
-      const response = await post('orders/checkout');
+      const response = await post('orders/checkout', {
+        orderItems: cartStore.items
+      });
       order.value = response;
+      cartStore.clearCart({ force: true });
     } catch (error) {
       console.error('Error fetching order:', error);
     } finally {

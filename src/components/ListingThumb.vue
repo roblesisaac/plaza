@@ -2,7 +2,7 @@
     <div class="q-grid parent">
         <div v-if="showImage !== false" class="q-cell-1">
             <router-link :to="'/products/' + listing.title">
-                <img class="cover-photo" :src="imagePath()" :alt="mainProduct.name">
+                <img class="cover-photo" loading="lazy" :src="imagePath()" :alt="mainProduct.name">
             </router-link>
         </div>
         <div class="q-cell-1 details">

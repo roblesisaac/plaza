@@ -1,107 +1,101 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from './stores/userStore'
 import { computed } from 'vue';
-
-import Boxes from './pages/BoxesPage.vue';
-import Cart from './pages/CartPage.vue';
 import Home from './pages/Home.vue';
-import InventoryPage from './pages/InventoryPage.vue';
-import ListingPage from './pages/ListingsManagementPage.vue';
-import Login from './pages/Login.vue';
-import MyAccount from './pages/MyAccount.vue';
 import Listings from './pages/ListingsPage.vue';
-import ListingDetails from './pages/ListingDetailsPage.vue';
-import Privacy from './pages/Privacy.vue';
-import Terms from './pages/Terms.vue';
-import ThankYou from './pages/ThankYou.vue';
+
+// Use dynamic imports to lazy-load components
+const Cart = () => import('./pages/CartPage.vue');
+const InventoryPage = () => import('./pages/InventoryPage.vue');
+const ListingPage = () => import('./pages/ListingsManagementPage.vue');
+const Login = () => import('./pages/Login.vue');
+const MyAccount = () => import('./pages/MyAccount.vue');
+const ListingDetails = () => import('./pages/ListingDetailsPage.vue');
+const Privacy = () => import('./pages/Privacy.vue');
+const Terms = () => import('./pages/Terms.vue');
+const ThankYou = () => import('./pages/ThankYou.vue');
+const Boxes = () => import('./pages/BoxesPage.vue');
 
 const routes = [
-  {
+  { 
     path: '/',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/cart', 
+    component: Home },
+  { 
+    path: '/cart',
     name: 'cart',
-    component: Cart
+    component: Cart 
   },
   {
     path: '/my-account',
     name: 'My Account',
     component: MyAccount,
     meta: { requires: 'auth' },
-    beforeEnter: handleAuthentication
+    beforeEnter: handleAuthentication 
   },
   {
     path: '/products',
     name: 'Products',
-    component: Listings
-  },
+    component: Listings },
   {
     path: '/products/:title',
     name: 'Product',
-    component: ListingDetails
+    component: ListingDetails 
   },
   {
     path: '/login',
     name: 'login',
     component: Login,
-    meta: {
-      hide: true
-    }
+    meta: { hide: true } 
   },
   {
-    path: '/privacy', 
+    path: '/privacy',
     name: 'privacy',
     component: Privacy,
-    meta: { hide: true }
+    meta: { hide: true } 
   },
   {
-    path: '/terms', 
+    path: '/terms',
     name: 'terms',
     component: Terms,
-    meta: {
-      hide: true
-    }
+    meta: { hide: true } 
   },
   {
     path: '/inventory',
     name: 'inventory',
     component: InventoryPage,
     meta: { requires: 'admin' },
-    beforeEnter: handleAuthentication
+    beforeEnter: handleAuthentication 
   },
   {
     path: '/listings',
     name: 'listings',
     component: ListingPage,
     meta: { requires: 'admin' },
-    beforeEnter: handleAuthentication
+    beforeEnter: handleAuthentication 
   },
   {
     path: '/boxes',
     name: 'boxes',
     component: Boxes,
     meta: { requires: 'admin' },
-    beforeEnter: handleAuthentication
+    beforeEnter: handleAuthentication 
   },
   {
     path: '/thank-you',
     name: 'thank you',
     component: ThankYou,
-    meta: { hide: true }
-  }
+    meta: { hide: true } }
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior: () => ({ top: 0 } )
+  scrollBehavior: () => ({ top: 0 })
 });
 
 async function handleAuthentication(to, from, next) {
-  if(import.meta.env.DEV) {
+  if (import.meta.env.DEV) {
     return next();
   }
   
@@ -138,15 +132,15 @@ function userHasAccess(route) {
   const userStore = useUserStore();
   const { requires } = route.meta;
   
-  if(route.name === 'login') {
-    if(userStore.isLoggedIn) return false;
+  if (route.name === 'login') {
+    if (userStore.isLoggedIn) return false;
   }
   
   if (!requires || import.meta.env.DEV) {
     return true;
   }
   
-  if(!userStore.isLoggedIn) {
+  if (!userStore.isLoggedIn) {
     return false;
   }
   

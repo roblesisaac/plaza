@@ -64,8 +64,8 @@ export const useCartStore = defineStore('cart', {
       return await this.saveCart();
     },
     
-    async clearCart() {
-      if(!confirm('Are you sure you want to clear your cart?')) {
+    async clearCart({ force } = {}) {
+      if(!force && !confirm('Are you sure you want to clear your cart?')) {
         return;
       }
 
