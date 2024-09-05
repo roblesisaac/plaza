@@ -147,6 +147,7 @@
   };
   
   const handleProceedToCheckout = () => {
+    console.log('should proceed to checkout...');
     showProceedingToCheckout.value = true;
     proceedToCheckout();
   };

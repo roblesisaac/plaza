@@ -23,7 +23,7 @@ const routes = [
     component: Home },
   { 
     path: '/cart',
-    name: 'cart',
+    name: 'Cart',
     component: Cart 
   },
   {
@@ -44,39 +44,39 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: Login,
     meta: { hide: true } 
   },
   {
     path: '/privacy',
-    name: 'privacy',
+    name: 'Privacy',
     component: Privacy,
     meta: { hide: true } 
   },
   {
     path: '/terms',
-    name: 'terms',
+    name: 'Terms',
     component: Terms,
     meta: { hide: true } 
   },
   {
     path: '/inventory',
-    name: 'inventory',
+    name: 'Inventory',
     component: InventoryPage,
     meta: { requires: 'admin' },
     beforeEnter: handleAuthentication 
   },
   {
     path: '/listings',
-    name: 'listings',
+    name: 'Listings',
     component: ListingPage,
     meta: { requires: 'admin' },
     beforeEnter: handleAuthentication 
   },
   {
     path: '/boxes',
-    name: 'boxes',
+    name: 'Boxes',
     component: Boxes,
     meta: { requires: 'admin' },
     beforeEnter: handleAuthentication 

@@ -1,21 +1,14 @@
 <template>
     <div class="flex flex-col min-h-screen">
       <TopNav :State="State" />
+      <LoadingBar />
   
-      <main class="flex-grow relative">
-        <router-view v-slot="{ Component, route }">
-          <Transition>
-            <div :key="route.path">
-              <component :is="Component" v-if="userStore.status !== 'NOT_VERIFIED'" />
-            </div>
-          </Transition>
-        </router-view>
-  
-        <VerifyForm v-if="userStore.status === 'NOT_VERIFIED'" />
+      <main class="flex-grow">
+        <router-view v-if="userStore.status !== 'NOT_VERIFIED'" />
+        <VerifyForm v-else />
       </main>
   
       <OffCanvas v-if="State.showingMenu" :State="State" />
-  
       <Footer v-if="!State.showingMenu" />
     </div>
   </template>
@@ -29,6 +22,7 @@
   import OffCanvas from './components/OffCanvas.vue';
   import Footer from './components/Footer.vue';
   import VerifyForm from './components/VerifyForm.vue';
+  import LoadingBar from './components/LoadingBar.vue';
   
   // Stores + Composables
   import { useUserStore } from './stores/userStore';
@@ -57,5 +51,20 @@
       } catch (err) {
           console.error(err);
       }
+  
+    //   prefetchComponents();
   });
+  
+//   function prefetchComponents() {
+//       const routesToPrefetch = ['Cart', 'Products', 'My Account'];
+//       routesToPrefetch.forEach(routeName => {
+//           const route = router.resolve({ name: routeName });
+//           if (route.matched.length > 0) {
+//               const component = route.matched[0].components.default;
+//               if (typeof component === 'function') {
+//                   component();
+//               }
+//           }
+//       });
+//   }
   </script>

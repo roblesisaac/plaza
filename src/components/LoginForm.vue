@@ -128,9 +128,10 @@ async function nativeSubmit() {
             ? login 
             : register;
         
-    await submit(email, password, retype);
+    const loginResult = await submit(email, password, retype);
 
     if(userStore.isLoggedIn) {
+        console.log('logged in!')
         emit('login-success');
     }
 }
