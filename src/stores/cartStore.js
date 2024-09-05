@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { nextTick } from 'vue';
 
 // composables
 import useApi from '../composables/useApi';
@@ -128,6 +129,8 @@ export const useCartStore = defineStore('cart', {
       const userCart = await this.fetchUserCart();
      
       await this.mergeCarts(localCart, userCart.items);
+
+      await nextTick();
 
       this.isLoading = false;
       this.isInit = true;
