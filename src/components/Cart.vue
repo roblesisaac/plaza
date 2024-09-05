@@ -4,13 +4,13 @@
       <h1 class="text-3xl font-bold text-center mb-8">My Cart</h1>
   
       <!-- Loading Screen -->
-      <div v-if="cartStore.isLoading" class="flex flex-col items-center justify-center py-12">
+      <div v-show="cartStore.isLoading && !loginSuccess" class="flex flex-col items-center justify-center py-12">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid mb-4"></div>
         <p class="text-gray-700 text-xl">Loading your cart...</p>
       </div>
   
       <!-- Cart Content -->
-      <div v-else>
+      <div v-show="!cartStore.isLoading || loginSuccess">
         <!-- Empty Cart Message -->
         <div v-if="isEmpty" class="text-center py-8">
           <p class="text-gray-600 mb-4">Your cart is currently empty.</p>
@@ -66,6 +66,9 @@
 <script setup>
 import { computed } from 'vue';
 
+const params = new URLSearchParams(window.location.search);
+const loginSuccess = params.get('loginSuccess');
+
 // Components
 import CartItemVue from '../components/CartItem.vue';
 import StripeButton from './StripeButton.vue';
@@ -78,18 +81,18 @@ const cartStore = useCartStore();
 const isEmpty = computed(() => cartStore.cartItemCount === 0);
 
 const formattedSubtotal = computed(() => {
-    return formatAsPrice(cartStore.subtotal);
+  return formatAsPrice(cartStore.subtotal);
 });
 
 const formattedTax = computed(() => {
-    return formatAsPrice(cartStore.tax);
+  return formatAsPrice(cartStore.tax);
 });
 
 const formattedTotalPrice = computed(() => {
-    return formatAsPrice(cartStore.total);
+  return formatAsPrice(cartStore.total);
 });
 
 if(!cartStore.isInit) {
-    cartStore.init();  
+  cartStore.init();  
 }
 </script>

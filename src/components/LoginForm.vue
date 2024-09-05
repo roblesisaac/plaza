@@ -107,7 +107,7 @@ import { useUserStore } from '../stores/userStore';
 
 const emit = defineEmits(['login-success']);
 const userStore = useUserStore();
-const { login, register, isLoading, hasError, isLoggedIn } = userStore;
+const { login, register, isLoading, hasError } = userStore;
 
 const body = ref({
     email: '',
@@ -128,10 +128,9 @@ async function nativeSubmit() {
             ? login 
             : register;
         
-    const loginResult = await submit(email, password, retype);
+    await submit(email, password, retype);
 
     if(userStore.isLoggedIn) {
-        console.log('logged in!')
         emit('login-success');
     }
 }
