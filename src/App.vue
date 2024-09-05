@@ -15,7 +15,6 @@
   
   <script setup>
   import { onMounted, ref } from 'vue';
-  import { useRouter } from 'vue-router';
   
   // Components
   import TopNav from './components/TopNav.vue';
@@ -35,7 +34,6 @@
   
   const userStore = useUserStore();
   const cartStore = useCartStore();
-  const router = useRouter();
   
   const State = ref({
       showingMenu: false
@@ -51,20 +49,5 @@
       } catch (err) {
           console.error(err);
       }
-  
-    //   prefetchComponents();
   });
-  
-//   function prefetchComponents() {
-//       const routesToPrefetch = ['Cart', 'Products', 'My Account'];
-//       routesToPrefetch.forEach(routeName => {
-//           const route = router.resolve({ name: routeName });
-//           if (route.matched.length > 0) {
-//               const component = route.matched[0].components.default;
-//               if (typeof component === 'function') {
-//                   component();
-//               }
-//           }
-//       });
-//   }
   </script>

@@ -24,7 +24,7 @@ const startLoading = () => {
   timer = setInterval(() => {
     progress.value += (100 - progress.value) / 10;
     if (progress.value > 95) {
-      clearInterval(timer);
+      stopLoading();
     }
   }, 200);
 };
@@ -35,12 +35,12 @@ const stopLoading = () => {
   hideTimer = setTimeout(() => {
     isVisible.value = false;
     progress.value = 0;
-  }, 500); // Delay hiding the bar
+  }, 500);
 };
 
 watch(
   () => router.currentRoute.value,
-  (newRoute, oldRoute) => {
+  (_, oldRoute) => {
     if (!isVisible.value && oldRoute.name) {
       startLoading();
     }
@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach(() => {
-  console.log('after each');
   stopLoading();
 });
 </script>
