@@ -121,6 +121,8 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         }
         
         const purchasedLabel = await provider.purchaseLabel(rateId);
+
+        // console.log(JSON.stringify(purchasedLabel, null, 2));
         
         const { purchasedLabelUrl, trackingUrl } = provider.extractLabelUrls(purchasedLabel);
         

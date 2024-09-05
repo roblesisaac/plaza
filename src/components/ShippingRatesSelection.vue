@@ -36,10 +36,10 @@
       >
         <div v-if="rate._id === selectedRateId" class="mt-3">
           <button 
-            @click="$emit('purchase-label', selectedRateId)" 
+            @click="purchaseLabel" 
             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"
           >
-            Purchase Label
+            Purchase Label <LoadingDotsVue v-if="purchasingLabel" />
           </button>
         </div>
       </transition>
@@ -49,6 +49,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import LoadingDotsVue from '../components/LoadingDots.vue';
 
 const props = defineProps({
   shipmentRatesData: Object
@@ -57,6 +58,12 @@ const props = defineProps({
 const emit = defineEmits(['purchase-label']);
 
 const selectedRateId = ref(null);
+const purchasingLabel = ref(false);
+
+function purchaseLabel() {
+  purchasingLabel.value = true;
+  emit('purchase-label', selectedRateId);
+}
 
 function getImageLogo(rate) {
   const courierName = rate.courier_name.toLowerCase();
