@@ -100,7 +100,6 @@ export async function createShipment(addressDestination, shipment, mailingServic
 
 export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DEFAULT_PROVIDER) {
     try {
-        
         const order = await orders.findOne(orderId);
         
         if (!order) {
@@ -122,6 +121,7 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         }
         
         const purchasedLabel = await provider.purchaseLabel(rateId);
+        
         const { purchasedLabelUrl, trackingUrl } = provider.extractLabelUrls(purchasedLabel);
         
         const updatedOrder = await orders.update(orderId, { 

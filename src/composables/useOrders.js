@@ -9,15 +9,6 @@ const orderItems = ref([]);
 
 export default function useOrders() {
 
-    async function captureOrderPayment(transactionId, orderId, userid) {
-        try {
-            const result = await post('orders/capture-order-payment', { transactionId, orderId, userid });
-            return result;
-        } catch (err) {
-            throw err;
-        }
-    }
-
     async function createLabel(order) {
         try {
             const { orderItems, shippingAddress } = order;
@@ -64,7 +55,6 @@ export default function useOrders() {
 
 
     return  {
-        captureOrderPayment,
         createLabel,
         getOrders,
         orderItems,

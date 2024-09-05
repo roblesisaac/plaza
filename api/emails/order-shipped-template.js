@@ -158,7 +158,7 @@ export default function orderShippedTemplate(order) {
                       <tbody>
                           ${order.stripeSession.line_items.data.map(item => `
                               <tr>
-                                  <td>${item.description}</td>
+                                  <td><a href="${config.URL}/products/${item.description.toLowerCase()}">${item.description}</a></td>
                                   <td>${item.quantity}</td>
                                   <td>$${(item.amount_total / 100).toFixed(2)}</td>
                               </tr>
