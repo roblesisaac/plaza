@@ -107,7 +107,7 @@
                 
                 <!-- Create Label Section -->
                 <div v-if="!orderData.purchasedLabelUrl && showCreateLabel">
-                    <CreateLabel :orderData="orderData" />
+                    <CreateLabel :orderData="orderData" @close="showCreateLabel = false" />
                 </div>
             </div>
         </div>

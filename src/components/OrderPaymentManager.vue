@@ -20,18 +20,7 @@
     </div>
     
     <!-- Action Buttons -->
-    <div class="space-y-4">
-      <!-- Capture Payment -->
-      <Transition>
-        <button
-          v-if="orderData.paymentStatus !== 'captured'"
-          @click="handleCaptureOrderPayment"
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          Capture ${{ orderData.totalPrice }} Payment
-        </button>
-      </Transition>
-      
+    <div class="space-y-4">      
       <!-- Cancel Payment -->
       <Transition>
         <button

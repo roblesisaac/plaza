@@ -16,7 +16,8 @@ const { get, post } = useApi();
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: [],
-    isLoading: true,
+    isLoading: false,
+    isInit: false,
     zipCode: '',
     status: null,
     shippingEstimate: 0,
@@ -118,12 +119,18 @@ export const useCartStore = defineStore('cart', {
     },
     
     async init() {
+      if(this.isLoading) {
+        return;
+      }
+
+      this.isLoading = true;
       const localCart = this.loadLocalCart();
       const userCart = await this.fetchUserCart();
      
       await this.mergeCarts(localCart, userCart.items);
 
       this.isLoading = false;
+      this.isInit = true;
     },
     
     loadLocalCart() {
