@@ -1,4 +1,3 @@
-// import paymentServices from './paymentServices';
 import Orders from '../models/orders';
 import Users from '../models/users';
 import { throwError } from '../utils/errors';
@@ -8,27 +7,28 @@ import { sendEmail } from './contactServices';
 import config from '../config/environment';
 import orderCreatedTemplate from '../emails/order-created-template';
 import orderShippedTemplate from '../emails/order-shipped-template';
-import { retreiveStripeSession } from './stripeServices';
+import * as StripeService from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
+    console.log('cancelling order...');
     const orderToCancel = await Orders.findOne(orderId);
-    const canCancel = ['created', 'on_hold'].includes(orderToCancel.status);
+    const acceptedStatuses = ['unpaid', 'created', 'on_hold'];
+    const canCancel = acceptedStatuses.includes(orderToCancel.status);
 
     if(!canCancel) {
         return {
             success: false,
-            message: `Order status must be created or on hold to cancel`
+            message: `You can only cancel ${acceptedStatuses.join(', ')} orders.`
         }
     }
 
-    const decryptedTransactionId = await getDecryptedTransactionId(orderToCancel);
-    const cancelledPayment = orderToCancel.paymentStatus === 'CAPTURED'
-        ? await paymentServices.refundPayment(decryptedTransactionId)
-        : await paymentServices.voidTransaction(decryptedTransactionId);
+    const voidedPayment = await StripeService.voidPayment(orderToCancel.stripeSessionId);
+
+    console.log(JSON.stringify(voidedPayment, null, 2));
 
     const cancelledOrder = await Orders.update(orderId, {
-        status: 'CANCELLED',
-        paymentStatus: orderToCancel.paymentStatus === 'CAPTURED' ? 'REFUNDED' : 'VOIDED',
+        status: 'cancelled',
+        paymentStatus: 'voided',
         cancellationReason
     });
 
@@ -36,14 +36,14 @@ export async function cancelOrder(orderId, cancellationReason) {
 
     return {
         cancelledOrder,
-        cancelledPayment
+        voidedPayment
     }
     
 }
 
 export async function createStripeOrder(stripeSessionId, orderItems, user) {
-    const stripeSession = await retreiveStripeSession(stripeSessionId);
-    const { id, amount_total, payment_status, payment_intent, shipping_details, customer_email } = stripeSession;
+    const stripeSession = await StripeService.retreiveStripeSession(stripeSessionId);
+    const { id, amount_total, payment_status, shipping_details, customer_email } = stripeSession;
 
     const { address, name } = shipping_details;
     const savedOrder = await Orders.save({
@@ -53,7 +53,6 @@ export async function createStripeOrder(stripeSessionId, orderItems, user) {
         orderItems,
         status: 'created',
         paymentStatus: payment_status,
-        paymentIntent: payment_intent,
         shippingAddress: {
             customerName: name,
             email: customer_email,
@@ -75,7 +74,7 @@ export async function getStripeOrderSession(order) {
 
     return {
         ...restOrder,
-        stripeSession: await retreiveStripeSession(stripeSessionId)
+        stripeSession: await StripeService.retreiveStripeSession(stripeSessionId)
     }
 }
 
@@ -113,8 +112,12 @@ export async function getUserOrders(userid) {
     }
 }
 
-export async function refundOrder(orderId) {
+export async function refundOrder(orderId, refundAmount) {
+    const savedOrder = await Orders.findOne(orderId);
+    const stripeSession = await StripeService.retreiveStripeSession(savedOrder.stripeSessionId);
+    const refund = await paymentServices.refundPayment(stripeSession.payment_intent);
 
+    return refund;
 }
 
 export async function sendOrderStatusEmail(order) {
@@ -172,11 +175,4 @@ export async function updateOrder(orderId, updates) {
     const updatedOrder = await Orders.update(orderId, updates);
 
     return updatedOrder;
-}
-
-export async function getDecryptedTransactionId({ paymentTransactionId, userid }) {
-    const { encryptionKey } = await Users.findOne(userid);
-    const userEncryption = decrypt(paymentTransactionId);
-    
-    return decryptWithKey(userEncryption, encryptionKey);
 }

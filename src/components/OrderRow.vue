@@ -78,9 +78,9 @@
                     @click="showCancelOrder = true"
                     class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
                     >
-                    Cancel Order
-                </button>
-            </div>
+                        Cancel Order
+                    </button>
+                </div>
             
             <!-- Admin Section -->
             <div v-if="userStore.isAdmin" class="mt-8 space-y-4">

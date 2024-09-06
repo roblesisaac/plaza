@@ -43,9 +43,8 @@ const orderSchema = {
     cancellationReason: String,
     paymentStatus: {
         type: String,
-        enum: ['failed', 'paid', 'voided', 'refunded', 'partially_refunded']
+        // enum: ['unpaid', 'failed', 'paid', 'voided', 'refunded', 'partially_refunded']
     },
-    paymentIntent: String,
     deliveredAt: String,
     shippingCost: Number,
     label1: 'userid',

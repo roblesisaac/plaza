@@ -35,7 +35,7 @@
     </div>
     <div class="flex justify-end space-x-4">
         <button
-        @click="cancelOrder"
+        @click="cancelOrderHandler"
         class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
         :disabled="isLoading || !isValidReason"
         >
@@ -53,9 +53,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import useApi from '../composables/useApi';
+import useOrders from '../composables/useOrders';
 
-const { post } = useApi();
+const { cancelOrder } = useOrders();
 
 const props = defineProps({
     orderData: {
@@ -74,16 +74,15 @@ const isValidReason = computed(() => {
     return cancelReason.value !== '' && (cancelReason.value !== 'Other' || otherReason.value.trim() !== '');
 });
 
-const cancelOrder = async () => {
+const cancelOrderHandler = async () => {
     if (isLoading.value || !isValidReason.value) return;
     
     isLoading.value = true;
     try {
         const cancellationReason = cancelReason.value === 'Other' ? otherReason.value : cancelReason.value;
-        const { cancelledOrder } = await post(`/orders/cancel-order`, {
-            orderId: props.orderData._id,
-            cancellationReason
-        });
+        const cancelledOrder = await cancelOrder(props.orderData.orderId, cancellationReason);
+
+        console.log(cancelledOrder);
 
         props.orderData.status = cancelledOrder.status;
         props.orderData.paymentStatus = cancelledOrder.paymentStatus;

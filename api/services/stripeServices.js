@@ -15,10 +15,42 @@ export async function createCheckoutSession(email, lineItems) {
     success_url: `${config.baseUrl}/thank-you`,
     cancel_url: `${config.baseUrl}/cart?canceled=true`,
     automatic_tax: { enabled: true },
+    payment_intent_data: {
+      capture_method: 'manual',
+    },
     // discounts: [{coupon: 'Ah9S1gRQ'}],
   });
 
   return session;
+}
+
+export async function refundPayment(stripeSessionId, amount, reason='requested_by_customer') {
+  if(!amount) {
+    throw new Error('Amount is required');
+  }
+
+  const session = await retreiveStripeSession(stripeSessionId);
+  const payment_intent = session.payment_intent;
+
+  const refund = await stripe.refunds.create({
+    payment_intent,
+    amount,
+    reason
+  });
+  
+  return refund;
+}
+
+export async function voidPayment(stripeSessionId) {
+  const session = await retreiveStripeSession(stripeSessionId);
+  const paymentIntentId = session.payment_intent;
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    
+  if (paymentIntent.status === 'requires_capture') {
+    return await stripe.paymentIntents.cancel(paymentIntentId);
+  } else {
+    throw new Error('Cannot void payment. The payment is already captured or in a non-voidable state.');
+  }
 }
 
 export async function retreiveStripeSession(stripeSessionId) {

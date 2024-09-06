@@ -7,6 +7,8 @@ export default {
             const { orderId, cancellationReason } = req.body;
             const cancelResult = await orderServices.cancelOrder(orderId, cancellationReason);
 
+            console.log(JSON.stringify({ cancelResult }, null, 2));
+
             res.json(cancelResult);
         } catch (err) {
             sendError(res, err);
@@ -25,7 +27,7 @@ export default {
             const { orderItems } = req.body;
             const savedStripeOrder = await orderServices.createStripeOrder(stripe_session_id, orderItems, req.user);
 
-            await orderServices.sendOrderStatusEmail(savedStripeOrder);
+            // await orderServices.sendOrderStatusEmail(savedStripeOrder);
 
             tempSessionStore.savedStripeOrder = savedStripeOrder;
             delete tempSessionStore.stripe_session_id;
