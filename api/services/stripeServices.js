@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import config from '../config/environment';
 
-const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
+const stripe = new Stripe(config.STRIPE.PRIVATE);
 
 export async function createCheckoutSession(email, lineItems) {
   const session = await stripe.checkout.sessions.create({
