@@ -16,7 +16,7 @@ export default function useOrders() {
                 cancellationReason
             });
 
-            console.log(cancelledOrder);
+            return cancelledOrder;
         } catch (err) {
             throw err;
         }

@@ -1,8 +1,6 @@
 import Orders from '../models/orders';
-import Users from '../models/users';
 import { throwError } from '../utils/errors';
 import { extractDateFromId } from '../utils/tools';
-import { decrypt, decryptWithKey } from '../utils/encryption';
 import { sendEmail } from './contactServices';
 import config from '../config/environment';
 import orderCreatedTemplate from '../emails/order-created-template';
@@ -11,13 +9,12 @@ import * as StripeService from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
-    const acceptedStatuses = ['unpaid', 'created', 'on_hold'];
-    const canCancel = acceptedStatuses.includes(orderToCancel.status);
+    const canCancel = orderToCancel.paymentStatus === 'unpaid';
 
     if(!canCancel) {
         return {
             success: false,
-            message: `You can only cancel ${acceptedStatuses.join(', ')} orders.`
+            message: `You can only cancel unpaid orders.`
         }
     }
 
