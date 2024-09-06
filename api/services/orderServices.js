@@ -10,7 +10,6 @@ import orderShippedTemplate from '../emails/order-shipped-template';
 import * as StripeService from './stripeServices';
 
 export async function cancelOrder(orderId, cancellationReason) {
-    console.log('cancelling order...');
     const orderToCancel = await Orders.findOne(orderId);
     const acceptedStatuses = ['unpaid', 'created', 'on_hold'];
     const canCancel = acceptedStatuses.includes(orderToCancel.status);
@@ -24,7 +23,12 @@ export async function cancelOrder(orderId, cancellationReason) {
 
     const voidedPayment = await StripeService.voidPayment(orderToCancel.stripeSessionId);
 
-    console.log(JSON.stringify(voidedPayment, null, 2));
+    if(voidedPayment.status !== 'canceled') {
+        return {
+            success: false,
+            message: 'Something went wrong. Please try again later.'
+        }
+    }
 
     const cancelledOrder = await Orders.update(orderId, {
         status: 'cancelled',
@@ -34,11 +38,7 @@ export async function cancelOrder(orderId, cancellationReason) {
 
     // send email
 
-    return {
-        cancelledOrder,
-        voidedPayment
-    }
-    
+    return cancelledOrder;
 }
 
 export async function createStripeOrder(stripeSessionId, orderItems, user) {

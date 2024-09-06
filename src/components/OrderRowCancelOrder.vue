@@ -82,8 +82,6 @@ const cancelOrderHandler = async () => {
         const cancellationReason = cancelReason.value === 'Other' ? otherReason.value : cancelReason.value;
         const cancelledOrder = await cancelOrder(props.orderData.orderId, cancellationReason);
 
-        console.log(cancelledOrder);
-
         props.orderData.status = cancelledOrder.status;
         props.orderData.paymentStatus = cancelledOrder.paymentStatus;
         emit('close');

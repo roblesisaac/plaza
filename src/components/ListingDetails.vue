@@ -72,13 +72,6 @@
         <!-- Etsy and View Cart -->
         <div class="grid grid-cols-1 gap-8">
             <div class="flex flex-col sm:flex-row gap-4">
-                <a
-                    href="https://gardenhanger.etsy.com"
-                    target="_blank"
-                    class="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg text-center text-lg font-semibold hover:bg-green-700 transition-colors duration-300"
-                >
-                    Buy Now On Etsy
-                </a>
                 <router-link
                     v-if="cart.items.length"
                     to="/cart"
@@ -86,6 +79,14 @@
                 >
                     View Cart ({{ formatAsPrice(cart.subtotal) }})
                 </router-link>
+                <h3 v-if="cart.items.length" class="text-center">- Or -</h3>
+                <a
+                    href="https://gardenhanger.etsy.com"
+                    target="_blank"
+                    class="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg text-center text-lg font-semibold hover:bg-green-700 transition-colors duration-300"
+                >
+                    Buy Now On Etsy
+                </a>
             </div>
         </div>
         

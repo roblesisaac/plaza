@@ -5,11 +5,9 @@ export default {
     cancelOrder: async (req, res) => {
         try {
             const { orderId, cancellationReason } = req.body;
-            const cancelResult = await orderServices.cancelOrder(orderId, cancellationReason);
+            const cancelledOrder = await orderServices.cancelOrder(orderId, cancellationReason);
 
-            console.log(JSON.stringify({ cancelResult }, null, 2));
-
-            res.json(cancelResult);
+            res.json(cancelledOrder);
         } catch (err) {
             sendError(res, err);
         }
