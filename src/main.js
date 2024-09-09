@@ -7,7 +7,6 @@ import './css/style.css'
 import './css/grid.css'
 import './css/fonts.css'
 import './css/palette.css'
-import './css/utils.css'
 import './css/colors.css'
 import 'swiper/css' 
 

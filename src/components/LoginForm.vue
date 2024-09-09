@@ -4,7 +4,7 @@
     <div class="q-cell-1 center google-container">
         <button class="bgF3 login-google mb-10" @click="loginWithGoogle">
             <img alt="Google logo" src="../assets/google.svg" class="google-img" />
-            <span class="proper">{{ formType }}</span> With Google
+            <span class="proper mr-2">{{ formType }}</span> With Google
         </button>
     </div>
     
@@ -57,7 +57,7 @@
                 <!-- Submit Form -->
                 <div class="q-cell-1">
                     <button type="submit" class="expanded proper">
-                        {{ formType }} <LoadingDotsVue v-if="isLoading"></LoadingDotsVue><i v-else class="fi-arrow-right"></i>
+                        {{ formType }} <LoadingDotsVue v-if="isLoading" /><ArrowRight v-else />
                     </button>
                 </div>
                 
@@ -97,6 +97,7 @@
 
 <script setup>
 import { nextTick, ref, defineEmits } from 'vue';
+import { ArrowRight } from 'lucide-vue-next';
 import Router from '../router';
 
 // Components
