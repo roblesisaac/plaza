@@ -88,11 +88,11 @@
         <!-- View orders button -->
         <button v-if="userStore.isLoggedIn" @click="goToOrders" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition duration-300 flex items-center justify-center text-lg">
           View My Orders
-          <ArrowRightVue />
+          <ArrowRight />
         </button>
         <button v-else @click="router.push('/')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition duration-300 flex items-center justify-center text-lg">
           Continue Shopping
-          <ArrowRightVue />
+          <ArrowRight />
         </button>
 
       </div>
@@ -112,7 +112,7 @@
   import useApi from '../composables/useApi';
   import router from '../router';
 
-  import ArrowRightVue from '../components/ArrowRight.vue';
+  import { ArrowRight } from 'lucide-vue-next';
   
   const isLoading = ref(true);
   const order = ref(null);

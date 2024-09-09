@@ -19,8 +19,8 @@
             </a>
         </nav>
         <button @click="toggleMenu" class="md:hidden p-2 text-white focus:outline-none">
-            <MenuVue v-if="!State.showingMenu" />
-            <CloseVue v-else />
+            <Menu v-if="!State.showingMenu" />
+            <CircleX v-else />
         </button>
     </header>
 </template>
@@ -30,8 +30,8 @@ import router, { useFilteredRoutes } from '../router';
 import { useUserStore } from '../stores/userStore';
 import { formatProper } from '../utils/formats';
 
-import MenuVue from 'vue-material-design-icons/Menu.vue';
-import CloseVue from 'vue-material-design-icons/Close.vue';
+
+import { Menu, CircleX } from 'lucide-vue-next';
 
 const linkClasses = 'text-white hover:text-green-300 transition-colors duration-200 pr-5';
 

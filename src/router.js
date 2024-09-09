@@ -29,9 +29,7 @@ const routes = [
   {
     path: '/my-account',
     name: 'My Account',
-    component: MyAccount,
-    meta: { requires: 'auth' },
-    beforeEnter: handleAuthentication 
+    component: MyAccount
   },
   {
     path: '/products',

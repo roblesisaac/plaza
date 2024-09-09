@@ -17,7 +17,7 @@
             </div>
             
             <div @click="editing=!editing" class="q-cell-5 item-dots">
-                <DotsVue />
+                <CircleEllipsis />
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@ import { computed, ref, watch } from 'vue';
 
 // Components
 import BoxFormVue from './BoxForm.vue';
-import DotsVue from 'vue-material-design-icons/DotsVerticalCircleOutline.vue';
+import { CircleEllipsis } from 'lucide-vue-next';
 
 // Stores + Utils
 import { useBoxStore } from '../stores/boxStore';

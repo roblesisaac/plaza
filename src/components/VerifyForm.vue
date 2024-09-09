@@ -10,7 +10,7 @@
     </div>
 
     <div class="q-cell-1">
-        <button type="submit">Verify <ArrowRightVue /></button>
+        <button type="submit">Verify <ArrowRight /></button>
     </div>
 
     <div v-if="notification" class="q-cell-1" id="notify" v-html="notification"></div>
@@ -21,7 +21,7 @@
 import { ref } from 'vue';
 
 // Components
-import ArrowRightVue from 'vue-material-design-icons/ArrowRightThick.vue';
+import { ArrowRight } from 'lucide-vue-next';
 
 // Composables + Stores
 import useApi from '../composables/useApi';

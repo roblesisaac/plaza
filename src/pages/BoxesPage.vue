@@ -3,8 +3,8 @@
     <div class="q-cell-1">
         <button @click="showForm=!showForm">
             <span v-if="!showForm">Show</span><span v-else>Hide</span><span>Form</span>
-            <Down v-if="!showForm" />
-            <Up v-else />
+            <ChevronDown v-if="!showForm" />
+            <ChevronUp v-else />
         </button>
     </div>
     <Transition>
@@ -24,8 +24,7 @@ import { ref } from 'vue';
 import AddNewBoxForm from '../components/BoxForm.vue';
 import Boxes from '../components/Boxes.vue';
 
-import Down from 'vue-material-design-icons/ChevronDown.vue';
-import Up from 'vue-material-design-icons/ChevronUp.vue'
+import { ChevronUp, ChevronDown } from 'lucide-vue-next';
 
 const showForm = ref(false);
 

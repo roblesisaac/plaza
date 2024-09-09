@@ -13,7 +13,7 @@
     
                 <!-- Edit Button -->
                 <div class="q-cell-10 left">
-                    <button @click="editing=!editing" class="action-dots"><DotsVue /></button>
+                    <button @click="editing=!editing" class="action-dots"><Ellipsis /></button>
                 </div>
                 
             </div>
@@ -33,7 +33,7 @@
     import { formatAsPrice } from '../utils/formats';
     
     // Components
-    import DotsVue from 'vue-material-design-icons/DotsVerticalCircleOutline.vue';
+    import { Ellipsis } from 'lucide-vue-next';
     import ListingItemFormVue from './ListingsItemForm.vue';
     
     const props = defineProps({

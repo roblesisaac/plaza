@@ -1,8 +1,8 @@
 <template>
 <div class="q-grid account-wrapper">
     <div class="q-cell-1 text-right">
-        <a v-if="!isEditing" @click="isEditing=true" class="edit-account"><PencilVue /></a>
-        <a v-else @click="isEditing=false" class="edit-account"><CloseVue /></a>
+        <a v-if="!isEditing" @click="isEditing=true" class="edit-account"><Settings /></a>
+        <a v-else @click="isEditing=false" class="edit-account"><CircleX /></a>
     </div>
     <div class="q-cell-1 text-center account-details">
         <div class="q-grid">
@@ -23,8 +23,7 @@
 import { computed, ref } from 'vue';
 import { useUserStore } from '../stores/userStore';
 
-import PencilVue from 'vue-material-design-icons/PencilCircleOutline.vue';
-import CloseVue from 'vue-material-design-icons/CloseCircleOutline.vue';
+import { CircleX, Settings } from 'lucide-vue-next';
 const userStore = useUserStore();
 
 const userEmail = computed(() => {

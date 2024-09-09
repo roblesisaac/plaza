@@ -9,7 +9,7 @@
     >
       <span class="flex items-center justify-center">
         Secure Checkout
-        <ArrowRightVue v-if="!isLoading" class="w-5 h-5 ml-2" />
+        <ArrowRight v-if="!isLoading" class="w-5 h-5 ml-2" />
         <LoadingDotsVue v-else />
       </span>
     </button>
@@ -90,7 +90,7 @@
   import { loadStripe } from '@stripe/stripe-js';
   
   import LoginFormVue from './LoginForm.vue'
-  import ArrowRightVue from './ArrowRight.vue';
+  import { ArrowRight } from 'lucide-vue-next';
   import LoadingDotsVue from './LoadingDots.vue';
   import StripeLogo from './StripeLogo.vue';
   

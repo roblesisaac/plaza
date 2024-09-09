@@ -16,10 +16,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import ListingDetailsVue from '../components/ListingDetails.vue';
 import CraftsmanRowVue from '../components/LandingSectionTwo.vue';
-import ArrowLeft from 'vue-material-design-icons/ArrowLeft.vue';
+import { ArrowLeft } from 'lucide-vue-next';
 
 </script>
 

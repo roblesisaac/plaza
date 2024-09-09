@@ -9,8 +9,8 @@
     
     <!-- Toggle Form Button -->
     <div class="q-cell-1">
-        <button v-if="!showForm" @click="showForm = true" class="toggle">Show Form <Down /></button>
-        <button v-else @click="showForm = false" class="toggle">Hide Form <Up /></button>
+        <button v-if="!showForm" @click="showForm = true" class="toggle">Show Form <ChevronDown /></button>
+        <button v-else @click="showForm = false" class="toggle">Hide Form <ChevronUp /></button>
     </div>
 
     <!-- When Showing Form -->
@@ -45,9 +45,7 @@ import { computed, ref } from 'vue';
 import InventoryItemRow from '../components/InventoryItemRow.vue';
 import InventoryItemFormVue from '../components/InventoryItemForm.vue';
 import LoadingDotsVue from '../components/LoadingDots.vue';
-import Down from 'vue-material-design-icons/ChevronDown.vue';
-import Up from 'vue-material-design-icons/ChevronUp.vue';
-
+import { ChevronUp, ChevronDown } from 'lucide-vue-next';
 // Composables
 import useDb from '../composables/useDb';
 import staticProducts from '../staticDb/productsDb';

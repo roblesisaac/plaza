@@ -212,7 +212,6 @@ export const useCartStore = defineStore('cart', {
     },
     
     async updateItemQuantity(title, newQuantity) {
-      console.log('updated qty...');
       const item = this.findItem(title);
 
       if(item.qty === 1 && newQuantity === -1) {

@@ -23,8 +23,7 @@
 
 <script setup>
 import Contact from './Contact.vue';
-import Facebook from 'vue-material-design-icons/Facebook.vue';
-import Instagram from 'vue-material-design-icons/Instagram.vue';
+import { Facebook, Instagram } from 'lucide-vue-next';
 </script>
 
 <style scoped>
