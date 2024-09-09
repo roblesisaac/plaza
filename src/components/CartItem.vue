@@ -1,42 +1,51 @@
 <template>
-  <div class="cart-item q-grid middle">
-
+  <div class="flex items-center justify-between py-6 border-b border-gray-200">
     <!-- Thumbnail -->
-    <div class="item-image q-cell-20">
-      <router-link :to="'products/' + item.title">
-        <img :src="item.coverPhoto" :alt="item.name" class="thumbnail" />
+    <div class="w-20 h-20 flex-shrink-0">
+      <router-link :to="'products/' + item.title" class="block w-full h-full">
+        <img :src="item.coverPhoto" :alt="item.name" class="w-full h-full object-cover rounded-md shadow-sm" />
       </router-link>
     </div>
 
     <!-- Details -->
-    <div class="item-details q-cell-40">
-      <h3><router-link :to="'products/' + item.title" class="item-title">{{ item.title }}</router-link><br>{{ formattedPrice }}</h3>
+    <div class="flex-grow ml-4">
+      <h3 class="text-lg font-semibold">
+        <router-link :to="'products/' + item.title" class="text-gray-800 hover:text-blue-600 transition duration-150 ease-in-out">
+          {{ item.title }}
+        </router-link>
+      </h3>
+      <p class="text-gray-600 mt-1">{{ formattedPrice }}</p>
     </div>
 
-    <!-- Buttons -->
-    <div class="q-cell-40 right">
-
-      <div class="qty-actions q-grid middle">
-        <div class="q-cell-33">
-          <button @click="updateQuantity(-1)" class="button-qty">-</button>
-        </div>
-        <div class="q-cell-33 center printed-qty" v-html="item.qty">
-        </div>
-        <div class="q-cell-33">
-          <button @click="updateQuantity(1)" class="button-qty">+</button>
+    <!-- Quantity and Actions -->
+    <div class="flex items-center space-x-2">
+      <div class="flex items-center bg-gray-100 rounded-full">
+        <button @click="updateQuantity(-1)" class="p-1.5 text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">
+          <Minus class="w-4 h-4" />
+        </button>
+        <span class="px-2 py-1 text-gray-800 font-large font-bold">{{ item.qty }}</span>
+        <button @click="updateQuantity(1)" class="p-1.5 text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">
+          <Plus class="w-4 h-4" />
+        </button>
+      </div>
+      <div class="relative">
+        <button @click="toggleActions" class="p-1.5 text-gray-700 hover:text-gray-600 transition duration-150 ease-in-out">
+          <MoreVertical class="w-4 h-4" />
+        </button>
+        <div v-if="showActions" class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+          <button @click="emitRemoveItem" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition duration-150 ease-in-out">
+            Remove
+          </button>
         </div>
       </div>
-
-      <button class="remove-button" @click="emitRemoveItem">Remove</button>
-
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { formatAsPrice } from '../utils/formats';
+import { Plus, Minus, MoreVertical } from 'lucide-vue-next';
 
 const props = defineProps({ 
   item: {
@@ -51,69 +60,18 @@ const formattedPrice = computed(() => {
   return formatAsPrice((props.item.price * props.item.qty));
 });
 
+const showActions = ref(false);
+
 function updateQuantity(amount) {
   emits('update-qty', props.item.title, Number(amount));
 }
 
 function emitRemoveItem() {
   emits('remove-item', props.item.title);
+  showActions.value = false;
+}
+
+function toggleActions() {
+  showActions.value = !showActions.value;
 }
 </script>
-
-<style scoped>
-
-button {
-  background: #fafafa;
-  color: var(--darkest-blue);
-  font-weight: bold;
-  border-radius: none;
-}
-
-h3 {
-  margin-bottom: 0;
-  line-height: 1.5rem;
-}
-
-input {
-  text-align: center;
-}
-
-.button-qty {
-  box-shadow: 1px 1px 1px #ccc;
-  width: 100%;
-}
-
-.cart-item {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.item-image {
-  padding: 10px;
-}
-
-.item-image img {
-  width: 100%;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.item-details {
-  padding: 20px;
-}
-
-.item-title {
-  color: var(--darkest-blue);
-  text-decoration: underline;
-}
-
-.printed-qty {
-  font-weight: bold;
-  text-align: center;
-}
-
-button.remove-button {
-  background: transparent;
-  float: right;
-}
-</style>

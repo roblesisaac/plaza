@@ -23,12 +23,6 @@ a:hover {
   text-decoration: underline;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
 button, .button {
   display: inline-block;
   border-radius: 8px;
@@ -37,7 +31,6 @@ button, .button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  color: #fff;
   cursor: pointer;
   transition: all 0.25s;
 }
@@ -58,7 +51,7 @@ button, .button {
 }
 
 button > *, .button > * {
-    margin: 0 8px;
+  margin: 0 8px;
 }
 
 h1,
@@ -88,7 +81,6 @@ input, textarea {
   box-sizing: border-box;
 }
 
-/* Input Fields */
 input[type="text"],
 input[type="password"],
 input[type="number"],
@@ -102,12 +94,7 @@ textarea
     border: 1px solid #ddd; 
     border-radius: 5px;
     box-sizing: border-box;
-    /* margin-bottom: 15px; */
     height: 45px;
-}
-
-.middle {
-  align-items:center;
 }
 
 .scrolling-content {
@@ -120,18 +107,6 @@ textarea
   display: flex;
   flex-wrap: nowrap;
   white-space: nowrap;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
 }
 
 .v-enter-active,
@@ -156,7 +131,6 @@ textarea
   }
 }
 
-/* small screens */
 @media (max-width: 47.9375em) {
   h1 {
     font-size: 1.875rem;
@@ -167,7 +141,6 @@ textarea
   }
 }
 
-/* medium screens */
 @media (min-width: 48em) and (max-width: 63.9375em) {
   h1 {
     font-size: 2.5rem;
