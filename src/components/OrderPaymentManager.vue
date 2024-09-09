@@ -3,19 +3,8 @@
     <!-- Payment Status -->
     <div class="flex justify-between items-center">
       <h3 class="text-lg font-semibold text-gray-800">Payment Status</h3>
-      <span
-        :class="[
-          'px-3 py-1 rounded-full text-sm font-medium',
-          {
-            'bg-green-100 text-green-800': orderData.paymentStatus === 'paid',
-            'bg-yellow-100 text-yellow-800': orderData.paymentStatus === 'voided',
-            'bg-red-100 text-red-800': orderData.paymentStatus === 'failed',
-            'bg-blue-100 text-blue-800': orderData.paymentStatus === 'partially_refunded',
-            'bg-orange-100 text-gray-800': orderData.paymentStatus === 'refunded',
-          }
-        ]"
-      >
-        {{ orderData.paymentStatus.toUpperCase() }}
+      <span :class="['px-3 py-1 rounded-full text-sm font-medium uppercase', statusClass]">
+        {{ orderData.paymentStatus }}
       </span>
     </div>
     
@@ -59,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import useOrders from '../composables/useOrders'
 
 const props = defineProps({
@@ -68,6 +57,26 @@ const props = defineProps({
 
 const { captureOrderPayment, refundOrder } = useOrders()
 const refundAmount = ref(0)
+
+const statusClass = computed(() => {
+  const { paymentStatus } = props.orderData || {};
+  
+  if(!paymentStatus) {
+    return '';
+  }
+
+  const normalizedStatus = paymentStatus.toLowerCase().trim()
+  const classMap = {
+    'unpaid': 'bg-red-100 text-red-800',
+    'paid': 'bg-green-100 text-green-800',
+    'voided': 'bg-yellow-100 text-yellow-800',
+    'failed': 'bg-red-100 text-red-800',
+    'partially_refunded': 'bg-blue-100 text-blue-800',
+    'refunded': 'bg-orange-100 text-gray-800'
+  }
+
+  return classMap[normalizedStatus] || '';
+})
 
 async function handleCaptureOrderPayment() {
   try {
