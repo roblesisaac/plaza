@@ -8,15 +8,36 @@
       </span>
     </div>
     
+    <!-- Order Details -->
+    <div class="bg-gray-50 rounded-md p-4">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600">Amount:</span>
+        <span class="font-medium">${{ orderData.totalPrice }}</span>
+      </div>
+    </div>
+
     <!-- Action Buttons -->
-    <div class="space-y-4">      
+    <div class="space-y-4">
+      <!-- Capture Payment -->
+      <Transition>
+        <button
+          v-if="orderData.paymentStatus === 'unpaid'"
+          @click="handleCaptureOrderPayment"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center"
+        >
+          <DollarSign class="w-5 h-5 mr-2" />
+          Capture Payment
+        </button>
+      </Transition>
+      
       <!-- Cancel Payment -->
       <Transition>
         <button
           v-if="orderData.paymentStatus === 'paid'"
           @click="handleCancelPayment"
-          class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 flex items-center justify-center"
         >
+          <XCircle class="w-5 h-5 mr-2" />
           Cancel Payment
         </button>
       </Transition>
@@ -25,16 +46,20 @@
       <Transition>
         <div v-if="['paid', 'partially_refunded'].includes(orderData.paymentStatus)" class="space-y-2">
           <div class="flex space-x-2">
-            <input
-              type="number"
-              v-model="refundAmount"
-              class="flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Refund Amount"
-            />
+            <div class="relative flex-grow">
+              <DollarSign class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="number"
+                v-model="refundAmount"
+                class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Refund Amount"
+              />
+            </div>
             <button
               @click="handleRefundOrder"
-              class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
+              class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 flex items-center"
             >
+              <RefreshCcw class="w-5 h-5 mr-2" />
               Refund
             </button>
           </div>
@@ -49,10 +74,14 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { DollarSign, XCircle, RefreshCcw } from 'lucide-vue-next'
 import useOrders from '../composables/useOrders'
 
 const props = defineProps({
-  orderData: Object,
+  orderData: {
+    type: Object,
+    required: true
+  },
 })
 
 const { captureOrderPayment, refundOrder } = useOrders()
@@ -85,6 +114,7 @@ async function handleCaptureOrderPayment() {
     props.orderData.paymentStatus = updatedOrder.paymentStatus
   } catch (err) {
     console.error(err)
+    // TODO: Add error handling, e.g., show an error message to the user
   }
 }
 
@@ -100,8 +130,12 @@ async function handleRefundOrder() {
     const refundResult = await refundOrder(paymentTransactionId, amountToRefund)
     console.log({ refundResult })
     // TODO: Update the UI to reflect the refund status
+    // For example:
+    // props.orderData.paymentStatus = refundResult.newStatus
+    // refundAmount.value = 0
   } catch (err) {
     console.error(err)
+    // TODO: Add error handling, e.g., show an error message to the user
   }
 }
 </script>

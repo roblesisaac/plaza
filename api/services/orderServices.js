@@ -112,7 +112,7 @@ export async function getUserOrders(userid) {
 export async function refundOrder(orderId, refundAmount) {
     const savedOrder = await Orders.findOne(orderId);
     const stripeSession = await StripeService.retreiveStripeSession(savedOrder.stripeSessionId);
-    const refund = await paymentServices.refundPayment(stripeSession.payment_intent);
+    const refund = await paymentServices.refundPayment(stripeSession.payment_intent, refundAmount);
 
     return refund;
 }
