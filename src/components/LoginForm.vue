@@ -4,7 +4,7 @@
     <div class="q-cell-1 center google-container">
         <button class="bgF3 login-google mb-10" @click="loginWithGoogle">
             <img alt="Google logo" src="../assets/google.svg" class="google-img" />
-            <span class="capitalize mr-2">{{ formType }}</span> With Google
+            <span class="capitalize mr-1">{{ formType }}</span> With Google
         </button>
     </div>
     
