@@ -7,6 +7,34 @@ import orderCreatedTemplate from '../emails/order-created-template';
 import orderShippedTemplate from '../emails/order-shipped-template';
 import * as StripeService from './stripeServices';
 
+export async function captureOrder(orderId) {
+    const orderToCapture = await Orders.findOne(orderId);
+    const canCapture = orderToCapture.paymentStatus === 'unpaid';
+
+    if(!canCapture) {
+        return {
+            success: false,
+            message: `You can only capture unpaid orders.`
+        }
+    }
+
+    const capturedPayment = await StripeService.capturePayment(orderToCapture.stripeSessionId);
+
+    if(capturedPayment.status !== 'succeeded') {
+        return {
+            success: false,
+            message: 'Something went wrong. Please try again later.'
+        }
+    }
+
+    const capturedOrder = await Orders.update(orderId, {
+        status: 'processing',
+        paymentStatus: 'captured'
+    });
+
+    return capturedOrder;
+}
+
 export async function cancelOrder(orderId, cancellationReason) {
     const orderToCancel = await Orders.findOne(orderId);
     const canCancel = orderToCancel.paymentStatus === 'unpaid';

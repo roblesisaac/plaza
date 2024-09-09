@@ -114,9 +114,9 @@
     </div>
     
     <!-- Toggle Row Arrows -->
-    <div @click="toggleExpand" class="cursor-pointer p-2 text-center border-t border-gray-200 bg-gray-50">
-        <ChevronUp v-if="expanded" />
-        <ChevronDown v-else />
+    <div @click="toggleExpand" class="cursor-pointer p-2 border-t border-gray-200 bg-gray-50 flex items-center justify-center">
+        <ChevronUp v-if="expanded" class="text-gray-500" />
+        <ChevronDown v-else class="text-gray-500" />
     </div>
 </div>
 </template>
@@ -174,6 +174,7 @@ const getStatusClass = () => {
     return {
         'bg-yellow-100 text-yellow-800': status === 'created',
         'bg-orange-100 text-orange-800': status === 'on_hold',
+        'bg-green-200 text-green-900': status === 'processing',
         'bg-red-100 text-red-800': status === 'cancelled',
         'bg-blue-100 text-blue-800': status === 'shipped',
         'bg-green-100 text-green-800': status === 'delivered',

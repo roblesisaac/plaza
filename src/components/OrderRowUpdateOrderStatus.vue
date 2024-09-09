@@ -20,7 +20,7 @@
 <script setup>
 import { ref } from 'vue';
 const emit = defineEmits(['status-changed']);
-const statuses = ['created', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned'];
+const statuses = ['created', 'on_hold', 'processing', 'cancelled', 'shipped', 'delivered', 'returned'];
 
 const props = defineProps({
     orderData: Object

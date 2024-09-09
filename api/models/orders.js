@@ -38,12 +38,12 @@ const orderSchema = {
     trackingUrl: String,
     status: {
         type: String,
-        enum: [ 'created', 'on_hold', 'cancelled', 'shipped', 'delivered', 'returned' ]
+        enum: [ 'created', 'on_hold', 'processing', 'cancelled', 'shipped', 'delivered', 'returned' ]
     },
     cancellationReason: String,
     paymentStatus: {
         type: String,
-        // enum: ['unpaid', 'failed', 'paid', 'voided', 'refunded', 'partially_refunded']
+        // enum: ['unpaid', 'failed', 'paid', 'captured', 'voided', 'refunded', 'partially_refunded']
     },
     deliveredAt: String,
     shippingCost: Number,

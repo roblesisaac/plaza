@@ -9,6 +9,15 @@ const orderItems = ref([]);
 
 export default function useOrders() {
 
+    async function captureOrder(order) {
+        try {
+            const capturedOrder = await post('orders/capture/' + order._id);
+            return capturedOrder;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async function cancelOrder(orderId, cancellationReason) {
         try {
             const cancelledOrder = await post('orders/cancel-order', {
@@ -68,6 +77,7 @@ export default function useOrders() {
 
 
     return  {
+        captureOrder,
         cancelOrder,
         createLabel,
         getOrders,

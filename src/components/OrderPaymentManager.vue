@@ -33,7 +33,7 @@
       <!-- Cancel Payment -->
       <Transition>
         <button
-          v-if="orderData.paymentStatus === 'paid'"
+          v-if="orderData.paymentStatus === 'upaid'"
           @click="handleCancelPayment"
           class="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 flex items-center justify-center"
         >
@@ -44,15 +44,15 @@
 
       <!-- Refund -->
       <Transition>
-        <div v-if="['paid', 'partially_refunded'].includes(orderData.paymentStatus)" class="space-y-2">
+        <div v-if="['captured', 'partially_refunded'].includes(orderData.paymentStatus)" class="space-y-2">
           <div class="flex space-x-2">
             <div class="relative flex-grow">
-              <DollarSign class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="number"
                 v-model="refundAmount"
-                class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Refund Amount"
+                step="0.01"
               />
             </div>
             <button
@@ -84,7 +84,7 @@ const props = defineProps({
   },
 })
 
-const { captureOrderPayment, refundOrder } = useOrders()
+const { captureOrder, refundOrder } = useOrders()
 const refundAmount = ref(0)
 
 const statusClass = computed(() => {
@@ -97,7 +97,7 @@ const statusClass = computed(() => {
   const normalizedStatus = paymentStatus.toLowerCase().trim()
   const classMap = {
     'unpaid': 'bg-red-100 text-red-800',
-    'paid': 'bg-green-100 text-green-800',
+    'captured': 'bg-green-100 text-green-800',
     'voided': 'bg-yellow-100 text-yellow-800',
     'failed': 'bg-red-100 text-red-800',
     'partially_refunded': 'bg-blue-100 text-blue-800',
@@ -109,9 +109,9 @@ const statusClass = computed(() => {
 
 async function handleCaptureOrderPayment() {
   try {
-    const { paymentTransactionId, _id: orderId, userid } = props.orderData
-    const { updatedOrder } = await captureOrderPayment(paymentTransactionId, orderId, userid);
-    props.orderData.paymentStatus = updatedOrder.paymentStatus
+    const capturedOrder = await captureOrder(props.orderData);
+    props.orderData.paymentStatus = capturedOrder.paymentStatus;
+    props.orderData.status = capturedOrder.status;
   } catch (err) {
     console.error(err)
     // TODO: Add error handling, e.g., show an error message to the user

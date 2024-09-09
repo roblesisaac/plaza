@@ -122,6 +122,8 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         
         const purchasedLabel = await provider.purchaseLabel(rateId);
 
+        console.log(purchasedLabel);
+
         // console.log(JSON.stringify(purchasedLabel, null, 2));
         
         const { purchasedLabelUrl, trackingUrl } = provider.extractLabelUrls(purchasedLabel);
@@ -195,9 +197,18 @@ function findLowestRate(rates, mailingServiceProvider = DEFAULT_PROVIDER) {
 }
 
 function orderStatusIsAllowed(orderStatus) {
-    const orderStatuses = [ 'CREATED', 'ON_HOLD', 'CANCELLED', 'SHIPPED', 'DELIVERED', 'RETURNED' ];
+    const orderStatuses = [ 
+        'CREATED', 
+        'ON_HOLD', 
+        'PROCESSING', // MAX STATUS
+        'CANCELLED', 
+        'SHIPPED', 
+        'DELIVERED', 
+        'RETURNED' 
+    ];
+
     const statusIndex = orderStatuses.indexOf(orderStatus.toUpperCase());
-    const onHoldIndex = orderStatuses.indexOf('ON_HOLD');
+    const maxIndex = orderStatuses.indexOf('PROCESSING');
     
-    return statusIndex !== -1 && statusIndex <= onHoldIndex;
+    return statusIndex !== -1 && statusIndex <= maxIndex;
 }

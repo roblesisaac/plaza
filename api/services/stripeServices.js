@@ -1,7 +1,20 @@
 import Stripe from 'stripe';
 import config from '../config/environment';
 
-const stripe = new Stripe(config.STRIPE.PRIVATE_TEST);
+const stripe = new Stripe(config.STRIPE.PRIVATE);
+
+export async function capturePayment(stripeSessionId) {
+  const session = await retreiveStripeSession(stripeSessionId);
+  const paymentIntentId = session.payment_intent;
+  
+  try {
+    const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId);
+    return paymentIntent;
+  } catch (error) {
+    console.error('Error capturing payment:', error);
+    throw new Error('Failed to capture payment');
+  }
+}
 
 export async function createCheckoutSession(email, lineItems) {
   const session = await stripe.checkout.sessions.create({

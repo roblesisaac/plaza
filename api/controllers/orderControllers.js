@@ -2,6 +2,16 @@ import * as orderServices from '../services/orderServices';
 import { sendError } from '../utils/errors';
 
 export default {
+    captureOrder: async (req, res) => {
+        try {
+            const { orderId } = req.params;
+            const capturedOrder = await orderServices.captureOrder(orderId);
+
+            res.json(capturedOrder);
+        } catch (err) {
+            sendError(res, err);
+        }
+    },
     cancelOrder: async (req, res) => {
         try {
             const { orderId, cancellationReason } = req.body;
@@ -25,7 +35,7 @@ export default {
             const { orderItems } = req.body;
             const savedStripeOrder = await orderServices.createStripeOrder(stripe_session_id, orderItems, req.user);
 
-            await orderServices.sendOrderStatusEmail(savedStripeOrder);
+            // await orderServices.sendOrderStatusEmail(savedStripeOrder);
 
             tempSessionStore.savedStripeOrder = savedStripeOrder;
             delete tempSessionStore.stripe_session_id;

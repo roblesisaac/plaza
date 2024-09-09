@@ -10,6 +10,7 @@ router.get('/all-orders', permit('admin'), orderControllers.getAllOrders);
 router.post('/orders/create-label', orderControllers.createLabel);
 router.post('/orders/cancel-order', orderControllers.cancelOrder);
 router.post('/orders/checkout', orderControllers.checkoutStripeOrder);
+router.post('/orders/capture/:orderId', orderControllers.captureOrder);
 
 router.put('/orders/:orderId', orderControllers.updateOrder);
 
