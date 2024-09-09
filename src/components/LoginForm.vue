@@ -9,9 +9,8 @@
     </div>
     
     <!-- Divider Text -->
-    <div class="q-cell-1 center divider">
-        <hr>
-        <p class="divider-text proper">Or {{ formType }} with email</p>
+    <div class="q-cell-1">
+        <DividerText :text="`Or ${formType} with email`" />
     </div>
 
     <!-- login form -->
@@ -99,6 +98,7 @@
 import { nextTick, ref, defineEmits } from 'vue';
 import { ArrowRight } from 'lucide-vue-next';
 import Router from '../router';
+import DividerText from './DividerText.vue';
 
 // Components
 import LoadingDotsVue from './LoadingDots.vue';
