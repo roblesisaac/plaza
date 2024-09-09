@@ -4,7 +4,7 @@
     <div class="q-cell-1 center google-container">
         <button class="bgF3 login-google mb-10" @click="loginWithGoogle">
             <img alt="Google logo" src="../assets/google.svg" class="google-img" />
-            <span class="proper mr-2">{{ formType }}</span> With Google
+            <span class="capitalize mr-2">{{ formType }}</span> With Google
         </button>
     </div>
     
@@ -55,7 +55,7 @@
                 
                 <!-- Submit Form -->
                 <div class="q-cell-1">
-                    <button type="submit" class="expanded proper">
+                    <button type="submit" class="expanded capitalize">
                         {{ formType }} <LoadingDotsVue v-if="isLoading" /><ArrowRight v-else />
                     </button>
                 </div>
@@ -155,7 +155,6 @@ button[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    text-transform: capitalize;
     width: 100%;
     font-weight: bold;
     margin: 15px 0 10px 0;
