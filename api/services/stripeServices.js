@@ -73,7 +73,7 @@ export async function retreiveStripeSession(stripeSessionId) {
   });
 }
 
-export async function retreiveStripePublicKey() {
+export function retreiveStripePublicKey() {
   return isProd() ? config.STRIPE.PUBLIC : config.STRIPE.PUBLIC_TEST;
 }
 

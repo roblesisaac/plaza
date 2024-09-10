@@ -86,7 +86,7 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { loadStripe } from '@stripe/stripe-js';
   
   import LoginFormVue from './LoginForm.vue'
@@ -97,9 +97,10 @@
   import useApi from '../composables/useApi';
   import { useCartStore } from '../stores/cartStore';
   import { useUserStore } from '../stores/userStore';
-  import { stripe_public } from '../config';
   
-  const stripePromise = loadStripe(stripe_public);
+  let stripePromise = null;
+  let isStripeInitiating = false;
+  
   const { post } = useApi();
   const cart = useCartStore();
   const userStore = useUserStore();
@@ -127,7 +128,7 @@
     showProceedingToCheckout.value = true;
   
     try {
-      const stripe = await stripePromise;  
+      const stripe = await loadStripePromise();  
       const sessionId = await post('/stripe/create-checkout-session', {
         lineItems: cart.items,
         email: guestEmail.value || userStore.user?.email
@@ -169,4 +170,29 @@
     proceedToCheckout();
   }
   
+  async function loadStripePromise() {
+    if (stripePromise) {
+      return stripePromise;
+    }
+  
+    if (isStripeInitiating) {
+      while (isStripeInitiating) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      return stripePromise;
+    }
+  
+    isStripeInitiating = true;
+    try {
+      const publicKey = await post('/stripe/public-key');
+      stripePromise = await loadStripe(publicKey);
+      return stripePromise;
+    } finally {
+      isStripeInitiating = false;
+    }
+  }
+  
+  onMounted(async () => {
+    await loadStripePromise();
+  });
   </script>

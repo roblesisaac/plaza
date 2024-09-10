@@ -17,7 +17,7 @@ export default {
             sendError(res, err);
         }
     },
-    retreiveStripePublicKey: (res, res) => {
+    retreiveStripePublicKey: (req, res) => {
         try {
             const publicKey = stripeService.retreiveStripePublicKey();
             res.json(publicKey);
