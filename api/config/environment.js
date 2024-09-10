@@ -47,6 +47,7 @@ export default {
         passReqToCallback: true
     },
     RECAPTCHA_KEY: params('RECAPTCHA_SECRET_KEY'),
+    RECAPTCHA_PUBLIC_KEY: params('RECAPTCHA_PUBLIC_KEY'),
     RSA_PRIVATE: params('RSA_PRIVATE').replace(/\\n/g, '\n'),
     RSA_PUBLIC: params('RSA_PUBLIC').replace(/\\n/g, '\n'),
     SESSION_ID: params('SESSION_ID'),

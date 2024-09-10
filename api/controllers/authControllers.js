@@ -1,6 +1,7 @@
 import passport from 'passport';
 import * as authServices from '../services/authServices';
 import { sendError } from '../utils/errors';
+import config from '../config/environment';
 
 export function checkAuth(req, res) {
   const { password, encryptionKey, ...user } = req.user || {};
@@ -37,6 +38,12 @@ export function loginNative(req, res, next) {
 }
 
 export const googleLogin = passport.authenticate('google', { scope: ['email'] });
+
+export function getPublicReCaptchaToken(_, res) {
+  res.json({
+    token: config.RECAPTCHA_PUBLIC_KEY
+  });
+}
 
 export function googleCallback(req, res, next) {
   passport.authenticate('google', (err, user) => {

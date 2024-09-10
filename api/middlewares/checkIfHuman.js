@@ -1,4 +1,4 @@
-import checkIfHuman from '../services/recaptchaServices';
+import { checkIfHuman } from '../services/recaptchaServices';
 
 export default async function({ body }, res, next) {
 

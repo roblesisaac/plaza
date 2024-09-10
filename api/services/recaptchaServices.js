@@ -2,7 +2,7 @@ import config from '../config/environment';
 import fetch from 'node-fetch';
 import { throwError } from '../utils/errors';
 
-export default async function(recaptchaToken) {
+export async function checkIfHuman(recaptchaToken) {
     try {
         if(!recaptchaToken) {
             return {

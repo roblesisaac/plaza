@@ -1,11 +1,28 @@
 import { ref } from 'vue';
 import { load } from 'recaptcha-v3';
-import { recaptcha_key } from '../config';
+let public_recaptcha = null;
 
 export default function useApi() {
   const data = ref(null);
   const error = ref(null);
   const loading = ref(true);
+
+  async function retrievePublicRecaptcha() {
+    if(public_recaptcha) return;
+    public_recaptcha = 'loading...';
+    const response = await fetch('/api/auth/recaptcha/public');
+    const { token } = await response.json();
+
+    public_recaptcha = token;
+  }
+
+  retrievePublicRecaptcha();
+
+  async function waitForRecaptchaToken() {
+    while(!public_recaptcha || public_recaptcha === 'loading...') {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
 
   async function request(method, url, body = null, settings = {}) {
 
@@ -14,7 +31,8 @@ export default function useApi() {
 
     try {
       if (settings.checkIfHuman) {
-        const recaptcha = await load(recaptcha_key);
+        await waitForRecaptchaToken();
+        const recaptcha = await load(public_recaptcha);
         body.recaptchaToken = await recaptcha.execute(settings.action || 'submit');
       }
 
