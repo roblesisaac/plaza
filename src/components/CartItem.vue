@@ -23,7 +23,7 @@
         <button @click="updateQuantity(-1)" class="p-1.5 text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">
           <Minus class="w-4 h-4" />
         </button>
-        <span class="px-2 py-1 text-gray-800 font-large font-bold">{{ item.qty }}</span>
+        <span class="px-2 py-1 text-gray-800 text-xl font-bold">{{ item.qty }}</span>
         <button @click="updateQuantity(1)" class="p-1.5 text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out">
           <Plus class="w-4 h-4" />
         </button>

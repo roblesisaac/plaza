@@ -9,6 +9,8 @@ router.post(
     stripeControllers.createCheckoutSession
 );
 
+router.get('/public-key', express.json(), stripeControllers.retreiveStripePublicKey);
+
 // router.post(
 //     '/fulfill-checkout-webhook',
 //     express.raw({type: 'application/json'}),

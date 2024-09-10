@@ -62,6 +62,7 @@ export default {
     },
     STRIPE: {
         PUBLIC: params('STRIPE_PUBLIC'),
+        PUBLIC_TEST: params('STRIPE_PUBLIC_TEST'),
         PRIVATE: params('STRIPE_PRIVATE'),
         PRIVATE_TEST: params('STRIPE_PRIVATE_TEST'),
         WHSEC_TEST: params('STRIPE_WHSEC_TEST')

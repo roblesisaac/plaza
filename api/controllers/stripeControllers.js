@@ -16,5 +16,13 @@ export default {
         } catch (err) {
             sendError(res, err);
         }
+    },
+    retreiveStripePublicKey: (res, res) => {
+        try {
+            const publicKey = stripeService.retreiveStripePublicKey();
+            res.json(publicKey);
+        } catch (err) {
+            sendError(res, err);
+        }
     }
 }

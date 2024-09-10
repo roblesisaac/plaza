@@ -1,7 +1,8 @@
 import Stripe from 'stripe';
 import config from '../config/environment';
+import isProd from '../utils/isProd';
 
-const stripe = new Stripe(config.STRIPE.PRIVATE);
+const stripe = new Stripe(isProd() ? config.STRIPE.PRIVATE : config.STRIPE.PRIVATE_TEST);
 
 export async function capturePayment(stripeSessionId) {
   const session = await retreiveStripeSession(stripeSessionId);
@@ -70,6 +71,10 @@ export async function retreiveStripeSession(stripeSessionId) {
   return await stripe.checkout.sessions.retrieve(stripeSessionId, {
     expand: ['line_items'],
   });
+}
+
+export async function retreiveStripePublicKey() {
+  return isProd() ? config.STRIPE.PUBLIC : config.STRIPE.PUBLIC_TEST;
 }
 
 function formatLineItems(lineItems) {
