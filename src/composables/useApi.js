@@ -8,13 +8,25 @@ export default function useApi() {
   const loading = ref(true);
 
   async function retrievePublicRecaptcha() {
-    if(public_recaptcha) return;
+    if (public_recaptcha) return;
+    
     public_recaptcha = 'loading...';
-    const response = await fetch('/api/auth/recaptcha/public');
-    const { token } = await response.json();
 
+    const response = await fetch('/api/auth/recaptcha/public', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok.');
+    }
+
+    const { token } = await response.json();
     public_recaptcha = token;
   }
+  
 
   retrievePublicRecaptcha();
 
