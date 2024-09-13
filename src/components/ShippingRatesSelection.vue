@@ -36,7 +36,7 @@
       >
         <div v-if="rate._id === selectedRateId" class="mt-3">
           <button 
-            @click="purchaseLabel" 
+            @click="handlePurchaseLabel(rate._id)" 
             class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300"
           >
             Purchase Label <LoadingDotsVue v-if="purchasingLabel" />
@@ -50,20 +50,20 @@
 <script setup>
 import { ref } from 'vue';
 import LoadingDotsVue from '../components/LoadingDots.vue';
+import useShipping from '../composables/useShipping';
+
+const { purchaseLabel } = useShipping();
 
 const props = defineProps({
-  shipmentRatesData: Object
+  orderData: Object,
+  shipmentRatesData: Object,
+  selectedServiceProvider: String
 });
 
-const emit = defineEmits(['purchase-label']);
+const emit = defineEmits(['purchased-label']);
 
 const selectedRateId = ref(null);
 const purchasingLabel = ref(false);
-
-function purchaseLabel() {
-  purchasingLabel.value = true;
-  emit('purchase-label', selectedRateId.value);
-}
 
 function getImageLogo(rate) {
   const courierName = rate.courier_name.toLowerCase();
@@ -76,4 +76,21 @@ function getImageLogo(rate) {
 function selectRate(rateId) {
   selectedRateId.value = rateId;
 }
+
+async function handlePurchaseLabel(rateId) {
+  purchasingLabel.value = true;
+  try {
+    const orderId = props.orderData._id;
+    const { updatedOrder } = await purchaseLabel(orderId, rateId, props.selectedServiceProvider);
+
+    props.orderData.purchasedLabelUrl = updatedOrder.purchasedLabelUrl;
+    props.orderData.trackingUrl = updatedOrder.trackingUrl;
+    props.orderData.status = updatedOrder.status;
+    emit('purchased-label');
+  } catch (error) {
+    console.log('Error handling purchase label:', error);
+  } finally {
+    purchasingLabel.value = false;
+  }
+  }
 </script>

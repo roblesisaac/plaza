@@ -235,7 +235,6 @@ export default function useShipping() {
 
             return purchasedLabel;
         } catch (err) {
-            console.error('Error in useShipping.purchaseLabel:', err);
             throw err;
         }
     }

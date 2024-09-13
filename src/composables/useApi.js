@@ -5,7 +5,6 @@ const notifications = ref([]);
 
 export default function useApi() {
   const data = ref(null);
-  const error = ref(null);
   const loading = ref(true);
 
   async function concatRecaptchaToBody(body, settings) {
@@ -44,7 +43,6 @@ export default function useApi() {
 
   async function request(method, url, body = null, settings = {}) {
     loading.value = true;
-    error.value = null;
 
     try {
       if (settings.checkIfHuman) {
@@ -76,7 +74,6 @@ export default function useApi() {
       return data.value;
     } catch (err) {
       notify({ message: err.message });
-      error.value = err.message || err;
       throw new Error(`Error in useApi.${method}: ${err.message}`);
     } finally {
       loading.value = false;
@@ -101,24 +98,23 @@ export default function useApi() {
     }
     
     setTimeout(() => {
-      removeNotifcation(messageId);
-    }, 5000);
+      removeNotification(messageId);
+    }, 10*1000);
   }
   
-  function removeNotifcation(messageId) {
+  function removeNotification(messageId) {
     notifications.value = notifications.value.filter(n => n.messageId !== messageId);
   }
 
   return {
     data,
-    error,
     loading,
     get: (url, settings) => request('GET', url, null, settings),
     post: (url, body, settings) => request('POST', url, body, settings),
     put: (url, body, settings) => request('PUT', url, body, settings),
     remove: (url, body, settings) => request('DELETE', url, body, settings),
     notifications,
-    removeNotifcation,
+    removeNotification,
     notify
   };
 }

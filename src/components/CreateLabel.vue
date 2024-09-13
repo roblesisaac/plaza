@@ -84,8 +84,10 @@
           <!-- Step 3: Shipping Rates -->
           <div v-else-if="currentStep === 3" class="p-6">
             <ShippingRatesSelection 
+              :orderData="orderData"
               :shipment-rates-data="fetchedShipmentRates" 
-              @purchase-label="handlePurchaseLabel" 
+              :selectedServiceProvider="selectedServiceProvider"
+              @purchased-label="emit('close')" 
             />
           </div>
         </div>
@@ -127,7 +129,7 @@
   
   const emit = defineEmits(['close']);
   
-  const { createShipment, getShippingOptions, purchaseLabel } = useShipping();
+  const { createShipment, getShippingOptions } = useShipping();
   
   const shippingServiceProviders = ref(['shippo', 'easyship', 'easypost', 'ship_engine']);
   const selectedServiceProvider = ref('shippo');
@@ -163,30 +165,6 @@
       currentStep.value = 3;
     } catch (err) {
       console.error(err);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-  
-  async function handlePurchaseLabel(rateId) {
-    isLoading.value = true;
-    try {
-      const orderId = props.orderData._id;
-      const purchaseLabelResult = await purchaseLabel(orderId, rateId, selectedServiceProvider.value);
-      
-      if (purchaseLabelResult.success === false) {
-        props.orderData.status = purchaseLabelResult.order.status;
-        console.error('Error purchasing label:', purchaseLabelResult.message);
-        return;
-      }
-      
-      const { updatedOrder } = purchaseLabelResult;
-      props.orderData.purchasedLabelUrl = updatedOrder.purchasedLabelUrl;
-      props.orderData.trackingUrl = updatedOrder.trackingUrl;
-      props.orderData.status = updatedOrder.status;
-      emit('close');
-    } catch (error) {
-      console.error('Error handling purchase label:', error);
     } finally {
       isLoading.value = false;
     }

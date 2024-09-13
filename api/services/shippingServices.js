@@ -2,8 +2,6 @@ import fetch from 'node-fetch';
 import { throwError } from '../utils/errors';
 import config from '../config/environment';
 import ZipCodes from '../models/zipcodes';
-import { sendEmail } from './contactServices';
-import orderShippedTemplate from '../emails/order-shipped-template';
 import { getStripeOrderSession, sendOrderStatusEmail } from './orderServices';
 
 import orders from '../models/orders';
@@ -35,7 +33,7 @@ export async function validateAddress(address, mailingServiceProvider = DEFAULT_
         // const provider = providerMap[mailingServiceProvider];
         const provider = providerMap[PROVIDERS.SHIPPO];
         if (!provider) {
-            return throwError('Invalid mailing service provider');
+            throw new Error('Invalid mailing service provider')
         }
         
         return await provider.validateAddress(address);
@@ -50,13 +48,13 @@ export async function fetchRates(addressOrigin, addressDestination, shipment, ma
         
         const provider = providerMap[mailingServiceProvider];
         if (!provider) {
-            return throwError('Invalid mailing service provider');
+            throw new Error('Invalid mailing service provider')
         }
         
         const rates = await provider.fetchRates(addressOrigin, addressDestination, shipment);
         
         if (rates?.error) {
-            return throwError(`${rates.error.message} - Details: ${JSON.stringify(rates.error.details)}`);
+            throw new Error(`${rates.error.message} - Details: ${JSON.stringify(rates.error.details)}`);
         }
         
         return rates;
@@ -77,13 +75,13 @@ export async function createShipment(addressDestination, shipment, mailingServic
     try {
         const provider = providerMap[mailingServiceProvider];
         if (!provider) {
-            return throwError('Invalid mailing service provider');
+            throw new Error('Invalid mailing service provider');
         }
         
         const fetchedShipment = await provider.createShipment(config.ADDRESS_ORIGIN, addressDestination, shipment);
         
         if (fetchedShipment?.error) {
-            return throwError(`${fetchedShipment.error.message} - Details: ${JSON.stringify(fetchedShipment.error.details)}`);
+            throw new Error(`${fetchedShipment.error.message} - Details: ${JSON.stringify(fetchedShipment.error.details)}`);
         }
         
         if(provider.normalizeRates) {
@@ -91,8 +89,6 @@ export async function createShipment(addressDestination, shipment, mailingServic
         }
         
         fetchedShipment.rates.sort((a, b) => a.price - b.price);
-
-        // console.log(fetchedShipment.rates);
         
         return fetchedShipment;
     } catch (err) {
@@ -105,7 +101,7 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         const order = await orders.findOne(orderId);
         
         if (!order) {
-            return throwError('Order not found');
+            throw new Error('Order not found');
         }
         
         if(!orderStatusIsAllowed(order.status)) {
@@ -119,17 +115,14 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         const provider = providerMap[mailingServiceProvider];
         
         if (!provider) {
-            return throwError('Invalid mailing service provider');
+            throw new Error('Invalid mailing service provider');
         }
         
         const purchasedLabel = await provider.purchaseLabel(rateId);
+        const labelError = provider.labelHasError && provider.labelHasError(purchasedLabel);
 
-        if(provider.labelHasError && provider.labelHasError(purchasedLabel)) {
-            console.log(provider.labelHasError(purchasedLabel));
-            return {
-                success: false,
-                message: provider.labelHasError(purchasedLabel)
-            }
+        if(labelError) {
+            throw new Error(labelError);
         }
         
         const { purchasedLabelUrl, trackingUrl } = provider.extractLabelUrls(purchasedLabel);
@@ -141,9 +134,12 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         });
 
         const stripedOrder = await getStripeOrderSession(updatedOrder);
-        // await sendOrderStatusEmail(stripedOrder);
+        await sendOrderStatusEmail(stripedOrder);
 
-        return { purchasedLabel, updatedOrder };
+        return { 
+            purchasedLabel, 
+            updatedOrder 
+        };
     } catch (err) {
         throwError(err);
     }
@@ -196,7 +192,7 @@ function findLowestRate(rates, mailingServiceProvider = DEFAULT_PROVIDER) {
     }, null);
     
     if (!lowestRate) {
-        throwError('No rates found');
+        return throwError('No rates found');
     }
     
     return lowestRate;
