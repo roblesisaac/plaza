@@ -62,7 +62,7 @@ const purchasingLabel = ref(false);
 
 function purchaseLabel() {
   purchasingLabel.value = true;
-  emit('purchase-label', selectedRateId);
+  emit('purchase-label', selectedRateId.value);
 }
 
 function getImageLogo(rate) {
