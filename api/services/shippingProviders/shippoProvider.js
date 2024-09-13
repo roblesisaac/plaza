@@ -81,10 +81,10 @@ export async function purchaseLabel(rateId) {
 
     const endpoint = `${API_BASE_URL}/transactions`;
 
-    console.log({
-        ...body,
-        endpoint
-    })
+    // console.log({
+    //     ...body,
+    //     endpoint
+    // })
 
     const purchasedLabel = await fetch(endpoint, {
         method: 'POST',

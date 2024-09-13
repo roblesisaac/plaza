@@ -92,7 +92,7 @@ export async function createShipment(addressDestination, shipment, mailingServic
         
         fetchedShipment.rates.sort((a, b) => a.price - b.price);
 
-        console.log(fetchedShipment.rates);
+        // console.log(fetchedShipment.rates);
         
         return fetchedShipment;
     } catch (err) {
