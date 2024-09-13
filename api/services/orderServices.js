@@ -137,12 +137,11 @@ export async function getUserOrders(userid) {
     }
 }
 
-export async function refundOrder(orderId, refundAmount) {
+export async function refundOrder(orderId, refundAmount, refundReason) {
     const savedOrder = await Orders.findOne(orderId);
-    const stripeSession = await StripeService.retreiveStripeSession(savedOrder.stripeSessionId);
-    const refund = await paymentServices.refundPayment(stripeSession.payment_intent, refundAmount);
+    const stripeRefund = await StripeService.refundPayment(savedOrder.stripeSessionId, refundAmount);
 
-    return refund;
+    return stripeRefund;
 }
 
 export async function sendOrderStatusEmail(order) {

@@ -91,6 +91,8 @@ export async function createShipment(addressDestination, shipment, mailingServic
         }
         
         fetchedShipment.rates.sort((a, b) => a.price - b.price);
+
+        console.log(fetchedShipment.rates);
         
         return fetchedShipment;
     } catch (err) {
@@ -122,9 +124,13 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         
         const purchasedLabel = await provider.purchaseLabel(rateId);
 
-        console.log(purchasedLabel);
-
-        // console.log(JSON.stringify(purchasedLabel, null, 2));
+        if(provider.labelHasError && provider.labelHasError(purchasedLabel)) {
+            console.log(provider.labelHasError(purchasedLabel));
+            return {
+                success: false,
+                message: provider.labelHasError(purchasedLabel)
+            }
+        }
         
         const { purchasedLabelUrl, trackingUrl } = provider.extractLabelUrls(purchasedLabel);
         
@@ -135,7 +141,7 @@ export async function purchaseLabel(orderId, rateId, mailingServiceProvider = DE
         });
 
         const stripedOrder = await getStripeOrderSession(updatedOrder);
-        await sendOrderStatusEmail(stripedOrder);
+        // await sendOrderStatusEmail(stripedOrder);
 
         return { purchasedLabel, updatedOrder };
     } catch (err) {

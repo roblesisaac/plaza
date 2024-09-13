@@ -81,6 +81,11 @@ export async function purchaseLabel(rateId) {
 
     const endpoint = `${API_BASE_URL}/transactions`;
 
+    console.log({
+        ...body,
+        endpoint
+    })
+
     const purchasedLabel = await fetch(endpoint, {
         method: 'POST',
         headers: getHeaders(),
@@ -88,6 +93,14 @@ export async function purchaseLabel(rateId) {
     });
 
     return await purchasedLabel.json();
+}
+
+export function labelHasError(purchasedLabel) {
+    if(purchasedLabel.status === 'ERROR') {
+        return purchasedLabel.messages.map(message => message.text).join(' ');
+    }
+
+    return false;
 }
 
 export function extractLabelUrls(purchasedLabel) {

@@ -45,16 +45,6 @@ export default {
             sendError(res, err);
         }
     },
-    createLabel: async (req, res) => {
-        try {
-            const { orderItems, shippingAddress } = req.body;
-            const createdLabel = await orderServices.createLabel(orderItems, shippingAddress)
-
-            res.json({ createdLabel });
-        } catch (err) {
-            sendError(res, err)
-        }
-    },
     getAllOrders: async (_, res) => {
         try {
             const orders = await orderServices.getAllOrders();
@@ -69,6 +59,16 @@ export default {
             const orders = await orderServices.getUserOrders(req.user?._id);
 
             res.json(orders);
+        } catch (err) {
+            sendError(res, err);
+        }
+    },
+    refundOrder: async (req, res) => {
+        try {
+            const { orderId, refundAmount, refundReason } = req.body;
+            const refundedOrder = await orderServices.refundOrder(orderId, refundAmount, refundReason);
+
+            res.json(refundedOrder);
         } catch (err) {
             sendError(res, err);
         }

@@ -54,6 +54,22 @@ export default function useShipping() {
         return baseWeight + additionalWeight;
     }
 
+    async function createShipment(shippingAddress, shippingOption, provider) {
+        try {
+            const body = {
+                address: shippingAddress,
+                boxes: shippingOption.boxes,
+                weight: shippingOption.totalWeight
+            };
+
+            const shipments = await post(`/shipping/create/shipment/${provider}`, body);
+            return shipments;
+        } catch (err) {
+            console.error('Error in useShipping.createShipment:', err);
+            throw err;
+        }
+    }
+
     function findProduct(sku) {
         return products.items.find(p => p.sku === sku);
     }
@@ -185,22 +201,6 @@ export default function useShipping() {
         };
 
         return shippingOptions;
-    }
-
-    async function createShipment(shippingAddress, shippingOption, provider) {
-        try {
-            const body = {
-                address: shippingAddress,
-                boxes: shippingOption.boxes,
-                weight: shippingOption.totalWeight
-            };
-
-            const shipments = await post(`/shipping/create/shipment/${provider}`, body);
-            return shipments;
-        } catch (err) {
-            console.error('Error in useShipping.createShipment:', err);
-            throw err;
-        }
     }
 
     async function fetchEstimate(zipCode, items) {
