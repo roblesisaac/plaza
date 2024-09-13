@@ -80,12 +80,6 @@
                         
                     </div>
                 </div>
-                
-                <!-- Notify -->
-                <br /><br />
-                <Transition>
-                    <div v-if="hasError" class="q-cell-1 notify" v-html="hasError"></div>
-                </Transition>
             </form>
         </Transition>
 
@@ -108,7 +102,7 @@ import { useUserStore } from '../stores/userStore';
 
 const emit = defineEmits(['login-success']);
 const userStore = useUserStore();
-const { login, register, isLoading, hasError } = userStore;
+const { login, register, isLoading } = userStore;
 
 const body = ref({
     email: '',
@@ -211,15 +205,6 @@ label {
 
 .login-google:hover {
     color: #fff;
-}
-
-.notify {
-    background: var(--dark-red);
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    border-radius: 5px;
-    font-weight: bold;
 }
 
 </style>

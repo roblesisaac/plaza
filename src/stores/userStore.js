@@ -3,14 +3,13 @@ import useApi from '../composables/useApi';
 import { useCartStore } from './cartStore';
 import { isValidEmail } from '../utils/validation';
 
-const { get, post, loading: apiLoading, error, data } = useApi();
+const { get, post, loading: apiLoading, data, notify } = useApi();
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     userData: false
   }),
   getters: {
-    hasError: () => error,
     isLoading: () => apiLoading,
     isAdmin: (state) => state.isLoggedIn && state.userData.role === 'admin',
     isLoggedOut: (state) => state.userData === false,
@@ -50,11 +49,11 @@ export const useUserStore = defineStore('user', {
         const cartStore = useCartStore();
 
         if(!email || !password) {
-            return this.throwError('Email and password are required.');
+            return notify('Email and password are required.');
         }
 
         if(!isValidEmail(email)) {
-            return this.throwError('Invalid email address.')
+            return notify('Invalid email address.')
         }
         
         await this.submit('login', { email, password });
@@ -65,15 +64,15 @@ export const useUserStore = defineStore('user', {
         const cartStore = useCartStore();
         
         if(!isValidEmail(email)) {
-            return this.throwError('Invalid email address.')
+            return notify('Invalid email address.')
         }
 
         if(password.length<8) {
-            return this.throwError('Password must be at least 8 characters long.');
+            return notify('Password must be at least 8 characters long.');
         }
 
         if(password !== retype) {
-            return this.throwError('Passwords must match.');
+            return notify('Passwords must match.');
         }
 
         await this.submit('register', { email, password });
@@ -85,17 +84,8 @@ export const useUserStore = defineStore('user', {
         const url = `auth/${submitType}/native`;
         
         await post(url, body, { checkIfHuman: true });
-           
-        if(error.value) {
-            return setTimeout(() => error.value = null, 5000);
-        }
 
         this.userData = data.value.data;
-    },
-
-    throwError(err) {
-        error.value = err;
-        setTimeout(() => error.value = null, 5000);
     }
   }
 });

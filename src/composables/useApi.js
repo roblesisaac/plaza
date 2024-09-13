@@ -1,11 +1,18 @@
 import { ref } from 'vue';
 import { load } from 'recaptcha-v3';
 let public_recaptcha = null;
+const notifications = ref([]);
 
 export default function useApi() {
   const data = ref(null);
   const error = ref(null);
   const loading = ref(true);
+
+  async function concatRecaptchaToBody(body, settings) {
+    await waitForRecaptchaToken();
+    const recaptcha = await load(public_recaptcha);
+    body.recaptchaToken = await recaptcha.execute(settings.action || 'submit');
+  }
 
   async function retrievePublicRecaptcha() {
     if (public_recaptcha) return;
@@ -27,7 +34,6 @@ export default function useApi() {
     public_recaptcha = token;
   }
   
-
   retrievePublicRecaptcha();
 
   async function waitForRecaptchaToken() {
@@ -37,15 +43,12 @@ export default function useApi() {
   }
 
   async function request(method, url, body = null, settings = {}) {
-
     loading.value = true;
     error.value = null;
 
     try {
       if (settings.checkIfHuman) {
-        await waitForRecaptchaToken();
-        const recaptcha = await load(public_recaptcha);
-        body.recaptchaToken = await recaptcha.execute(settings.action || 'submit');
+        await concatRecaptchaToBody(body, settings);
       }
 
       const baseUrl = settings.baseUrl || '/api/';
@@ -65,19 +68,45 @@ export default function useApi() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData || response.statusText || 'API Request Failed');
+        throw new Error(errorData.message || 'API Request Failed');
       }
   
       data.value = await response.json();
   
       return data.value;
     } catch (err) {
-      console.error(`Error in useApi.${method}:`, error);
-      error.value = err;
-      throw err;
+      notify({ message: err.message });
+      error.value = err.message || err;
+      throw new Error(`Error in useApi.${method}: ${err.message}`);
     } finally {
       loading.value = false;
     }
+  }
+
+      
+  function notify(message) {
+    const messageText = message.message || message;
+    const messageType = message.type || 'ERROR'; 
+    const duplicateMessage = notifications.value.find(m => m.message === messageText);
+    const messageId = Math.random().toString();
+    
+    if(duplicateMessage) {
+      duplicateMessage.messageId = messageId;
+    } else {
+      notifications.value.push({
+        messageId,
+        message: messageText,
+        type: messageType
+      });
+    }
+    
+    setTimeout(() => {
+      removeNotifcation(messageId);
+    }, 5000);
+  }
+  
+  function removeNotifcation(messageId) {
+    notifications.value = notifications.value.filter(n => n.messageId !== messageId);
   }
 
   return {
@@ -87,6 +116,9 @@ export default function useApi() {
     get: (url, settings) => request('GET', url, null, settings),
     post: (url, body, settings) => request('POST', url, body, settings),
     put: (url, body, settings) => request('PUT', url, body, settings),
-    remove: (url, body, settings) => request('DELETE', url, body, settings)
+    remove: (url, body, settings) => request('DELETE', url, body, settings),
+    notifications,
+    removeNotifcation,
+    notify
   };
 }

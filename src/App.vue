@@ -8,6 +8,7 @@
         <VerifyForm v-else />
       </main>
   
+      <Notifications />
       <OffCanvas v-if="State.showingMenu" :State="State" />
       <Footer v-if="!State.showingMenu" />
     </div>
@@ -22,6 +23,7 @@
   import Footer from './components/Footer.vue';
   import VerifyForm from './components/VerifyForm.vue';
   import LoadingBar from './components/LoadingBar.vue';
+  import Notifications from './components/Notifications.vue';
   
   // Stores + Composables
   import { useUserStore } from './stores/userStore';
