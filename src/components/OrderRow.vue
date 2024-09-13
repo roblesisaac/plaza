@@ -1,19 +1,23 @@
 <template>
-    <div class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-lg overflow-hidden border border-gray-200">
+  <div class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-lg overflow-hidden border border-gray-200">
         <!-- Minimized Details -->
         <div @click="toggleExpand" class="cursor-pointer p-4 sm:p-6">
             <div class="flex justify-between flex-row">
                 <div class="flex flex-col">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-sm font-medium text-gray-600">Order #{{ orderData.orderId }}</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mt-2">{{ getOrderTitle() }}</h3>
-                    <p class="text-sm text-gray-500">{{ getItemCount() }} item(s)</p>
+                <div class="flex items-center space-x-3">
+                    <span class="text-sm font-medium text-gray-600">Order #{{ orderData.orderId }}</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mt-2">{{ getOrderTitle() }}</h3>
+                <p class="text-sm text-gray-500">{{ getItemCount() }} item(s)</p>
                 </div>
                 <div class="flex flex-grow flex-col items-end">
-                    <span :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusClass()]">{{ orderData.status.toUpperCase() }}</span>
-                    <p class="text-lg font-semibold text-green-600">${{ orderData.totalPrice }}</p>
-                    <p class="text-xs text-gray-400">{{ formatDateFromId(orderData._id) }}</p>
+                <!-- Label Status -->
+                <OrderStatusLabel 
+                    :status="orderData.status"
+                    @status-changed="handleUpdateOrder({ status: $event })"
+                />
+                <p class="text-lg font-semibold text-green-600">${{ orderData.totalPrice }}</p>
+                <p class="text-xs text-gray-400">{{ formatDateFromId(orderData._id) }}</p>
                 </div>
             </div>
         </div>
@@ -125,9 +129,9 @@
 import { computed, ref } from 'vue';
 import OrderPaymentManager from './OrderPaymentManager.vue';
 import CreateLabel from './CreateLabel.vue';
-import OrderRowUpdateOrderStatus from './OrderRowUpdateOrderStatus.vue';
 import OrderRowUpdateAddressForm from './OrderRowUpdateAddressForm.vue';
 import OrderRowCancelOrder from './OrderRowCancelOrder.vue';
+import OrderStatusLabel from './OrderStatusLabel.vue';
 import { formatDateFromId } from '../../api/utils/formats';
 import { ChevronDown, ChevronUp } from 'lucide-vue-next';
 
@@ -138,7 +142,7 @@ const { updateOrder } = useOrders();
 const userStore = useUserStore();
 
 const props = defineProps({
-    orderData: Object
+  orderData: Object
 });
 
 const expanded = ref(false);
@@ -183,20 +187,20 @@ const getStatusClass = () => {
 };
 
 const handleUpdateOrder = async (updates) => {
-    try {
-        if(updates.shippingAddress && !canUpdateAddress.value) {
-            alert('You can only update orders with created or on_hold status');
-            isEditingAddress.value = false;
-            return;
-        }
-        
-        await updateOrder(props.orderData._id, updates);
-        
-        if (updates.shippingAddress) {
-            isEditingAddress.value = false;
-        }
-    } catch (err) {
-        console.error('Failed to update order:', err);
+  try {
+    if(updates.shippingAddress && !canUpdateAddress.value) {
+      alert('You can only update orders with created or on_hold status');
+      isEditingAddress.value = false;
+      return;
     }
+    
+    await updateOrder(props.orderData._id, updates);
+    
+    if (updates.shippingAddress) {
+      isEditingAddress.value = false;
+    }
+  } catch (err) {
+    console.error('Failed to update order:', err);
+  }
 }
 </script>
