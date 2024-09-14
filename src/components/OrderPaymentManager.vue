@@ -3,9 +3,7 @@
     <!-- Payment Status -->
     <div class="flex justify-between items-center">
       <h3 class="text-lg font-semibold text-gray-800">Payment Status</h3>
-      <span :class="['px-3 py-1 rounded-full text-sm font-medium uppercase', statusClass]">
-        {{ orderData.paymentStatus }}
-      </span>
+      <OrderPaymentStatusSelection @payment-status-changed="handleStatusChange" :orderData="orderData" />
     </div>
     
     <!-- Order Details -->
@@ -76,6 +74,9 @@
 import { computed, ref } from 'vue'
 import { DollarSign, XCircle, RefreshCcw } from 'lucide-vue-next'
 import useOrders from '../composables/useOrders'
+import OrderPaymentStatusSelection from './OrderPaymentStatusSelection.vue'
+
+const emit = defineEmits(['payment-status-changed']);
 
 const props = defineProps({
   orderData: {
@@ -87,25 +88,9 @@ const props = defineProps({
 const { captureOrder, refundOrder } = useOrders()
 const refundAmount = ref(0)
 
-const statusClass = computed(() => {
-  const { paymentStatus } = props.orderData || {};
-  
-  if(!paymentStatus) {
-    return '';
-  }
-
-  const normalizedStatus = paymentStatus.toLowerCase().trim()
-  const classMap = {
-    'unpaid': 'bg-red-100 text-red-800',
-    'captured': 'bg-green-100 text-green-800',
-    'voided': 'bg-yellow-100 text-yellow-800',
-    'failed': 'bg-red-100 text-red-800',
-    'partially_refunded': 'bg-blue-100 text-blue-800',
-    'refunded': 'bg-orange-100 text-gray-800'
-  }
-
-  return classMap[normalizedStatus] || '';
-})
+function handleStatusChange(newStatus) {
+  emit('payment-status-changed', newStatus)
+}
 
 async function handleCaptureOrderPayment() {
   try {

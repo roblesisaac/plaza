@@ -88,11 +88,9 @@
             
             <!-- Admin Section -->
             <div v-if="userStore.isAdmin" class="mt-8 space-y-4">
-                <!-- Update Order Status -->
-                <OrderRowUpdateOrderStatus :orderData="orderData" @status-changed="handleUpdateOrder" />
                 
                 <!-- Admin Capture / Refund Buttons -->
-                <OrderPaymentManager :orderData="orderData" />
+                <OrderPaymentManager :orderData="orderData" @payment-status-changed="handleUpdateOrder({ paymentStatus: $event })" />
                 
                 <!-- Label Image -->
                 <div v-if="orderData.purchasedLabelUrl" class="flex flex-col items-center">
@@ -103,9 +101,18 @@
                 </div>
                 
                 <!-- Toggle Label Button -->
-                <div v-if="!orderData.purchasedLabelUrl" class="flex flex-col items-center">
-                    <button @click="showCreateLabel = !showCreateLabel" class="flex-1 text-center px-4 py-2 text-blue-500 rounded-md transition-colors text-sm font-medium">
-                        {{ showCreateLabel ? 'Hide' : 'Show' }} Create Label Form
+                <div v-if="!orderData.purchasedLabelUrl && orderData.paymentStatus !== 'unpaid'" class="flex flex-col items-center">
+                    <button @click="showCreateLabel = !showCreateLabel" 
+                        class="
+                        flex-1 
+                        text-center 
+                        px-4 py-2 
+                        bg-blue-50 
+                        hover:bg-blue-100 
+                        text-blue-700 
+                        font-bold
+                        ">
+                        Show Create Label Form
                     </button>
                 </div>
                 
