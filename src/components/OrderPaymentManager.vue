@@ -16,6 +16,7 @@
 
     <!-- Action Buttons -->
     <div class="space-y-4">
+
       <!-- Capture Payment -->
       <Transition>
         <button
@@ -24,7 +25,7 @@
           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center"
         >
           <DollarSign class="w-5 h-5 mr-2" />
-          Capture Payment
+          Capture Payment <LoadingDots v-if="isLoading" />
         </button>
       </Transition>
       
@@ -58,7 +59,7 @@
               class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50 flex items-center"
             >
               <RefreshCcw class="w-5 h-5 mr-2" />
-              Refund
+              Refund <LoadingDots v-if="isLoading" />
             </button>
           </div>
           <p class="text-sm text-gray-600">
@@ -66,6 +67,7 @@
           </p>
         </div>
       </Transition>
+
     </div>
   </div>
 </template>
@@ -73,8 +75,11 @@
 <script setup>
 import { ref } from 'vue'
 import { DollarSign, XCircle, RefreshCcw } from 'lucide-vue-next'
+import LoadingDots from './LoadingDots.vue'
 import useOrders from '../composables/useOrders'
 import OrderPaymentStatusSelection from './OrderPaymentStatusSelection.vue'
+
+const isLoading = ref(false);
 
 const emit = defineEmits(['payment-status-changed']);
 
@@ -93,6 +98,7 @@ function handleStatusChange(newStatus) {
 }
 
 async function handleCaptureOrderPayment() {
+  isLoading.value = true;
   try {
     const capturedOrder = await captureOrder(props.orderData);
     props.orderData.paymentStatus = capturedOrder.paymentStatus;
@@ -100,6 +106,8 @@ async function handleCaptureOrderPayment() {
   } catch (err) {
     console.error(err)
     // TODO: Add error handling, e.g., show an error message to the user
+  } finally {
+    isLoading.value = false;
   }
 }
 
@@ -109,6 +117,7 @@ function handleCancelPayment() {
 }
 
 async function handleRefundOrder() {
+  isLoading.value = true;
   try {
     const { paymentTransactionId } = props.orderData
     const amountToRefund = refundAmount.value > 0 ? refundAmount.value : null
@@ -121,6 +130,8 @@ async function handleRefundOrder() {
   } catch (err) {
     console.error(err)
     // TODO: Add error handling, e.g., show an error message to the user
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

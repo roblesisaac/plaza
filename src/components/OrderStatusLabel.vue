@@ -22,9 +22,9 @@
     </div>
     <span 
         v-else
-        :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusClass(status)]"
+        :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusClass(selectedStatus)]"
         >
-        {{ status.toUpperCase() }}
+        {{ selectedStatus.toUpperCase() }}
     </span>
 </div>
 </template>
@@ -34,11 +34,7 @@ import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore';
 
 const props = defineProps({
-    orderData: Object,
-    status: {
-        type: String,
-        required: true
-    }
+    orderData: Object
 });
 
 const emit = defineEmits(['status-changed']);
