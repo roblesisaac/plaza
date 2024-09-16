@@ -3,7 +3,7 @@
     <div v-if="isAdmin" class="relative inline-block w-full">
       <select
         @click.stop
-        v-model="selectedStatus"
+        v-model="orderData.status"
         @change="handleStatusChange"
         :class="[
             'appearance-none w-full border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5', 
@@ -30,10 +30,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useUserStore } from '../stores/userStore';
 
 const props = defineProps({
+    orderData: Object,
     status: {
         type: String,
         required: true
@@ -46,7 +47,7 @@ const userStore = useUserStore();
 const isAdmin = computed(() => userStore.isAdmin);
 
 const statuses = ['created', 'on_hold', 'processing', 'cancelled', 'shipped', 'delivered', 'returned'];
-const selectedStatus = ref(props.status);
+const selectedStatus = computed(() => props.orderData.status);
 
 function handleStatusChange() {
     emit('status-changed', selectedStatus.value);

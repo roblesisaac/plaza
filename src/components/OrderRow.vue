@@ -13,7 +13,7 @@
                 <div class="flex flex-grow flex-col items-end">
                 <!-- Label Status -->
                 <OrderStatusLabel 
-                    :status="orderData.status"
+                    :orderData="orderData"
                     @status-changed="handleUpdateOrder({ status: $event })"
                 />
                 <p class="text-lg font-semibold text-green-600">${{ orderData.totalPrice }}</p>
