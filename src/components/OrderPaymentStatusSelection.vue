@@ -4,7 +4,7 @@
         @click.stop
         v-model="orderData.paymentStatus"
         @change="handleStatusChange"
-        class="appearance-none w-full bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
+        class="appearance-none w-full border border-gray-300 rounded-md py-2 pl-3 pr-10 text-sm leading-5"
         :class="getStatusClass(selectedStatus)"
       >
         <option v-for="status in statuses" :key="status" :value="status">

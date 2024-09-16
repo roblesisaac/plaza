@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { DollarSign, XCircle, RefreshCcw } from 'lucide-vue-next'
 import useOrders from '../composables/useOrders'
 import OrderPaymentStatusSelection from './OrderPaymentStatusSelection.vue'

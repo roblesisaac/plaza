@@ -101,7 +101,7 @@
                 </div>
                 
                 <!-- Toggle Label Button -->
-                <div v-if="!orderData.purchasedLabelUrl && orderData.paymentStatus !== 'unpaid'" class="flex flex-col items-center">
+                <div v-if="canPrintShippingLabel" class="flex flex-col items-center">
                     <button @click="showCreateLabel = !showCreateLabel" 
                         class="
                         flex-1 
@@ -117,9 +117,7 @@
                 </div>
                 
                 <!-- Create Label Section -->
-                <div v-if="!orderData.purchasedLabelUrl && showCreateLabel">
-                    <CreateLabel :orderData="orderData" @close="showCreateLabel = false" />
-                </div>
+                <CreateLabel v-if="showCreateLabel" :orderData="orderData" @close="showCreateLabel = false" />
             </div>
         </div>
     </div>
@@ -161,6 +159,13 @@ const showCancelOrder = ref(false);
 const canUpdateAddress = computed(() => {
     const { status } = props.orderData;
     return ['created', 'on_hold'].includes(status.toLowerCase());
+});
+
+const canPrintShippingLabel = computed(() => {
+    const { purchasedLabelUrl, paymentStatus } = props.orderData;
+    const unacceptableStatuses = ['unpaid', 'failed'];
+
+    return !purchasedLabelUrl && !unacceptableStatuses.includes(paymentStatus.toLowerCase());
 });
 
 const toggleExpand = () => {
