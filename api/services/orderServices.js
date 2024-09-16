@@ -177,7 +177,7 @@ export async function sendOrderStatusEmail(order) {
             sendEmail({ from, to: toAdmin, subject, html })
         ]);
     } catch (error) {
-        console.error("Error sending email:", error);
+        throw error;
     }
     
 }

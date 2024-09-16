@@ -12,8 +12,7 @@ export async function capturePayment(stripeSessionId) {
     const paymentIntent = await stripe.paymentIntents.capture(paymentIntentId);
     return paymentIntent;
   } catch (error) {
-    console.error('Error capturing payment:', error);
-    throw new Error('Failed to capture payment');
+    throw error;
   }
 }
 
