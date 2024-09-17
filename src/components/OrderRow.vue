@@ -25,6 +25,9 @@
         <!-- Expanded Section -->
         <div v-if="expanded" class="border-t border-gray-200 p-4 sm:p-6 bg-white">
             <div class="space-y-6">
+
+                <!-- Previous Refunds -->
+                <OrderRowPreviousRefunds :orderData="orderData" />
                 
                 <!-- Shipping Address -->
                 <div class="bg-gray-50 p-4 rounded-lg">
@@ -137,6 +140,7 @@ import CreateLabel from './CreateLabel.vue';
 import OrderRowUpdateAddressForm from './OrderRowUpdateAddressForm.vue';
 import OrderRowCancelOrder from './OrderRowCancelOrder.vue';
 import OrderStatusLabel from './OrderStatusLabel.vue';
+import OrderRowPreviousRefunds from './OrderRowPreviousRefunds.vue'
 import { formatDateFromId } from '../../api/utils/formats';
 import { ChevronDown, ChevronUp } from 'lucide-vue-next';
 
