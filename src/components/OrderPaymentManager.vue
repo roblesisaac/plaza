@@ -59,9 +59,10 @@
                 placeholder="Refund Amount"
                 class="pl-3 pr-3 py-2 border rounded-md w-full"
                 step="0.01"
+                v-model="refundAmount"
               />
             </div>
-            <button class="bg-yellow-500 hover:bg-yellow-600 text-white flex items-center px-4 py-2 rounded-md">
+            <button @click="handleRefundOrder" class="bg-yellow-500 hover:bg-yellow-600 text-white flex items-center px-4 py-2 rounded-md">
               <RefreshCcw class="w-5 h-5 mr-2" />
               Refund
               <LoadingDots v-if="isLoading" />
@@ -106,7 +107,7 @@ const totalRefunded = computed(() => {
 
 const canRefund = computed(() => {
   const paymentStatusIsValid = !['failed', 'unpaid'].includes(props.orderData.paymentStatus);
-  return paymentStatusIsValid && totalRefunded.value < props.orderData.total;
+  return paymentStatusIsValid && totalRefunded.value <= props.orderData.totalPrice;
 });
 
 function handleStatusChange(newStatus) {
@@ -135,6 +136,11 @@ async function handleRefundOrder() {
   isLoading.value = true;
   try {
     const refundResult = await refundOrder(props.orderData, refundAmount.value);
+
+    if(!refundResult) {
+      return;
+    }
+
     props.orderData.paymentStatus = refundResult.paymentStatus;
     props.orderData.refunds = refundResult.refunds;
     refundAmount.value = 0

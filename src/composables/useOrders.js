@@ -57,10 +57,21 @@ export default function useOrders() {
     }
 
     async function refundOrder(orderData, refundAmount = null) {
-        const { _id } = orderData;
-
-        if(!refundAmountIsValid(refundAmount, orderData)) {
+        if(refundAmount === 0 && !confirm('Are you sure you want to refund this order?')) {
             return;
+        }
+
+        const { _id, totalPrice, refunds } = orderData;
+        const totalRefunded = refunds.reduce((sum, refund) => sum + ( refund || 0 ), 0);
+
+        if(refundAmount+totalRefunded > totalPrice) {
+          throw new Error('Refund amount will exceed total price of order.');
+        }
+
+        if(refundAmount === 0) {
+            const refundRemainder = Math.round((totalPrice - totalRefunded) * 100) / 100;
+
+            refundAmount = refundRemainder;
         }
 
         const refundResult = await post('orders/refund', {
@@ -69,22 +80,6 @@ export default function useOrders() {
         });
 
         return refundResult;
-    }
-
-    function refundAmountIsValid(refundAmount, orderData) {
-        const { refunds, totalPrice } = orderData;
-      
-        const totalRefunded = refunds.reduce((acc, refund) => acc + refund, 0);
-      
-        if(refundAmount === 0 && totalRefunded === 0) {
-          return true;
-        }
-      
-        if(refundAmount+totalRefunded > totalPrice) {
-          throw new Error('Refund amount will exceed total price of order.');
-        }
-      
-        return true;
     }
 
     async function updateOrder(orderId, updates) {

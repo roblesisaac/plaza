@@ -150,7 +150,7 @@ export async function refundOrder(orderId, refundAmount, refundReason) {
             paymentStatus: 'refunded',
             refunds: [
                 ...savedOrder.refunds,
-                refundAmount
+                stripeRefund.amount / 100
             ]
         });
     
