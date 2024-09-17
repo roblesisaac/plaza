@@ -133,7 +133,7 @@ async function handleCaptureOrderPayment() {
 }
 
 function handleCancelPayment() {
-  console.log('TODO: Implement cancel payment functionality')
+  console.log('TODO: Implement cancel payment functionality here')
   // TODO: Implement the cancel payment logic
 }
 
