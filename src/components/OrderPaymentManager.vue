@@ -51,24 +51,20 @@
 
       <!-- Refund -->
       <Transition>
-        <div v-if="!['failed', 'unpaid'].includes(orderData.paymentStatus)" class="space-y-2">
-          <div class="flex space-x-2">
+        <div v-if="canRefund" class="max-w-md mx-auto p-4">
+          <div class="flex space-x-2 mb-2">
             <div class="relative flex-grow">
-              <DollarSign class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="number"
-                v-model="refundAmount"
-                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Refund Amount"
+                class="pl-3 pr-3 py-2 border rounded-md w-full"
                 step="0.01"
               />
             </div>
-            <button
-              @click="handleRefundOrder"
-              class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md flex items-center"
-            >
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white flex items-center px-4 py-2 rounded-md">
               <RefreshCcw class="w-5 h-5 mr-2" />
-              Refund <LoadingDots v-if="isLoading" />
+              Refund
+              <LoadingDots v-if="isLoading" />
             </button>
           </div>
           <p class="text-sm text-gray-600">
@@ -76,6 +72,7 @@
           </p>
         </div>
       </Transition>
+
     </div>
   </div>
 </template>
@@ -106,6 +103,11 @@ const refundAmount = ref(0)
 const totalRefunded = computed(() => {
   return props.orderData.refunds ? props.orderData.refunds.reduce((sum, refund) => sum + ( refund || 0 ), 0) : 0
 })
+
+const canRefund = computed(() => {
+  const paymentStatusIsValid = !['failed', 'unpaid'].includes(props.orderData.paymentStatus);
+  return paymentStatusIsValid && totalRefunded.value < props.orderData.total;
+});
 
 function handleStatusChange(newStatus) {
   emit('payment-status-changed', newStatus)
