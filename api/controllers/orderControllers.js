@@ -35,7 +35,7 @@ export default {
             const { orderItems } = req.body;
             const savedStripeOrder = await orderServices.createStripeOrder(stripe_session_id, orderItems, req.user);
 
-            // await orderServices.sendOrderStatusEmail(savedStripeOrder);
+            await orderServices.sendOrderStatusEmail(savedStripeOrder);
 
             tempSessionStore.savedStripeOrder = savedStripeOrder;
             delete tempSessionStore.stripe_session_id;
