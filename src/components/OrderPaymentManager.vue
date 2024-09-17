@@ -18,7 +18,7 @@
           <span class="font-medium text-gray-800">${{ (refund || 0).toFixed(2) }}</span>
         </li>
       </ul>
-      <p class="text-sm text-gray-500 mt-2">
+      <p v-if="orderData.refunds.length > 1" class="text-sm text-gray-500 mt-2">
         Total Refunded: ${{ totalRefunded.toFixed(2) }}
       </p>
     </div>
