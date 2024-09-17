@@ -112,7 +112,6 @@ const totalRefunded = computed(() => {
 
 const canRefund = computed(() => {
   const paymentStatusIsValid = !['failed', 'unpaid'].includes(props.orderData.paymentStatus);
-  console.log(paymentStatusIsValid, totalRefunded.value, props.orderData.totalPrice);
   return paymentStatusIsValid && totalRefunded.value < props.orderData.totalPrice;
 });
 
