@@ -45,6 +45,7 @@ const orderSchema = {
         type: String,
         // enum: ['unpaid', 'failed', 'paid', 'captured', 'voided', 'refunded', 'partially_refunded']
     },
+    refunds: [Number],
     deliveredAt: String,
     shippingCost: Number,
     label1: 'userid',

@@ -56,13 +56,35 @@ export default function useOrders() {
         }
     }
 
-    async function refundOrder(transactionId, amount = null) {
-        const refundResult = await post('payments/refund-order', {
-            transactionId,
-            amount
+    async function refundOrder(orderData, refundAmount = null) {
+        const { _id } = orderData;
+
+        if(!refundAmountIsValid(refundAmount, orderData)) {
+            return;
+        }
+
+        const refundResult = await post('orders/refund', {
+            orderId: _id,
+            refundAmount
         });
 
         return refundResult;
+    }
+
+    function refundAmountIsValid(refundAmount, orderData) {
+        const { refunds, totalPrice } = orderData;
+      
+        const totalRefunded = refunds.reduce((acc, refund) => acc + refund, 0);
+      
+        if(refundAmount === 0 && totalRefunded === 0) {
+          return true;
+        }
+      
+        if(refundAmount+totalRefunded > totalPrice) {
+          throw new Error('Refund amount will exceed total price of order.');
+        }
+      
+        return true;
     }
 
     async function updateOrder(orderId, updates) {

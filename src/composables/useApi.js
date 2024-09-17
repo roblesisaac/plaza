@@ -74,7 +74,7 @@ export default function useApi() {
       return data.value;
     } catch (err) {
       notify({ message: err.message });
-      throw new Error(`Error in useApi.${method}: ${err.message}`);
+      throw new Error(err.message);
     } finally {
       loading.value = false;
     }

@@ -138,10 +138,26 @@ export async function getUserOrders(userid) {
 }
 
 export async function refundOrder(orderId, refundAmount, refundReason) {
-    const savedOrder = await Orders.findOne(orderId);
-    const stripeRefund = await StripeService.refundPayment(savedOrder.stripeSessionId, refundAmount);
+    try {
+        const savedOrder = await Orders.findOne(orderId);
+        const stripeRefund = await StripeService.refundPayment(savedOrder.stripeSessionId, refundAmount, refundReason);
+    
+        if(stripeRefund.status !== 'succeeded') {
+            throw new Error('Something went wrong with StripeService.refundPayment. Please try again later.');
+        }
 
-    return stripeRefund;
+        const refundedOrder = await Orders.update(orderId, {
+            paymentStatus: 'refunded',
+            refunds: [
+                ...savedOrder.refunds,
+                refundAmount
+            ]
+        });
+    
+        return refundedOrder;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export async function sendOrderStatusEmail(order) {

@@ -38,16 +38,24 @@ export async function createCheckoutSession(email, lineItems) {
 }
 
 export async function refundPayment(stripeSessionId, amount, reason='requested_by_customer') {
-  if(!amount) {
-    throw new Error('Amount is required');
+  if(amount == null) {
+    throw new Error('StripeService Error: Refund amount is required.');
   }
 
   const session = await retreiveStripeSession(stripeSessionId);
-  const payment_intent = session.payment_intent;
+  const { payment_intent, amount_total } = session;
+
+  if(amount === 0) {
+    amount = amount_total;
+  }
+
+  if(!amount) {
+    throw new Error('StripeService Error: Refund amount is required.');
+  }
 
   const refund = await stripe.refunds.create({
     payment_intent,
-    amount,
+    amount: Math.round(amount * 100),
     reason
   });
   
