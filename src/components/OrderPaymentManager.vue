@@ -102,12 +102,18 @@ const isLoading = ref(false)
 const refundAmount = ref(0)
 
 const totalRefunded = computed(() => {
-  return props.orderData.refunds ? props.orderData.refunds.reduce((sum, refund) => sum + ( refund || 0 ), 0) : 0
+  if(!props.orderData.refunds?.length) {
+    return 0
+  }
+
+  const sum = props.orderData.refunds.reduce((acc, refund) => acc + (Number(refund) || 0), 0);  
+  return parseFloat(sum.toFixed(2));
 })
 
 const canRefund = computed(() => {
   const paymentStatusIsValid = !['failed', 'unpaid'].includes(props.orderData.paymentStatus);
-  return paymentStatusIsValid && totalRefunded.value <= props.orderData.totalPrice;
+  console.log(paymentStatusIsValid, totalRefunded.value, props.orderData.totalPrice);
+  return paymentStatusIsValid && totalRefunded.value < props.orderData.totalPrice;
 });
 
 function handleStatusChange(newStatus) {
