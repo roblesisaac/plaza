@@ -7,7 +7,7 @@
         <p>{{ paragraph }}</p>
     </div>
     <div class="q-cell-50 icon">
-        <img class="img-large" src="/images/usa.svg" />
+        <!-- <img class="img-large" src="/images/usa.svg" /> -->
     </div>
 </div>
 
@@ -19,7 +19,7 @@
     </div>
     <div class="q-cell-1 icon on-small">
         <hr>
-        <img class="img-small" src="/images/usa.svg" />
+        <!-- <img class="img-small" src="/images/usa.svg" /> -->
     </div>
 </div>
 

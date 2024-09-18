@@ -4,13 +4,13 @@
       <LoadingBar />
   
       <main class="flex-grow">
-        <router-view v-if="userStore.status !== 'NOT_VERIFIED'" />
-        <VerifyForm v-else />
+        <!-- <router-view v-if="userStore.status !== 'NOT_VERIFIED'" /> -->
+        <!-- <VerifyForm v-else /> -->
       </main>
   
       <Notifications />
       <OffCanvas v-if="State.showingMenu" :State="State" />
-      <Footer v-if="!State.showingMenu" />
+      <!-- <Footer v-if="!State.showingMenu" /> -->
     </div>
   </template>
   
